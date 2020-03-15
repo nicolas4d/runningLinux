@@ -1,0 +1,35 @@
+* 
+  Because tar saves the ownership and permissions of files in the archive and
+  retains the full directory structure, as well as symbolic and hard links,
+  using tar is an excellent way to copy or move an entire directory tree from
+  one place to another on the same system (or even between different systems, as
+  we'll see). Using the - syntax described earlier, you can write a tar file to
+  standard output, which is read and extracted on standard input elsewhere.
+
+  For example, say that we have a directory containing two subdirectories:
+  from-stuff and to- stuff. from-stuff contains an entire tree of files,
+  symbolic links, and so forth — something that is difficult to mirror precisely
+  using a recursive cp. In order to mirror the entire tree beneath from-stuff to
+  to-stuff, we could use the commands:
+  #+begin_src shell
+    cd from-stuff
+    tar cf - . | (cd ../to-stuff; tar xvf -)
+  #+end_src
+* 
+  Simple and elegant, right? We start in the directory from-stuff and create a
+  tar file of the current directory, which is written to standard output. This
+  archive is read by a subshell (the commands contained within parentheses); the
+  subshell does a cd to the target directory, ../to- stuff (relative to
+  from-stuff, that is), and then runs tar xvf, reading from standard input. No
+  tar file is ever written to disk; the data is sent entirely via pipe from one
+  tar process to another. The second tar process has the v option that prints
+  each file as it's extracted; in this way, we can verify that the command is
+  working as expected.
+
+  In fact, you could transfer directory trees from one machine to another (via
+  the network) using this trick; just include an appropriate rsh (or ssh)
+  command within the subshell on the right side of the pipe. The remote shell
+  would execute tar to read the archive on its standard input.
+
+  (Actually, GNU tar has facilities to read or write tar files automatically
+  from other machines over the network; see the tar(1) manual page for details.)

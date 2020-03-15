@@ -1,0 +1,7 @@
+In the next few chapters, we'll introduce a number of popular applications for
+Linux. We'll start here with text editing, which underlies nearly every activity
+on the system. (You need an editor to create a file of more than trivial size,
+whether it is a program to be compiled, a configuration file for your system, or
+a mail message to send to a friend.) On a related topic, we'll show you some
+text formatters that can make attractive documents and utilities that manage
+printing.

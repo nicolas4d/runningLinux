@@ -1,0 +1,27 @@
+* 
+  The most common way to search for a string within Emacs is to press C-s . This
+  starts what is called an incremental search. You then start entering the
+  characters you are looking for. Each time you press a character, Emacs
+  searches forward for a string matching everything you've typed so far. If you
+  make a mistake, just press the Delete key and continue typing the right
+  characters. If the string cannot be found, Emacs beeps. If you find an
+  occurrence but you want to keep searching for another one, press C-s again.
+
+  You can also search backward this way using the C-r key. Several other types
+  of searches exist, including a regular expression search that you can invoke
+  by pressing M-C-s . This lets you search for something like jo.*n , which
+  matches names like John, Joan, and Johann. (By default, searches are not
+  case-sensitive.)
+
+  To replace a string, enter M-% . You are prompted for the string that is
+  currently in the buffer, and then the one with which you want to replace it.
+  Emacs displays each place in the buffer where the string is and asks you if
+  you want to replace this occurrence. Press the spacebar to replace the string,
+  the Delete key to skip this string, or a period to stop the search.
+* 
+  If you know you want to replace all occurrences of a string that follow your
+  current place in the buffer, without being queried for each one, enter M-x
+  replace-string . (The M-x key allows you to enter the name of an Emacs
+  function and execute it, without use of a key binding. Many Emacs functions
+  are available only via M-x , unless you bind them to keys yourself.) A regular
+  expression can be replaced by entering M-x replace-regexp .

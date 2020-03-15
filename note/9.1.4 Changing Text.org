@@ -1,0 +1,16 @@
+You can replace text using the *R* command, which overwrites the text beginning
+at the cursor. Place the cursor on the first letter in pizza , press R, and
+type:
+
+The *r* command replaces the single character under the cursor. r does not place
+you in insert mode per se, so there is no reason to use Escape to return to
+command mode.
+
+The *~* command changes the case of the letter under the cursor from upper- to
+lowercase, and vice versa. If you place the cursor on the o in Now in the
+previous example, and repeatedly press ~, you end up with the following:
+
+Another useful command for changing words is the *cw* command, which lets you
+simply type in the new word and — after pressing Escape — removes anything that
+might be left over from the original word. If the new text is longer than the
+one being changed, the space is automatically expanded as needed.

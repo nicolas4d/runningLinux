@@ -1,0 +1,31 @@
+* 
+  Linux is a remarkably effective operating system, which in many cases can
+  completely replace MS-DOS/Windows. However, there are always those of us who
+  want to continue to use other operating systems as well as Linux, or at least
+  to exchange files directly with them. Linux satisfies such yearnings with
+  internal enhancements that allow it to access foreign filesystems and act on
+  their files. It can mount DOS/Windows partitions on the system's hard disk, or
+  access files and printers shared by Windows servers on the network. Linux can
+  also run DOS and Windows applications, using compatibility utilities that
+  allow it to invoke MS-DOS or Windows.
+
+  We use the terms MS-DOS and Windows somewhat generically in this chapter to
+  refer to any of the DOS-based operating systems coming from Microsoft or those
+  compatible with them. These include MS-DOS, PC-DOS, and DR-DOS/Novell DOS (all
+  with or without Windows 3.x running on top of them), as well as the various
+  Windows versions themselves, no matter whether they build upon a separate DOS
+  installation, such as Windows 3.x, or whether they have a DOS kernel built in,
+  such as Windows 95/98/ME. Windows NT/2000/XP are different, and some of the
+  things described here will not work with them, or will work differently.
+* 
+  One of the most common reasons for needing to run Windows is that it often has
+  better support for new hardware products. If you have installed Windows
+  because you need to use a piece of hardware that is supported by Windows, but
+  for which there is no Linux driver, do not despair. Although you may have to
+  wait a while for it, most mainstream hardware devices that are supported by
+  Windows will eventually be supported by Linux, too. For example, Linux drivers
+  for USB devices used to be rare and flaky, but now many common USB devices
+  work just fine on Linux. You can get updated information about which USB
+  devices work on Linux at http://www.linux-usb.org.
+
+  

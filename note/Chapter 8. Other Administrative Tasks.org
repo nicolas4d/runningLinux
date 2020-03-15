@@ -1,0 +1,6 @@
+After reading the previous three chapters, you now have all the skills you need
+to start using your system. But eventually you'll want the information in this
+chapter too. Some of the activities, such as making backup tapes, are important
+habits to develop. You may also find it useful to have access to files and
+programs on MS-DOS and Windows. Finally, we'll help you handle events that you
+hope will never happen, but sometimes do — system panics and corruption.

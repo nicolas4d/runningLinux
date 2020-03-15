@@ -1,0 +1,102 @@
+* 
+  ImageMagick is a suite of programs that convert and manipulate graphics files
+  from the command line. It is also well suited for batch conversions — that is,
+  converting many files at once. In addition, ImageMagick includes PerlMagick, a
+  binding that lets you invoke the ImageMagick utilities from the Perl
+  programming language. It comes with most Linux distributions; if yours does
+  not have it, you can get it from
+  ftp://ftp.x.org/contrib/applications/ImageMagick. ImageMagick consists of a
+  library and a number of utilities:
+** display
+   display is a graphical frontend to many of the functions provided by
+   ImageMagick. It is very useful if you want to experiment with the effects of a
+   function before you go and batch-convert hundreds of images with these
+   effects. display can load many different graphics file formats and display
+   them on the X Window System. You can start display and pass it one or more
+   filenames on the command line, or load a file from the menu provided. If you
+   have started display and do not see a menu, click the image displayed with the
+   left mouse button. display features a huge number of command-line switches.
+   See the manual page for details.
+** import
+   import is a small program that captures either one window or the whole server
+   into a file; that is, it allows you to make screenshots. For example, to make
+   a screenshot of your whole screen and save it as myscreen.xpm in the graphics
+   file format XPM, you would execute:
+   #+begin_src shell
+     import -window root myscreen.xpm
+   #+end_src
+   When you hear the first beep, the screen capture begins, and when the second
+   one sounds, capturing is finished and the image data is in the process of
+   being saved to the file you specified.
+
+   If you want to capture the contents of only one window, the easiest way is to
+   start import without the -window option:
+   #+begin_src shell
+     mport mywindow.xpm
+   #+end_src
+   The cursor then turns into a crossbar, which prompts you to click any window.
+   This window's contents are then captured and saved to the specified file.
+
+   Like all ImageMagick programs, import has many command-line options; check
+   the image(1) manual page.
+** montage
+   montage is a very useful little tool with a functionality rarely found
+   elsewhere. It takes a number of images and puts them together as one large
+   image in a tiled manner.
+
+   There are lots of options for changing how the images are exactly tiled and
+   put together.
+
+   In order to tile all your JPEG images in the current directory and create the
+   image all.jpg out of it, you could call:
+   #+begin_src shell
+     montage *.jpg all.jpg
+   #+end_src
+   By default, there will be a label with the filename below each image. You can
+   avoid this by entering:
+   #+begin_src shell
+     montage +frame *.jpg all.jpg
+   #+end_src
+** convert
+   In a way, convert is the heart of the ImageMagick suite. It can convert
+   between an amazing number of graphics formats. For example, let's assume that
+   you want to port a GUI program from Windows to Linux. You have a large number
+   of toolbar icons in Windows BMP format and want to convert those to XPM. You
+   could do this with:
+   #+begin_src shell
+     for i in *.bmp
+     do
+         convert $i xpm:'basename $i .bmp'.xpm
+     done
+   #+end_src
+   convert will happily chug through all the images and convert them. If you
+   want to do other things to the images, just add the necessary switches —
+   e.g., -despeckle for removing speckles from the images.
+** mogrify
+   mogrify is like convert, but it overwrites the original images and is meant
+   more for applying filter functions than for converting file formats (even
+   though you can easily change the file format by using the switch -format ).
+** identify
+   identify outputs information about the images passed on the command line. For
+   example:
+   #+begin_src shell
+     identify tux.gif
+     tux.gif 257x303+0+0 DirectClass 10968b GIF 1s
+   #+end_src
+   This tells you, among other things, that tux.gif is a GIF file 257 pixels
+   wide and 303 pixels high. If this is not enough information for you, try the
+   -verbose switch!
+** combine
+   As its name indicates, combine combines several images into one. You can, for
+   example, put color-separated images together or put a logo on top of a larger
+   image.
+** xtp
+   Like the ftp program, xtp downloads files from a remote site or uploads them
+   to a remote site. But unlike ftp, it does not need interactive input (in
+   order to get this with ftp, you would have to edit its configuration file).
+   You can productively combine xtp with the other tools from the ImageMagick
+   suite to automatically manipulate images on remote servers.
+* 
+  To sum up, the programs from the ImageMagick suite are an extremely versatile
+  means to manipulate graphics files. However, it takes some time to familiarize
+  yourself with all the command-line options in order to know what is available.

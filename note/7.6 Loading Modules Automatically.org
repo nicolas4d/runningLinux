@@ -1,0 +1,22 @@
+* 
+  The automatic loading of modules is an especially useful feature which is
+  implemented by a kernel component called *kmod*. With the help of kmod, the
+  kernel can load needed device drivers and other modules automatically and
+  without manual intervention from the system administrator. If the modules are
+  not needed after 60 seconds, they are automatically unloaded as well.
+
+  *In order to use kmod*, you need to turn on support for it ( Kernel module
+  loader ) during kernel configuration in the Loadable module support section.
+
+  Modules that need other modules must be correctly listed in /lib/modules/
+  kernelversion/modules.dep, and there must be aliases for the major and minor
+  number in /etc/conf.modules. See the documentation from the modules package
+  for further information.
+* 
+  If a module has not been loaded manually with insmod or modprobe, but was
+  loaded automatically by the kernel, the module is listed with the addition
+  (autoclean) in the lsmod output. This tells you that the kernel will remove
+  the module if it has not been used for more than one minute.
+
+  We have gone through quite a lot of material now, and you should have all the
+  tools you'll need to build and maintain your own kernels.

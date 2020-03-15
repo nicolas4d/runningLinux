@@ -1,0 +1,146 @@
+* 
+  *gzip* is a fast and efficient compression program distributed by the GNU
+  project. The basic function of gzip is to take a file, compress it, save the
+  compressed version as filename.gz, and remove the original, uncompressed file.
+  The original file is removed only if gzip is successful; it is very difficult
+  to accidentally delete a file in this manner. Of course, being GNU software,
+  gzip has more options than you want to think about, and many aspects of its
+  behavior can be modified using command-line options.
+
+  First, let's say that we have a large file named garbage.txt:
+  #+begin_src shell
+    ls -l garbage.txt
+    -rw-r--r--  1 mdw  hack  312996 Nov 17 21:44 garbage.txt
+  #+end_src
+  To compress this file using gzip, we simply use the command:
+  #+begin_src shell
+    gzip garbage.txt
+  #+end_src
+* 
+  This replaces garbage.txt with the compressed file garbage.txt.gz. What we end
+  up with is the following:
+  #+begin_src shell
+    rutabaga% ls -l garbage.txt.gz
+    -rw-r--r--  1 mdw  hack  103441 Nov 17 21:44 garbage.txt.gz
+  #+end_src
+  Note that garbage.txt is removed when gzip completes.
+
+  You can give gzip a list of filenames; it compresses each file in the list,
+  storing each with a .gz extension. (Unlike the zip program for Unix and MS-DOS
+  systems, gzip will not, by default, compress several files into a single .gz
+  archive. That's what tar is for; see the next section.)
+* 
+  How efficiently a file is compressed depends upon its format and contents. For
+  example, many graphics file formats (such as PNG and JPEG) are already well
+  compressed, and gzip will have little or no effect upon such files. Files that
+  compress well usually include plain-text files, and binary files, such as
+  executables and libraries. You can get information on a gzipped file using
+  *gzip -l*. For example:
+  #+begin_src shell
+    rutabaga% gzip -l garbage.txt.gz
+    compressed uncompr. ratio uncompressed_name
+    103115  312996 67.0% garbage.txt
+  #+end_src
+  To get our original file back from the compressed version, we use *gunzip*, as
+  in:
+  #+begin_src shell
+    rutabaga% gunzip garbage.txt.gz
+    rutabaga% ls -l garbage.txt
+    -rw-r--r--  1 mdw  hack  312996 Nov 17 21:44 garbage.txt
+  #+end_src
+* 
+  which is identical to the original file. Note that when you gunzip a file, the
+  compressed version is removed once the uncompression is complete. Instead of
+  using gunzip, you can also use gzip -d (e.g., if gunzip happens not to be
+  installed).
+
+  gzip stores the name of the original, uncompressed file in the compressed
+  version. This way, if the compressed filename (including the .gz extension) is
+  too long for the filesystem type (say, you're compressing a file on an MS-DOS
+  filesystem with 8.3 filenames), the original filename can be restored using
+  gunzip even if the compressed file had a truncated name. To uncompress a file
+  to its original filename, use the -N option with gunzip. To see the value of
+  this option, consider the following sequence of commands:
+  #+begin_src shell
+    gzip garbage.txt
+    mv garbage.txt.gz rubbish.txt.gz
+  #+end_src
+* 
+  If we were to gunzip rubbish.txt.gz at this point, the uncompressed file would
+  be named rubbish.txt, after the new (compressed) filename. However, with the
+  -N option, we get: 
+  #+begin_src shell
+    gunzip -N rubbish.txt.gz
+    ls -l garbage.txt
+    -rw-r--r--  1 mdw  hack  312996 Nov 17 21:44 garbage.txt
+  #+end_src
+  gzip and gunzip can also compress or uncompress data from standard input and
+  output. If gzip is given no filenames to compress, it attempts to compress
+  data read from standard input. Likewise, if you use the -c option with gunzip,
+  it writes uncompressed data to standard output. For example, you could pipe
+  the output of a command to gzip to compress the output stream and save it to a
+  file in one step, as in:
+  #+begin_src shell
+    ls -laR $HOME | gzip > filelist.gz
+  #+end_src
+* 
+  This will produce a recursive directory listing of your home directory and
+  save it in the compressed file filelist.gz. You can display the contents of
+  this file with the command:
+  #+begin_src shell
+    gunzip -c filelist.gz | more
+  #+end_src
+  This will uncompress filelist.gz and pipe the output to the more command. When
+  you use gunzip -c, the file on disk remains compressed.
+
+  The *zcat* command is identical to gunzip -c. You can think of this as a
+  version of cat for compressed files. Linux even has a version of the pager
+  less for compressed files, called zless.
+* 
+  When compressing files, you can use one of the options -1, -2, through -9 to
+  specify the speed and quality of the compression used. -1 (also — fast)
+  specifies the fastest method, which compresses the files less compactly, while
+  -9 (also — best) uses the slowest, but best compression method. If you don't
+  specify one of these options the default is -6. None of these options has any
+  bearing on how you use gunzip; gunzip will be able to uncompress the file no
+  matter what speed option you use.
+
+  gzip is relatively new in the Unix world. The *compression* programs used on
+  most Unix systems are compress and uncompress, which were included in the
+  original Berkeley versions of Unix. compress and uncompress are very much like
+  gzip and gunzip, respectively; compress saves compressed files as filename.Z
+  as opposed to filename.gz, and uses a slightly less efficient compression
+  algorithm.
+* 
+  However, the free software community has been moving to gzip for several
+  reasons. First of all, gzip works better. Second, there has been a patent
+  dispute over the compression algorithm used by compress — the results of which
+  could prevent third parties from implementing the compress algorithm on their
+  own. Because of this, the Free Software Foundation urged a move to gzip, which
+  at least the Linux community has embraced. gzip has been ported to many
+  architectures, and many others are following suit. Happily, gunzip is able to
+  uncompress the .Z format files produced by compress.
+* 
+  Another compression/decompression program has also emerged to take the lead
+  from gzip. *bzip2* is the new kid on the block and sports even better
+  compression (on the average about 10-20% better than gzip), at the expense of
+  longer compression times. You cannot use bunzip2 to uncompress files
+  compressed with gzip and vice versa, and because you cannot expect everybody
+  to have bunzip2 installed on their machine, you might want to confine yourself
+  to gzip for the time being if you want to send the compressed file to somebody
+  else. However, it pays to have bzip2 installed because more and more FTP
+  servers now provide bzip2-compressed packages in order to conserve disk space
+  and bandwidth. You can recognize bzip2-compressed files by their .bz2 filename
+  extension.
+* 
+  While the command-line options of bzip2 are not exactly the same as those of
+  gzip, those that have been described in this section are. For more
+  information, see the bzip2(1) manual page. The bottom line is that you should
+  use gzip/gunzip or bzip2/bunzip2 for your compression needs. If you encounter
+  a file with the extension .Z, it was probably produced by compress, and gunzip
+  can uncompress it for you.
+
+  Earlier versions of gzip used .z (lowercase) instead of .gz as the
+  compressed-filename extension. Because of the potential confusion with .Z,
+  this was changed. At any rate, gunzip retains backwards compatibility with a
+  number of filename extensions and file types.

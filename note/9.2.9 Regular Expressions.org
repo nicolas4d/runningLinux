@@ -1,0 +1,52 @@
+* 
+  Even a few regular expression tricks can vastly increase your power to search
+  for text and alter it in bulk. Regular expressions were associated only with
+  Unix tools and languages for a long time; now they are popping up in other
+  environments, such as Microsoft's .NET, but only Unix offers them in a wide
+  variety of places, such as text editors and the grep command where ordinary
+  users can exploit them.
+
+  Let's suppose you're looking through a file that contains mail messages.
+  You're on a bunch of mailing lists with names, such as gyro-news and gyro-talk
+  , so you're looking for Subject lines with gyro- in them. You can use your
+  text editor or the grep command to search for:
+  #+begin_src shell
+    ^Subject:.*gyro-
+  #+end_src
+  This means "look for lines beginning with Subject:, followed by any number of
+  any kind of character, followed by gyro- ." The regular expression is made up
+  of a number of parts, some reproducing the plain text you're looking for and
+  others expressing general concepts like "beginning of line." Figure 9-1 shows
+  what the parts mean and how they fit together.
+*   
+  [[file:../img/Figure 9-1. Simple regular expression.png]]
+
+  Just to give a hint of how powerful and sophisticated regular expressions can
+  be, let's refine the one in Figure 9-1 for a narrower search. This time, we
+  know that mailing lists on gyros send out mail with Subject lines that begin
+  with the name of the list in brackets, such as Subject: [gyro-news] or
+  Subject: [gyro-talk] . We can search for precisely such lines, as follows:
+  #+begin_src shell
+    ^Subject: *\[gyro-[a-z]*\]
+  #+end_src
+  Figure 9-2 shows what the parts of this expression mean. We'll just mention a
+  couple of interesting points here.
+
+  [[file:../img/Figure 9-2. Regular expression with more parts.png]]
+* 
+  Brackets, like carets and asterisks, are special characters in regular
+  expressions. Brackets are used to mark whole classes of characters you want to
+  search for, such as [a-z] to represent "any lowercase character." We don't
+  want the bracket before gyro to have this special meaning, so we put a
+  backslash in front of it; this is called escaping the bracket. (In other
+  words, we let the bracket escape being considered a metacharacter in the
+  regular expression.) The first asterisk in our expression follows a space, so
+  it means "match any number of spaces in succession." The second asterisk
+  follows the [a-z] character class, so it applies to that entire construct. By
+  itself, [a-z] matches one and only one lowercase letter. Together, [a- z]*
+  means "match any number of lowercase letters in succession."
+
+  A sophisticated use of regular expressions can take weeks to learn, and
+  readers who want to base applications on regular expressions would do well to
+  read Mastering Regular Expressions, by Jeffrey Friedl (O'Reilly).
+

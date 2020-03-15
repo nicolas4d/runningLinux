@@ -1,0 +1,46 @@
+* 
+  The first step in adding additional swap is to create a file or partition to
+  host the swap area. If you wish to create an additional swap partition, you
+  can create the partition using the fdisk utility, as described in Section
+  3.1.3.
+
+  To create a swap file, you'll need to open a file and write bytes to it
+  equaling the amount of swap you wish to add. One easy way to do this is with
+  the *dd* command. For example, to create a 32-MB swap file, you can use the
+  command:
+  #+begin_src shell
+    dd if=/dev/zero of=/swap bs=1024 count=32768
+  #+end_src
+  This will write 32768 blocks (32 MB) of data from /dev/zero to the file /swap.
+  (/dev/zero is a special device in which read operations always return null
+  bytes. It's something like the inverse of /dev/null.) After creating a file of
+  this size, it's a good idea to use the sync command to sync the filesystems in
+  case of a system crash.
+* 
+  Once you have created the swap file or partition, you can use the mkswap
+  command to "format" the swap area. As described in Section 3.1.4, the format
+  of the mkswap command is:
+  #+begin_src shell
+    mkswap -c device size
+  #+end_src
+  where device is the name of the swap partition or file, and size is the size
+  of the swap area in blocks (again, one block is equal to one kilobyte). You
+  normally do not need to specify this when creating a swap area because mkswap
+  can detect the partition size on its own. The -c switch is optional and causes
+  the swap area to be checked for bad blocks as it is formatted. For example,
+  for the swap file created in the previous example, you would use the command:
+  #+begin_src shell
+    mkswap -c /swap 8192
+  #+end_src
+* 
+  If the swap area is a partition, you would substitute the name of the
+  partition (such as /dev/hda3) and the size of the partition, also in blocks.
+
+  If you are using a swap file (and not a swap partition), you need to change its permissions
+  first, like this:
+  #+begin_src shell
+    chmod 0600 /swap
+  #+end_src
+  After running mkswap on a swap file, use the *sync* command to ensure the
+  format information has been physically written to the new swap file. Running
+  sync is not necessary when formatting a swap partition.

@@ -1,0 +1,144 @@
+* 
+  The *syslogd* utility logs various kinds of system activity, such as debugging
+  output from sendmail and warnings printed by the kernel. syslogd runs as a
+  daemon and is usually started in one of the rc files at boot time.
+
+  The file */etc/syslog.conf* is used to control where syslogd records
+  information. Such a file might look like the following (even though they tend
+  to be much more complicated on most systems):
+  #+begin_src 
+  *.info;*.notice    /var/log/messages
+  mail.debug    /var/log/maillog
+  *.warn    /var/log/syslog
+  kern.emerg    /dev/console
+  #+end_src
+  The first field of each line lists the kinds of messages that should be
+  logged, and the second field lists the location where they should be logged.
+  The first field is of the format:
+  #+begin_src 
+  facility.level [;facility.level  ... ]
+  #+end_src
+* 
+  where facility is the system application or facility generating the message,
+  and level is the severity of the message.
+
+  For example, facility can be mail (for the mail daemon), kern (for the
+  kernel), user (for user programs), or auth (for authentication programs such
+  as login or su). An asterisk in this field specifies all facilities.
+
+  *level* can be (in increasing severity): debug , info , notice , warning , err
+  , crit , alert , or emerg .
+
+  In the previous /etc/syslog.conf, we see that all messages of severity info
+  and notice are logged to /var/log/messages, all debug messages from the mail
+  daemon are logged to /var/log/maillog, and all warn messages are logged to
+  /var/log/syslog. Also, any emerg warnings from the kernel are sent to the
+  console (which is the current virtual console, or an xterm started with the -C
+  option).
+* 
+  The messages logged by syslogd usually include the date, an indication of what
+  process or facility delivered the message, and the message itself — all on one
+  line. For example, a kernel error message indicating a problem with data on an
+  ext2fs filesystem might appear in the log files, as in:
+  #+begin_src 
+  Dec 1 21:03:35 loomer kernel: EXT2-fs error (device 3/2):
+  ext2_check_blocks_bit map: Wrong free blocks count in super block,
+  stored = 27202, counted = 27853
+  #+end_src
+  Similarly, if an su to the root account succeeds, you might see a log message,
+  such as: Dec 11 15:31:51 loomer su: mdw on /dev/ttyp3
+
+  Log files can be important in tracking down system problems. If a log file
+  grows too large, you can empty it using *cat /dev/null > logfile*. This clears
+  out the file, but leaves it there for the logging system to write to.
+* 
+  Your system probably comes equipped with a running syslogd and an /etc/syslog.conf that
+  does the right thing. However, it's important to know where your log files are and what
+  programs they represent. If you need to log many messages (say, debugging messages from
+  the kernel, which can be very verbose) you can edit syslog.conf and tell syslogd to reread its
+  configuration file with the command:
+  #+begin_src shell
+    kill -HUP `cat /var/run/syslog.pid`
+  #+end_src
+  Note the use of backquotes to obtain the process ID of syslogd, contained in
+  /var/run/syslog.pid.
+
+  Other system logs might be available as well. These include:
+** /var/log/wtmp
+   This file contains binary data indicating the login times and duration for each user on
+   the system; it is used by the last command to generate a listing of user logins. The
+   output of last might look like:
+   #+begin_src 
+   mdw    tty3    Sun    Dec    11       15:25       still logged in        
+   mdw    tty3    Sun    Dec    11       15:24 - 15:25 (00:00)
+   mdw    tty1    Sun    Dec    11    11:46       still logged in
+   reboot    ~    Sun    Dec    11    06:46
+   #+end_src
+   A record is also logged in /var/log/wtmp when the system is rebooted.
+** /var/run/utmp
+   This is another binary file that contains information on users currently
+   logged into the system. Commands such as who, w, and finger use this file to
+   produce information on who is logged in. For example, the w command might
+   print:
+   
+   [[file:../img/var-run-utmp.png]]
+
+   We see the login times for each user (in this case, one user logged in many
+   times), as well as the command currently being used. The w(1) manual page
+   describes all the fields displayed.
+** /var/log/lastlog
+   This file is similar to wtmp but is used by different programs (such as
+   finger to determine when a user was last logged in).
+* 
+  Note that the format of the wtmp and utmp files differs from system to system.
+  Some programs may be compiled to expect one format and others another format.
+  For this reason, commands that use the files may produce confusing or
+  inaccurate information — especially if the files become corrupted by a program
+  that writes information to them in the wrong format.
+
+  Log files can get quite large, and if you do not have the necessary hard-disk
+  space, you have to do something about your partitions being filled too fast.
+  Of course, you can delete the log files from time to time, but you may not
+  want to do this, because the log files also contain information that can be
+  valuable in crisis situations.
+
+  One option is to copy the log files from time to time to another file and
+  compress this file. The log file itself starts at 0 again. Here is a short
+  shell script that does this for the log file /var/log/messages:
+* 
+  #+begin_src 
+  mv /var/log/messages /var/log/messages-backup
+  cp /dev/null /var/log/messages
+  CURDATE=`date +"%m%d%y"`
+  mv /var/log/messages-backup /var/log/messages-$CURDATE
+  gzip /var/log/messages-$CURDATE
+  #+end_src
+  First, we move the log file to a different name and then truncate the original
+  file to 0 bytes by copying to it from /dev/null. We do this so that further
+  logging can be done without problems while the next steps are done. Then, we
+  compute a date string for the current date that is used as a suffix for the
+  filename, rename the backup file, and finally compress it with gzip.
+
+  You might want to run this small script from cron, but as it is presented
+  here, it should not be run more than once a day — otherwise the compressed
+  backup copy will be overwritten because the filename reflects the date but not
+  the time of day (of course, you could change the date format string to include
+  the time). If you want to run this script more often, you must use additional
+  numbers to distinguish between the various copies.
+* 
+  You could make many more improvements here. For example, you might want to
+  check the size of the log file first and copy and compress it only if this
+  size exceeds a certain limit.
+
+  Even though this is already an improvement, your partition containing the log
+  files will eventually get filled. You can solve this problem by keeping around
+  only a certain number of compressed log files (say, 10). When you have created
+  as many log files as you want to have, you delete the oldest, and overwrite it
+  with the next one to be copied. This principle is also called log rotation.
+  Some distributions have scripts like savelog or logrotate that can do this
+  automatically.
+
+  To finish this discussion, it should be noted that most recent distributions,
+  such as SuSE, Debian, and Red Hat, already have built-in cron scripts that
+  manage your log files and are much more sophisticated than the small one
+  presented here.

@@ -1,0 +1,186 @@
+* 
+  Before we leave the realm of gcc, a few words on linking and libraries are in
+  order. For one thing, it's easy for you to create your own libraries. If you
+  have a set of routines you use often, you may wish to group them into a set of
+  source files, compile each source file into an object file, and then create a
+  library from the object files. This saves you from having to compile these
+  routines individually for each program in which you use them.
+
+  Let's say you have a set of source files containing oft-used routines, such as:
+  #+begin_src c
+  float square(float x) {
+  /* Code for square( )... */
+  }
+  int factorial(int x, int n) {
+  /* Code for factorial( )... */
+  }
+  #+end_src
+* 
+  and so on (of course, the gcc standard libraries provide analogs to these
+  common routines, so don't be misled by our choice of example). Furthermore,
+  let's say that the code for square( ) is in the file square.c and that the
+  code for factorial( ) is in factorial.c. Simple enough, right? To produce a
+  library containing these routines, all you do is compile each source file, as
+  so:
+  #+begin_src shell
+    gcc -c square.c factorial.c
+  #+end_src
+  which leaves you with square.o and factorial.o. Next, create a library from
+  the object files. As it turns out, a library is just an archive file created
+  using *ar* (a close counterpart to tar). Let's call our library libstuff.a and
+  create it this way:
+  #+begin_src shell
+    ar r libstuff.a square.o factorial.o
+  #+end_src
+* 
+  When updating a library such as this, you may need to delete the old
+  libstuff.a, if it exists. The last step is to generate an index for the
+  library, which enables the linker to find routines within the library. To do
+  this, use the *ranlib* command, as so:
+  #+begin_src shell
+    ranlib libstuff.a
+  #+end_src
+  This command adds information to the library itself; no separate index file is
+  created. You could also combine the two steps of running ar and ranlib by
+  using the s command to ar:
+  #+begin_src shell
+    ar rs libstuff.a square.o factorial.o
+  #+end_src
+  Now you have libstuff.a, a static library containing your routines. Before you
+  can link programs against it, you'll need to create a header file describing
+  the contents of the library. For example, we could create libstuff.h with the
+  contents:
+* 
+  #+begin_src c
+    /* libstuff.h: routines in libstuff.a */
+      extern float square(float);
+      extern int factorial(int, int);
+  #+end_src
+  Every source file that uses routines from libstuff.a should contain an
+  #include "libstuff.h" line, as you would do with standard header files.
+
+  Now that we have our library and header file, how do we compile programs to
+  use them? First of all, we need to put the library and header file someplace
+  where the compiler can find them. Many users place personal libraries in the
+  directory lib in their home directory, and personal include files under
+  include. Assuming we have done so, we can compile the mythical program
+  wibble.c using the command:
+  #+begin_src shell
+    gcc -I ../include -L ../lib -o wibble wibble.c -lstuff
+  #+end_src
+* 
+  The -I option tells gcc to add the directory ../include to the include path it
+  uses to search for include files. -L is similar, in that it tells gcc to add
+  the directory ../lib to the library path. The last argument on the command
+  line is -lstuff, which tells the linker to link against the library libstuff.a
+  (wherever it may be along the library path). The lib at the beginning of the
+  filename is assumed for libraries.
+
+  Any time you wish to link against libraries other than the standard ones, you
+  should use the -l switch on the gcc command line. For example, if you wish to
+  use math routines (specified in math.h), you should add -lm to the end of the
+  gcc command, which links against libm. Note, however, that the order of -l
+  options is significant. For example, if our libstuff library used routines
+  found in libm, you must include -lm after -lstuff on the command line:
+  #+begin_src shell
+    gcc -Iinclude -Llib -o wibble wibble.c -lstuff -lm
+  #+end_src
+* 
+  This forces the linker to link libm after libstuff, allowing those unresolved
+  references in libstuff to be taken care of.
+
+  Where does gcc look for libraries? By default, libraries are searched for in a
+  number of locations, the most important of which is /usr/lib. If you take a
+  glance at the contents of /usr/lib, you'll notice it contains many library
+  files — some of which have filenames ending in .a, others ending in
+  .so.version. The *.a* files are static libraries, as is the case with our
+  libstuff.a. The *.so* files are shared libraries, which contain code to be
+  linked at runtime, as well as the stub code required for the runtime linker
+  (ld.so) to locate the shared library.
+
+  At runtime, the program loader looks for shared library images in several
+  places, including /lib. If you look at /lib, you'll see files such as
+  libc.so.6. This is the image file containing the code for the libc shared
+  library (one of the standard libraries, which most programs are linked
+  against).
+* 
+  By default, the linker attempts to link against shared libraries. However,
+  static libraries are used in several caese — e.g., when there are no shared
+  libraries with the specified name anywhere in the library search path. You can
+  also specify that static libraries should be linked by using the -static
+  switch with gcc.
+* 13.1.7.1 Creating shared libraries
+** 
+  Now that you know how to create and use static libraries, it's very easy to
+  take the step to shared libraries. Shared libraries have a number of
+  advantages. They reduce memory consumption if used by more than one process,
+  and they reduce the size of the executable. Furthermore, they make developing
+  easier: when you use shared libraries and change some things in a library, you
+  do not need to recompile and relink your application each time. You need to
+  recompile only if you make incompatible changes, such as adding arguments to a
+  call or changing the size of a struct.
+
+  Before you start doing all your development work with shared libraries,
+  though, be warned that debugging with them is slightly more difficult than
+  with static libraries because the debugger usually used on Linux, gdb, has
+  some problems with shared libraries. *Code that goes into a shared library
+  needs to be position-independent.* This is just a convention for object code
+  that makes it possible to use the code in shared libraries. You make gcc emit
+  position-independent code by passing it one of the command-line switches
+  *-fpic* or *-fPIC*. The former is preferred, unless the modules have grown so
+  large that the relocatable code table is simply too small, in which case the
+  compiler will emit an error message and you have to use -fPIC. To repeat our
+  example from the last section:
+** 
+   #+begin_src shell
+     gcc -c -fpic square.c factorial.c
+   #+end_src
+   This being done, it is just a simple step to generate a shared library: (In
+   the ancient days of Linux, creating a shared library was a daunting task of
+   which even wizards were afraid. The advent of the ELF object-file format a few
+   years ago has reduced this task to picking the right compiler switch. Things
+   sure have improved!)
+   #+begin_src shell
+     gcc -shared -o libstuff.so square.o factorial.o
+   #+end_src
+   Note the compiler switch -shared. There is no indexing step as with static
+   libraries.
+
+   Using our newly created shared library is even simpler. The shared library
+   doesn't require any change to the compile command:
+   #+begin_src shell
+     gcc -I../include -L../lib -o wibble wibble.c -lstuff -lm
+   #+end_src
+** 
+   You might wonder what the linker does if a shared library libstuff.so and a
+   static library libstuff.a are available. In this case, the linker always picks
+   the shared library. To make it use the static one, you will have to name it
+   explicitly on the command line:
+   #+begin_src shell
+     gcc -I../include -L../lib -o wibble wibble.c libstuff.a -lm
+   #+end_src
+   Another very useful tool for working with shared libraries is ldd. It tells
+   you which shared libraries an executable program uses. Here's an example:
+   #+begin_src shell
+     ldd wibble
+     libstuff.so => libstuff.so (0x400af000)
+     libm.so.5 => /lib/libm.so.5 (0x400ba000)
+     libc.so.5 => /lib/libc.so.5 (0x400c3000)
+   #+end_src
+   The three fields in each line are the name of the library, the full path to
+   the instance of the library that is used, and where in the virtual address
+   space the library is mapped to.
+** 
+   If ldd outputs not found for a certain library, you are in trouble and won't
+   be able to run the program in question. You will have to search for a copy of
+   that library. Perhaps it is a library shipped with your distribution that you
+   opted not to install, or it is already on your hard disk, but the loader (the
+   part of the system that loads every executable program) cannot find it.
+
+   In the latter situation, try locating the libraries yourself and find out
+   whether they're in a nonstandard directory. By default, the loader looks only
+   in /lib and /usr/lib. If you have libraries in another directory, create an
+   environment variable LD_LIBRARY_PATH and add the directories separated by
+   colons. If you believe that everything is set up correctly, and the library in
+   question still cannot be found, run the command *ldconfig* as root, which
+   refreshes the linker system cache.

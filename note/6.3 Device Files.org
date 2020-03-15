@@ -1,0 +1,158 @@
+* 
+  Device files allow user programs to access hardware devices on the system
+  through the kernel. They are not "files" per se, but look like files from the
+  program's point of view: you can read from them, write to them, *mmap()* onto
+  them, and so forth. When you access such a device "file," the kernel
+  recognizes the I/O request and passes it a device driver, which performs some
+  operation, such as reading data from a serial port or sending data to a sound
+  card.
+
+  Device files (although they are inappropriately named, we will continue to use
+  this term) provide a convenient way to access system resources without
+  requiring the applications programmer to know how the underlying device works.
+  Under Linux, as with most Unix systems, device drivers themselves are part of
+  the kernel. In Section 7.4.2 in Chapter 7, we show you how to build your own
+  kernel, including only those device drivers for the hardware on your system.
+* 
+  Device files are located in the directory */dev* on nearly all Unix-like
+  systems. Each device on the system should have a corresponding entry in /dev.
+  For example, /dev/ttyS0 corresponds to the first serial port, known as COM1
+  under MS-DOS; /dev/hda2 corresponds to the second partition on the first IDE
+  drive. In fact, there should be entries in /dev for devices you do not have.
+  The device files are generally created during system installation and include
+  every possible device driver. They don't necessarily correspond to the actual
+  hardware on your system.
+
+  A number of pseudo-devices in /dev don't correspond to any actual peripheral.
+  For example, /dev/null acts as a byte sink; any write request to /dev/null
+  will succeed, but the data written will be ignored. Similarly, we've already
+  demonstrated the use of /dev/zero to create a swap file; any read request on
+  /dev/zero simply returns null bytes.
+* 
+  When using ls -l to list device files in /dev, you'll see something like the
+  following:
+  #+begin_src shell
+    brw-rw---- 1 root disk 3, 0 May 19 1994 /dev/hda
+  #+end_src
+  This is /dev/hda, which corresponds to the first IDE drive. First of all, note
+  that the first letter of the permissions field is b , which means this is a
+  block device file. (Recall that normal files have an - in this first column,
+  directories a d , and so on.) Device files are denoted either by b , for block
+  devices, or c , for character devices. A block device is usually a peripheral
+  such as a hard drive: data is read and written to the device as entire blocks
+  (where the block size is determined by the device; it may not be 1024 bytes as
+  we usually call "blocks" under Linux), and the device may be accessed
+  randomly. In contrast, character devices are usually read or written
+  sequentially, and I/O may be done as single bytes. An example of a character
+  device is a serial port.
+* 
+  Also, note that the size field in the ls -l listing is replaced by two
+  numbers, separated by a comma. The first value is the major device number and
+  the second is the minor device number. When a device file is accessed by a
+  program, the kernel receives the I/O request in terms of the major and minor
+  numbers of the device. The major number generally specifies a particular
+  driver within the kernel, and the minor number specifies a particular device
+  handled by that driver. For example, all serial port devices have the same
+  major number, but different minor numbers. The kernel uses the major number to
+  redirect an I/O request to the appropriate driver, and the driver uses the
+  minor number to figure out which specific device to access. In some cases,
+  minor numbers can also be used for accessing specific functions of a device.
+* 
+  The naming convention used by files in /dev is, to put it bluntly, a complete
+  mess. Because the kernel itself doesn't care what filenames are used in /dev
+  (it cares only about the major and minor numbers), the distribution
+  maintainers, applications programmers, and device driver writers are free to
+  choose names for a device file. Often, the person writing a device driver will
+  suggest a name for the device, and later the name will be changed to
+  accommodate other, similar devices. This can cause confusion and inconsistency
+  as the system develops; hopefully, you won't encounter this problem unless
+  you're working with newer device drivers — those that are under testing.
+
+  At any rate, the device files included in your original distribution should be
+  accurate for the kernel version and for device drivers included with that
+  distribution. When you upgrade your kernel or add additional device drivers
+  (see Section 7.4), you may need to add a device file using the *mknod* command.
+  The format of this command is:
+  #+begin_src shell
+    mknod -m permissions name type major minor
+  #+end_src
+* 
+  where:
+  - name is the full pathname of the device to create, such as /dev/rft0
+  - type is either c for a character device or b for a block device
+  - major is the major number of the device
+  - minor is the minor number of the device
+  - -m permissions is an optional argument that sets the permission bits of the
+    new device file to permissions
+  For example, let's say you're adding a new device driver to the kernel, and
+  the documentation says that you need to create the block device /dev/bogus,
+  major number 42, minor number 0. You would use the command:
+  #+begin_src shell
+    mknod /dev/bogus b 42 0
+  #+end_src
+* 
+  Making devices is even easier with the shell script */dev/MAKEDEV* that comes
+  with many distributions — you specify only the kind of device you want, and
+  MAKEDEV finds out the major and minor numbers for you.
+
+  If you don't specify the -m permissions argument, the new device is given the
+  permissions for a newly created file, modified by your current umask —
+  usually 0644. To set the permissions for /dev/bogus to 0660 instead, we use:
+  #+begin_src shell
+    mknod -m 660 /dev/bogus b 42 0
+  #+end_src
+  You can also use chmod to set the permissions for a device file after
+  creation.
+* 
+  Why are device permissions important? Like any file, the permissions for a
+  device file control who may access the raw device, and how. As we saw in the
+  previous example, the device file for /dev/hda has permissions 0660, which
+  means that only the owner and users in the file's group (here, the group disk
+  is used) may read and write directly to this device. (Permissions are
+  introduced in Section 4.13 in Chapter 4.)
+
+  In general, you don't want to give any user direct read and write access to
+  certain devices — especially those devices corresponding to disk drives and
+  partitions. Otherwise, anyone could, say, run mkfs on a drive partition and
+  completely destroy all data on the system.
+* 
+  In the case of drives and partitions, write access is required to corrupt data
+  in this way, but read access is also a breach of security; given read access
+  to a raw device file corresponding to a disk partition, a user could peek in
+  on other users' files. Likewise, the device file */dev/mem* corresponds to the
+  system's physical memory (it's generally used only for extreme debugging
+  purposes). Given read access, clever users could spy on other users'
+  passwords, including the one belonging to root , as they are entered at login
+  time.
+
+  Be sure that the permissions for any device you add to the system correspond
+  to how the device can and should be accessed by users. Devices such as serial
+  ports, sound cards, and virtual consoles are generally safe for mortals to
+  have access to, but most other devices on the system should be limited to use
+  by root (and to programs running setuid as root ).
+* 
+  Many files found in /dev are actually symbolic links (created using ln -s, in
+  the usual way) to another device file. These links make it easier to access
+  certain devices by using a more common name. For example, if you have a serial
+  mouse, that mouse might be accessed through one of the device files
+  /dev/ttyS0, /dev/ttyS1, /dev/ttyS2, or /dev/ttyS3, depending on which serial
+  port the mouse is attached to. Many people create a link named /dev/mouse to
+  the appropriate serial device, as in:
+  #+begin_src shell
+    ln -s /dev/ttyS2 /dev/mouse
+  #+end_src
+  In this way, users can access the mouse from /dev/mouse, instead of having to
+  remember which serial port it is on. This convention is also used for devices
+  such as /dev/cdrom and /dev/modem. These files are usually symbolic links to a
+  device file in /dev corresponding to the actual CD-ROM or modem device.
+* 
+  To remove a device file, just use rm, as in:
+  #+begin_src shell
+    rm /dev/bogus
+  #+end_src
+  Removing a device file does not remove the corresponding device driver from
+  memory or from the kernel; it simply leaves you with no means to talk to a
+  particular device driver. Similarly, adding a device file does not add a
+  device driver to the system; in fact, you can add device files for drivers
+  that don't even exist. Device files simply provide a "hook" into a particular
+  device driver should such a driver exist in the kernel.

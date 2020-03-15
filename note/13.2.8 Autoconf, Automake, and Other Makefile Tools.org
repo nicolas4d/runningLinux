@@ -1,0 +1,51 @@
+* 
+  Writing makefiles for a larger project usually is a boring and time-consuming
+  task, especially if the programs are expected to be compiled on multiple
+  platforms. From the GNU project come two tools called Autoconf and Automake
+  that have a steep learning curve but, once mastered, greatly simplify the task
+  of creating portable makefiles. In addition, libtool helps a lot to create
+  shared libraries in a portable manner. You can probably find these tools on
+  your distribution CD, or you can download them from ftp://ftp.gnu.org/gnu/.
+
+  From a user's point of view, using Autoconf involves running a program
+  configure, which should have been shipped in the source package you are trying
+  to build. This program analyzes your system and configures the makefiles of
+  the package to be suitable for your system and setup. A good thing to try
+  before running the configure script for real is to issue the command:
+  #+begin_src shell
+    owl$ ./configure --help
+  #+end_src
+  This shows all command-line switches that the configure program understands.
+  Many packages allow different setups — e.g., different modules to be compiled
+  in — and you can select these with configure options.
+* 
+  From a programmer's point of view, you don't write makefiles, but rather files
+  called makefile.in. These can contain place holders that will be replaced with
+  actual values when the user runs the configure program, generating the
+  makefiles that make then runs. In addition, you need to write a file called
+  configure.in that describes your project and what to check for on the target
+  system. The Autoconf tool then generates the configure program from this
+  configure.in file. Writing the configure.in file is unfortunately way too
+  involved to be described here, but the Autoconf package contains documentation
+  to get you started.
+
+  Writing the makefile.in files is still a cumbersome and lengthy task, but even
+  this can be mostly automated by using the Automake package. Using this
+  package, you do not write the makefile.in files, but rather the makefile.am
+  files, which have a much simpler syntax and are much less verbose. By running
+  the automake tool, these makefile.am files are converted to the makefile.in,
+  which you include when you distribute your source code and which are later
+  converted into the makefiles themselves when the package is configured for the
+  user's system. How to write makefile.am files is beyond the scope of this book
+  as well. Again, please check the documentation of the package to get started.
+* 
+  These days, most open-source packages use the libtool/automake/autoconf combo
+  for generating the makefiles, but this does not mean that this rather
+  complicated and involved method is the only one available. Other
+  makefile-generating tools exist as well, such as the imake tool used to
+  configure the X Window System. Another tool that is not as powerful as the
+  Autoconf suite (even though it still lets you do most things you would want to
+  do when it comes to makefile generation) but extremely easy to use (it can
+  even generate its own description files for you from scratch) is the qmake
+  tool that ships together with the C++ GUI library Qt (downloadable from
+  http://www.trolltech.com).

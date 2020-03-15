@@ -1,0 +1,122 @@
+* 
+  SGML and XML go one step beyond the text markup languages we have discussed so
+  far. They impose a structure on the text that shows the relation of each
+  element to the containing elements. This makes it possible to convert the text
+  to a number of output formats including PostScript and PDF (the Adobe Portable
+  Document Format).
+
+  SGML itself is just a framework for defining the structure of a document. A
+  so-called *Document Type Description (DTD)* or schema then defines what kind
+  of markup you are allowed to use in a document.
+
+  While SGML is not widely known, its two descendants — HTML and XML — are
+  famous and even overly hyped. Essentially, HTML is an implementation of SGML
+  with a fixed set of tags that is useful for formatting web pages. XML is a
+  general solution like SGML, but minus some of its difficult features. Both
+  SGML and XML allow people to define any set of tags they like; the exact tags
+  and their relationships are specified in the DTD or schema (which are optional
+  in XML).
+* 
+  For each DTD or schema that you want to use, you need to have processing tools
+  that convert the SGML or XML file to the desired output format. Historically,
+  most free systems did this by means of a system called DSSSL. *XSLT* is now
+  much more popular for converting XML to other formats. But this is nothing you
+  need to be concerned with unless you want to change the way the output looks.
+
+  In the field of computer documentation, the most commonly used DTD is *DocBook*.
+  Among many other things, most of the freely available Linux documentation is
+  written with DocBook, as well as this book. DocBook users include a huge range
+  of companies and well-known organizations, such as Sun Microsystems,
+  Microsoft, IBM, Hewlett-Packard, Boeing, and the U.S. State Department.
+
+  To give you an example of how a DocBook text can look, here is a fragment of
+  an article for a computer magazine:
+* 
+  #+begin_src xml 
+    <!DOCTYPE Article PUBLIC "-//OASIS//DTD DocBook V4.1.2//EN">
+    <article>
+    <artheader>
+      <title>Looping the Froz with Foobar</title>
+      <author>
+        <firstname>Helmer B.</firstname>
+        <surname>Technerd</surname>
+        <affiliation>
+          <orgname>Linux Hackers, Inc.</orgname>
+        </affiliation>
+      </author>
+    </artheader>
+    <abstract>
+      <para>This article describes a technique that you can employ to
+      loop the Froz with the Foobar software package.</para>
+    </abstract>
+    <sect1>
+      <title>Motivation</title>
+      <para>Blah, blah, blah, ...
+      </para>
+    </sect1>
+    </article>
+  #+end_src
+* 
+  The first line specifies the DTD to be used and the root element; in this case
+  we are creating an article using the DocBook DTD. The rest of the source
+  contains the article itself. If you are familiar with HTML, the markup
+  language used for the World Wide Web (see the O'Reilly book HTML & XHTML: The
+  Definitive Guide, by Chuck Musciano and Bill Kennedy), this should look a bit
+  familiar. Tags are used to mark up the text logically.
+
+  Describing the whole DocBook DTD is well beyond the scope of this book, but if
+  you are interested, check out DocBook: The Definitive Guide by Norman Walsh
+  and Leonard Muellner (O'Reilly).
+
+  Once you have your article, documentation, or book written, you will want to
+  transform it, of course, into a format that you can print or view on the
+  screen. In order to do this, you need a complete *SGML* setup, which,
+  unfortunately, is not easy to achieve. In fact, you need so many pieces in
+  place that we cannot describe this here. But there is hope: a number of
+  distributions (including Red Hat, SuSE, and Debian) come with very good SGML
+  setups out of the box; just install their respective SGML packages. If you
+  have a working SGML system, you should be able to transform the above text to
+  HTML (as one example) with a command like this:
+* 
+  #+begin_src shell
+    owl$ db2html myarticle.sgml
+    input file was called — output will be in myarticle
+    TMPDIR is db2html.GUBPgh
+    working on ../myarticle.sgml
+    about to copy cascading stylesheet and admon graphics to temp dir
+    about to rename temporary directory to "myarticle"
+  #+end_src
+* 
+  The file myarticle/t1.html will contain the generated HTML. If you would like
+  to generate PDF instead, use the following command:
+* 
+  #+begin_src shell
+    owl$ db2pdf myarticle.sgml
+    tex output file name is myarticle.tex
+    tex file name is myarticle.tex
+    pdf file name is myarticle.pdf
+    This is pdfTeX, Version 3.14159-13d (Web2C 7.3.1)
+    (myarticle.tex[/var/lib/texmf/pdftex/config/pdftex.cfg]
+    JadeTeX 2001/07/19: 3.11
+    (/usr/share/texmf/tex/latex/psnfss/t1ptm.fd)
+    Elements will be labelled
+    Jade begin document sequence at 20
+    No file myarticle.aux.
+    (/usr/share/texmf/tex/latex/cyrillic/t2acmr.fd)
+    (/usr/share/texmf/tex/latex/base/ts1cmr.fd)
+    (/usr/share/texmf/tex/latex/hyperref/nameref.sty)
+    (/usr/share/texmf/tex/latex/psnfss/t1phv.fd) [1.0.31[/var/lib/texmf/dvips/confi
+    g/pdftex.map]] (myarticle.aux) )<8r.enc>
+    Output written on myarticle.pdf (1 page, 4446 bytes).
+    Transcript written on myarticle.log.
+  #+end_src
+* 
+  As you can see, this command uses T E X in the background, or more
+  specifically a special version called Jade which is specifically geared toward
+  documents produced by DSSSL.
+
+  SGML opens a whole new world of tools and techniques. A good starting point
+  for getting inspired and reading up on this is the web site of the Linux
+  Documentation Project, which, as mentioned before, uses SGML/DocBook for all
+  its documentation. You'll find the Linux Documentation Project at
+  http://www.tlpd.org.

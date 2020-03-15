@@ -1,0 +1,16 @@
+The *:!* command allows you to enter the name of a command, which is executed
+within vi. For example, the command:
+#+begin_src 
+:!ls -F
+#+end_src
+executes the ls command and displays the results on your screen.
+
+The *:r!* command is similar to :! , but includes the standard output of the
+command in the buffer. The command:
+#+begin_src 
+:r!ls -F
+#+end_src
+
+If you need to execute a series of shell commands, it's often easier to use the
+suspend key (usually Ctrl-Z), provided you're using a shell that supports job
+control, such as tcsh or bash.

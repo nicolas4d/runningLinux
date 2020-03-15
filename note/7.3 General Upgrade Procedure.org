@@ -1,0 +1,36 @@
+* 
+  Of course, you'll have to periodically upgrade other pieces of your system. As
+  discussed in the previous section, it's usually easier and best to upgrade
+  only those applications you need to upgrade. For example, if you never use
+  Emacs on your system, why bother keeping up-to-date with the most recent
+  version of Emacs? For that matter, you may not need to stay completely current
+  with oft-used applications. If something works for you, there's little need to
+  upgrade.
+
+  Modern Linux systems provide various ways of upgrading software, some manual
+  (which ultimately are the most flexible, but also the most difficult), others
+  quite automated. In this section, we'll look at three different techniques:
+  using the RPM package system, using the Debian package system, and doing
+  things manually.
+* 
+  We'd like to stress here that using packages and package systems is
+  convenient, and even if you are a power-user, you might want to use these
+  techniques because they save you time for other, more fun stuff. Here is a
+  short summary of the advantages:
+  - You have everything that belongs to a software package in one downloadable
+    file.
+  - You can remove a software package entirely, without endangering other
+    packages.
+  - Package systems keep a dependency database and can thus automatically track
+    dependencies. For example, they can tell you if you need to install a newer
+    version of a library in order to run a certain application you are about to
+    install (and will refuse to remove a library package as long as packages are
+    installed that use the libraries this package provides).
+* 
+  Of course, package systems also have a few disadvantages, some of which we
+  discuss when we talk about RPM and the Debian package system. A generic
+  problem is that once you start using a package system (which is almost a
+  requirement if you use the distributions' automated installation interfaces)
+  you ought to really install everything through packages. Otherwise, you can't
+  keep track of the dependencies. For the same reason, mixing different package
+  systems is a bad idea.

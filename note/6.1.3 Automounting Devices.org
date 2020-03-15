@@ -1,0 +1,128 @@
+* 
+  If you need to access a lot of different filesystems, especially networked
+  ones, you might be interested in a special feature in the Linux kernel: the
+  *automounter*. This is a combination of kernel functionality, a daemon, and
+  some configuration files that automatically detect when somebody wants to
+  access a certain filesystem and mounts the filesystem transparently. When the
+  filesystem is not used for some time, the automounter automatically unmounts
+  it in order to save resources like memory and network throughput.
+
+  If you want to use the automounter, you first need to turn this feature on
+  when building your kernel. (See Section 7.4.2 in Chapter 7 for more details.)
+  You will also need to enable the NFS option.
+
+  Next, you need to start the automount daemon. Because this feature is quite
+  new, your distribution might not yet have it. Look for the directory
+  */usr/lib/autofs*. If it is not there, you will need to get the autofs package
+  from your friendly Linux archive and compile and install it according to the
+  instructions.
+* 
+  Note that there are two versions of automount support: Version 3 and
+  Version 4. Version 3 is the one still contained in most distributions, so
+  that's what we describe here. You can automount filesystems wherever you like,
+  but for simplicity's sake, we will assume here that you want to *automount all
+  filesystems below one directory that we will call /automount* here. If you
+  want your automount points to be scattered over your filesystem, you will need
+  to use multiple automount daemons.
+
+  If you have compiled the autofs package yourself, it might be a good idea to
+  start by copying the sample configuration files that you can find in sample
+  directory, and adapt them to your needs. To do this, copy the files
+  *sample/auto.master and sample/auto.misc* into the /etc directory, and the
+  file *sample/rc.autofs* under the name autofs wherever your distribution
+  stores its boot scripts. We'll assume here that you use */etc/init.d*.
+* 
+  The first configuration file to edit is */etc/auto.master*. This lists all the directories (the so-
+  called mount points) below which the automounter should mount partitions. Because we have
+  decided to use only one partition in this chapter's example, we will need to make only one
+  entry here. The file could look like this:
+  #+begin_src 
+  /automount  /etc/auto.misc
+  #+end_src
+  This file consists of lines with two entries each, separated by whitespace. The first entry
+  specifies the mount point, and the second entry names a so-called map file that specifies how
+  and where to mount the devices or partitions to be automounted. You need one such map file
+  for each mount point.
+
+  In our case, the file /etc/auto.misc looks like the following:
+  #+begin_src 
+  cd   -fstype=iso9660,ro    :/dev/scd0
+  floppy   -fstype=auto    :/dev/fd0
+  #+end_src
+*   
+  Again, this file consists of one-line entries that each specify one particular
+  device or partition to be automounted. The lines have two mandatory and one
+  optional field, separated by whitespaces. The first value is mandatory and
+  specifies the directory onto which the device or partition of this entry is
+  automounted. This value is appended to the mount point so that the CD-ROM will
+  be automounted onto /automount/cd.
+
+  The second value is optional and specifies flags to be used for the mount operation. These are
+  equivalent to those for the mount command itself, with the exception that the type is specified
+  with the option -fstype= instead of -t.
+
+  Finally, the third value specifies the partition or device to be mounted. In our case, we specify
+  the first SCSI CD-ROM drive and the first floppy drive, respectively. The colon in front of
+  the entry is mandatory; it separates the host part from the device/directory part, just as with
+  mount. Because those two devices are on a local machine, there is nothing to the left of the
+  colon. If we wanted to automount the directory sources from the NFS server
+  sourcemaster , we would specify something, such as:
+* 
+  #+begin_src 
+    sources -fstype=nfs,soft sourcemaster:/sources
+  #+end_src
+  After editing the configuration files to reflect your system, you can start the automount
+  daemon by issuing (replace the path with the path that suits your system):
+  #+begin_src shell
+    tigger# /etc/init.d/autofs start
+  #+end_src
+  Because this command is very taciturn, you should check whether the
+  automounter has really started. One way to do this is to issue:
+  #+begin_src shell
+    tigger# /etc/init.d/autofs status
+  #+end_src
+* 
+  but it is difficult to determine from the output whether the automounter is really running.
+  Your best bet, therefore, is to check whether the automount process exists:
+  #+begin_src shell
+    tigger# ps aux | grep automount
+  #+end_src
+  If this command shows the automount process, everything should be all right.
+  If it doesn't, you need to check your configuration files again. It could also
+  be the case that the necessary kernel support is not available: either the
+  automount support is not in your kernel, or you have compiled it as a module
+  but not installed this module. If the latter is the case, you can fix the
+  problem by issuing:
+  #+begin_src shell
+    tigger# modprobe autofs
+  #+end_src
+  If that doesn't work, you need to use:
+  #+begin_src shell
+    tigger# modprobe autofs4
+  #+end_src
+* 
+  instead.(We'll cover the modprobe command in the next chapter.) When your
+  automounter works to your satisfaction, you might want to put the modprobe
+  call as well as the autofs call in one of your system's startup configuration
+  files like /etc/rc.local, /etc/init.d/boot.local, or whatever your
+  distribution uses.
+
+  If everything is set up correctly, all you need to do is access some directory below the mount
+  point, and the automounter will mount the appropriate device or partition for you. For
+  example, if you type:
+  #+begin_src shell
+    tigger$ ls /automount/cd
+  #+end_src
+  the automounter will automatically mount the CD-ROM so that ls can list its contents. The
+  only difference between normal and automounting is that with automounting you will notice a
+  slight delay before the output comes.
+* 
+  In order to conserve resources, the automounter unmounts a partition or device
+  if it has not been accessed for a certain amount of time (the default is five
+  minutes).
+
+  The automounter supports a number of advanced options; for example, you do not
+  need to read the map table from a file but can also access system databases or
+  even have the automounter run a program and use this program's output as the
+  mapping data. See the manpages for autofs(5) and automount(8) for further
+  details.

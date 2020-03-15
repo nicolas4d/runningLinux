@@ -1,0 +1,21 @@
+While ImageMagick and GIMP are mainly for manipulating existing images, POVRAY
+(the first three letters stand for Persistence Of Vision) is a program for
+automatically creating new images. It is a so-called ray-tracer; a program that
+computes a scene from some information about which objects should be in the
+scene, what their physical and optical properties are, where the light is coming
+from, and where the spectator is standing. You describe this to POVRAY in a
+programming language of its own.
+
+This brief description should already indicate that using POVRAY is not
+something you learn in one afternoon. If you are interested in this program, you
+can download it from http://www.povray.org, which is also the first source for
+all kinds of POVRAY resources like sample files, documentation, and so on. Since
+we cannot give you even a crash course into using POVRAY here, we'll refrain
+from attempting this futile task.
+
+If you are interested in POVRAY, though, but find the task of describing your
+scenes in a programming language daunting, it might interest you to know that
+certain graphic modeling programs can be used with ray-tracers like POVRAY, so
+you do not have to create the 3D models completely by hand. One of these
+programs is Blender, about which you can find more information at
+http://www.blender3d.com.

@@ -1,0 +1,212 @@
+* 
+  *tar* is a general-purpose archiving utility capable of packing many files
+  into a single archive file, while retaining information needed to restore the
+  files fully, such as file permissions and ownership. The name tar stands for
+  *tape archive* because the tool was originally used to archive files as
+  backups on tape. However, use of tar is not at all restricted to making tape
+  backups, as we'll see.
+
+  The format of the tar command is:
+  #+begin_src shell
+    tar functionoptions files...
+  #+end_src
+  where function is a single letter indicating the operation to perform, options
+  is a list of (single-letter) options to that function, and files is the list
+  of files to pack or unpack in an archive. (Note that function is not separated
+  from options by any space.)
+
+  function can be one of the following:
+* 
+  - c :: To create a new archive
+  - x :: To extract files from an archive
+  - t :: To list the contents of an archive
+  - r :: To append files to the end of an archive
+  - u :: To update files that are newer than those in the archive
+  - d :: To compare files in the archive to those in the filesystem
+* 
+  You'll rarely use most of these functions; the more commonly used are c , x ,
+  and t .
+
+  The most common options are:
+* 
+  - v :: To print verbose information when packing or unpacking archives.
+  - k :: To keep any existing files when extracting — that is, to not overwrite
+         any existing files which are contained within the tar file.
+  - f filename :: To specify that the tar file to be read or written is
+                  filename .
+  - z :: To specify that the data to be written to the tar file should be
+         compressed or that the data in the tar file is compressed with gzip.
+  - j :: Like z, but uses bzip2 instead of gzip; works only with newer versions
+         of tar. Some intermediate versions of tar used I instead; older ones
+         don't support bzip2 at all.
+  - v :: To make tar show the files it is archiving or restoring — it is good
+         practice to use this so that you can see what actually happens (unless,
+         of course, you are writing shell scripts).
+* 
+  There are others, which we will cover later in this section.
+
+  Although the tar syntax might appear complex at first, in practice it's quite
+  simple. For example, say we have a directory named mt, containing these files:
+  #+begin_src shell
+    ls -l mt
+  #+end_src
+  We wish to pack the contents of this directory into a single tar archive. To
+  do this, we use the command:
+  #+begin_src shell
+    tar cf mt.tar mt
+  #+end_src
+  The first argument to tar is the function (here, c , for create) followed by
+  any options. Here, we use the option f mt.tar to specify that the resulting
+  tar archive be named mt.tar. The last argument is the name of the file or
+  files to archive; in this case, we give the name of a directory, so tar packs
+  all files in that directory into the archive.
+* 
+  Note that the first argument to tar must be the function letter and options.
+  Because of this, there's no reason to use a hyphen ( - ) to precede the
+  options as many Unix commands require. tar allows you to use a hyphen, as in:
+  #+begin_src shell
+    tar -cf mt.tar mt
+  #+end_src
+  but it's really not necessary. In some versions of tar, the first letter must
+  be the function , as in c , t , or x . In other versions, the order of letters
+  does not matter.
+
+  The function letters as described here follow the so-called "old option
+  style." There is also a newer "short option style" in which you precede the
+  function options with a hyphen, and a "long option style" in which you use
+  long option names with two hyphens. See the Info page for tar for more details
+  if you are interested.
+* 
+  Be careful to remember the filename if you use the cf function letters.
+  Otherwise tar will overwrite the first file in your list of files to pack
+  because it will mistake that for the filename! It is often a good idea to use
+  the v option with tar; this lists each file as it is archived. For example:
+  #+begin_src shell
+    rutabaga% tar cvf mt.tar mt
+    mt/
+    mt/st_info.txt
+    mt/README
+    mt/mt.1
+    mt/Makefile
+    mt/mt.c
+    mt/mt.o
+    mt/mt
+  #+end_src
+* 
+  #+begin_src shell
+    tar cvvf mt.tar mt
+  #+end_src
+  This is especially useful as it lets you verify that tar is doing the right
+  thing.
+
+  In some versions of tar, f must be the last letter in the list of options.
+  This is because tar expects the f option to be followed by a filename — the
+  name of the tar file to read from or write to. If you don't specify f filename
+  at all, tar assumes for historical reasons that it should use the device
+  /dev/rmt0 (that is, the first tape drive). In Section 8.1, in Chapter 8, we'll
+  talk about using tar in conjunction with a tape drive to make backups.
+
+  Now, we can give the file mt.tar to other people, and they can extract it on
+  their own system. To do this, they would use the command:
+  #+begin_src shell
+    tar xvf mt.tar
+  #+end_src
+* 
+  This creates the subdirectory mt and places all the original files into it, with the same
+  permissions as found on the original system. The new files will be owned by the user running
+  the tar xvf (you) unless you are running as root , in which case the original owner is
+  preserved. The x option stands for "extract." The v option is used again here to list each file as
+  it is extracted. This produces:
+  #+begin_src shell
+    tar xvf mt.tar
+  #+end_src
+  We can see that tar saves the pathname of each file relative to the location where the tar file
+  was originally created. That is, when we created the archive using tar cf mt.tar mt, the only
+  input filename we specified was mt, the name of the directory containing the files. Therefore,
+  tar stores the directory itself and all the files below that directory in the tar file. When we
+  extract the tar file, the directory mt is created and the files placed into it, which is the exact
+  inverse of what was done to create the archive.
+* 
+  By default, tar extracts all tar files relative to the current directory where
+  you execute tar. For example, if you were to pack up the contents of your /bin
+  directory with the command:
+  #+begin_src shell
+    tar cvf bin.tar /bin
+  #+end_src
+  tar would give the warning:
+  #+begin_src shell
+    tar: Removing leading / from absolute pathnames in the archive.
+  #+end_src
+* 
+  What this means is that the files are stored in the archive within the
+  subdirectory bin. When this tar file is extracted, the directory bin is
+  created in the working directory of tar — not as /bin on the system where the
+  extraction is being done. This is very important and is meant to prevent
+  terrible mistakes when extracting tar files. Otherwise, extracting a tar file
+  packed as, say, /bin would trash the contents of your /bin directory when you
+  extracted it.(Some (older) implementations of Unix (e.g., Sinix and Solaris)
+  do just that.) If you really wanted to extract such a tar file into /bin, you
+  would extract it from the root directory, /. You can override this behavior
+  using the P option when packing tar files, but it's not recommended you do so.
+
+  Another way to create the tar file mt.tar would have been to cd into the mt directory itself, and
+  use a command, such as:
+  #+begin_src shell
+    tar cvf mt.tar *
+  #+end_src
+* 
+  This way the mt subdirectory would not be stored in the tar file; when
+  extracted, the files would be placed directly in your current working
+  directory. One fine point of tar etiquette is to always pack tar files so that
+  they have a subdirectory at the top level, as we did in the first example with
+  tar cvf mt.tar mt. Therefore, when the archive is extracted, the subdirectory
+  is also created and any files placed there. This way you can ensure that the
+  files won't be placed directly in your current working directory; they will be
+  tucked out of the way and prevent confusion. This also saves the person doing
+  the extraction the trouble of having to create a separate directory (should
+  they wish to do so) to unpack the tar file. Of course, there are plenty of
+  situations where you wouldn't want to do this. So much for etiquette.
+
+  When creating archives, you can, of course, give tar a list of files or
+  directories to pack into the archive. In the first example, we have given tar
+  the single directory mt, but in the previous paragraph we used the wildcard *
+  , which the shell expands into the list of filenames in the current directory.
+* 
+  Before extracting a tar file, it's usually a good idea to take a look at its
+  table of contents to determine how it was packed. This way you can determine
+  whether you do need to create a subdirectory yourself where you can unpack the
+  archive. A command, such as:
+  #+begin_src shell
+    tar tvf tarfile
+  #+end_src
+  lists the table of contents for the named tarfile . Note that when using the t
+  function, only one v is required to get the long file listing, as in this
+  example:
+  #+begin_src shell
+    tar tvf mt.tar
+  #+end_src
+* 
+  No extraction is being done here; we're just displaying the archive's table of
+  contents. We can see from the filenames that this file was packed with all
+  files in the subdirectory mt so that when we extract the tar file, the
+  directory mt will be created and the files placed there. You can also extract
+  individual files from a tar archive. To do this, use the command:
+  #+begin_src shell
+    tar xvf tarfile files
+  #+end_src
+  where files is the list of files to extract. As we've seen, if you don't
+  specify any files , tar extracts the entire archive.
+
+  When specifying individual files to extract, you must give the full pathname
+  as it is stored in the tar file. For example, if we wanted to grab just the
+  file mt.c from the previous archive mt.tar, we'd use the command:
+* 
+  #+begin_src shell
+    tar xvf mt.tar mt/mt.c
+  #+end_src
+  This would create the subdirectory mt and place the file mt.c within it.
+
+  tar has many more options than those mentioned here. These are the features
+  that you're likely to use most of the time, but GNU tar, in particular, has
+  extensions that make it ideal for creating backups and the like. See the tar
+  manual page and the following section for more information.

@@ -1,0 +1,18 @@
+If you prefer object-oriented programming, gcc provides complete support for C++
+as well as Objective-C. There are only a few considerations you need to be aware
+of when doing C++ programming with gcc.
+
+First of all, C++ source filenames should end in the extension .cpp (most often used), .C, or
+.cc. This distinguishes them from regular C source filenames, which end in .c.
+
+Second, you should use the *g++* shell script in lieu of gcc when compiling C++
+code. g++ is simply a shell script that invokes gcc with a number of additional
+arguments, specifying a link against the C++ standard libraries, for example.
+g++ takes the same arguments and options as gcc.
+
+If you do not use g++, you'll need to be sure to link against the C++ libraries
+in order to use any of the basic C++ classes, such as the cout and cin I/O
+objects. Also be sure you have actually installed the C++ libraries and include
+files. Some distributions contain only the standard C libraries. gcc will be
+able to compile your C++ programs fine, but without the C++ libraries, you'll
+end up with linker errors whenever you attempt to use standard objects.

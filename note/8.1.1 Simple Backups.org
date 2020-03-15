@@ -1,0 +1,210 @@
+* 
+  The simplest means of taking a backup is to use tar to archive all the files
+  on the system or only those files in a set of specific directories. Before you
+  do this, however, you need to decide what files to back up. Do you need to
+  back up every file on the system? This is rarely necessary, especially if you
+  have your original installation disks or CD-ROM. If you have made important
+  changes to the system, but everything else is just the way it was found on
+  your installation media, you could get by only archiving those files you have
+  made changes to. Over time, however, it is difficult to keep track of such
+  changes.
+
+  In general, you will be making changes to the system configuration files in
+  /etc. There are other configuration files as well, and it can't hurt to
+  archive directories, such as /usr/lib, and /etc/X11 (which contains the
+  XFree86 configuration files, as we'll see in Section 10.3 in Chapter 10).
+
+  You should also back up your kernel sources (if you have upgraded or built
+  your own kernel); these are found in /usr/src/linux.
+* 
+  During your Linux adventures it's a good idea to keep notes on what features
+  of the system you've made changes to so that you can make intelligent choices
+  when taking backups. If you're truly paranoid, go ahead and back up the whole
+  system; that can't hurt, but the cost of backup media might.
+
+  Of course, you should also back up the home directories for each user on the
+  system; these are generally found in /home. If you have your system configured
+  to receive electronic mail (see Section 16.2 in Chapter 16), you might want to
+  back up the incoming mail files for each user. Many people tend to keep old
+  and "important" electronic mail in their incoming mail spool, and it's not
+  difficult to accidentally corrupt one of these files through a mailer error or
+  other mistake. These files are usually found in /var/spool/mail. Of course,
+  this applies only if you are using the local mail system, not to people who
+  access mail directly via POP3 or IMAP.
+* 8.1.1.1 Backing up to tape
+**   
+   Assuming you know what files or directories to back up, you're ready to roll.
+   You can use the tar command directly, as we saw in Section 7.1.2 in Chapter
+   7, to make a backup. For example, the command:
+   #+begin_src shell
+     tar cvf /dev/qft0 /usr/src /etc /home
+   #+end_src
+   archives all the files from /usr/src, /etc, and /home to /dev/qft0.
+   */dev/qft0* is the first "floppy- tape" device — that is, a tape drive that
+   hangs off of the floppy controller. Many popular tape drives for the PC use
+   this interface. If you have a SCSI tape drive, the device names are /dev/st0,
+   /dev/st1, and so on, based on the drive number. Those tape drives with
+   another type of interface have their own device names; you can determine
+   these by looking at the documentation for the device driver in the kernel.
+** 
+   You can then read the archive back from the tape using a command, such as:
+   #+begin_src shell
+     tar xvf /dev/qft0
+   #+end_src
+   This is exactly as if you were dealing with a tar file on disk, as seen in
+   Section 7.1 in Chapter 7.
+
+   When you use the tape drive, the tape is seen as a stream that may be read
+   from or written to in one direction only. Once tar is done, the tape device
+   will be closed, and the tape will rewind. You don't create a filesystem on a
+   tape, nor do you mount it or attempt to access the data on it as files. You
+   simply treat the tape device itself as a single "file" from which to create
+   or extract archives.
+
+   Be sure your tapes are formatted before you use them. This ensures that the
+   beginning-of-tape marker and bad-blocks information has been written to the
+   tape. For formatting QIC-80 tapes (those used with floppy-tape drivers), you
+   can use a tool called ftformat that is either already included with your
+   distribution or can be downloaded from
+   ftp://sunsite.unc.edu/pub/Linux/kernel/tapes as part of the ftape package.
+** 
+   Creating one tar file per tape might be wasteful if the archive requires but
+   a fraction of the capacity of the tape. In order to place more than one file
+   on a tape, you must first prevent the tape from rewinding after each use, and
+   you must have a way to position the tape to the next "file marker," for both
+   tar file creation and extraction.
+
+   The way to do this is to use the nonrewinding tape devices, which are named
+   /dev/nqft0, /dev/nqft1, and so on for floppy-tape drivers, and /dev/nst0,
+   /dev/nst1, and so on for SCSI tapes. When this device is used for reading or
+   writing, the tape will not be rewound when the device is closed (that is,
+   once tar has completed). You can then use tar again to add another archive to
+   the tape. The two tar files on the tape won't have anything to do with each
+   other. Of course, if you later overwrite the first tar file, you may
+   overwrite the second file or leave an undesirable gap between the first and
+   second files (which may be interpreted as garbage). In general, don't attempt
+   to replace just one file on a tape that has multiple files on it.
+** 
+   Using the nonrewinding tape device, you can add as many files to the tape as
+   space permits. In order to rewind the tape after use, use the *mt* command.
+   mt is a general-purpose command that performs a number of functions with the
+   tape drive.
+
+   For example, the command:
+   #+begin_src shell
+     mt /dev/nqft0 rewind
+   #+end_src
+   rewinds the tape in the first floppy-tape device. (In this case, you can use
+   the corresponding rewinding tape device as well.)
+
+   Similarly, the command:
+   #+begin_src shell
+     mt /dev/nqft0 reten
+   #+end_src
+   retensions the tape by winding it to the end and then rewinding it.
+** 
+   When reading files on a multiple-file tape, you must use the nonrewinding
+   tape device with tar and the mt command to position the tape to the
+   appropriate file.
+
+   For example, to skip to the next file on the tape, use the command:
+   #+begin_src shell
+     mt /dev/nqft0 fsf 1
+   #+end_src
+   This skips over one file on the tape. Similarly, to skip over two files, use:
+   #+begin_src shell
+     mt /dev/nqft0 fsf 2
+   #+end_src
+   Be sure to use the appropriate nonrewinding tape device with mt. Note that
+   this command does not move to "file number two" on the tape; it skips over
+   the next two files based on the current tape position. Just use mt to rewind
+   the tape if you're not sure where the tape is currently positioned. You can
+   also skip back; see the mt(1) manual page for a complete list of options.
+** 
+   You need to use mt every time you read a multifile tape. Using tar twice in
+   succession to read two archive files usually won't work; this is because tar
+   doesn't recognize the file marker placed on the tape between files. Once the
+   first tar finishes, the tape is positioned at the beginning of the file
+   marker. Using tar immediately will give you an error message because tar will
+   attempt to read the file marker. After reading one file from a tape, just
+   use:
+   #+begin_src shell
+     mt device fsf 1
+   #+end_src
+   to move to the next file.
+* 8.1.1.2 Backing up to floppy
+** 
+   Just as we saw in the last section, the command:
+   #+begin_src shell
+    tar cvf /dev/fd0 /usr/src /etc /home
+   #+end_src
+   makes a backup of /usr/src, /etc, and /home to /dev/fd0, the first floppy device. You can then
+   read the backup using a command, such as:
+   #+begin_src shell
+    tar xvf /dev/fd0
+   #+end_src
+   Because floppies have a rather limited storage capacity, GNU tar allows you to create a
+   "multivolume" archive. (This feature applies to tapes as well, but it is far more useful in the
+   case of floppies.) With this feature, tar prompts you to insert a new volume after reading or
+   writing each floppy. To use this feature, simply provide the M option to tar, as in:
+   #+begin_src shell
+    tar cvMf /dev/fd0 /usr/src /etc /home
+   #+end_src
+   Be sure to label your floppies well, and don't get them out of order when
+   attempting to restore the archive.
+** 
+   One caveat of this feature is that it doesn't support the automatic
+   compression provided by the z and I options. However, there are various
+   reasons why you may not want to compress your backups created with tar, as
+   discussed later. At any rate, you can create your own multivolume backups
+   using tar and gzip in conjunction with a program that reads and writes data to
+   a sequence of floppies (or tapes), prompting for each in succession. One such
+   program is backflops, available on several Linux distributions and on the FTP
+   archive sites. A do-it- yourself way to accomplish the same thing is to write
+   the backup archive to a disk file and use dd or a similar command to write the
+   archive as individual chunks to each floppy. If you're brave enough to try
+   this, you can figure it out for yourself.
+* 8.1.1.3 To compress, or not to compress?
+** 
+   There are good arguments both for and against compression of tar archives
+   when making backups. The overall problem is that neither tar nor the
+   compression tools gzip and bzip2 are particularly *fault-tolerant*, no matter
+   how convenient they are. Although compression using gzip or bzip2 can greatly
+   reduce the amount of backup media required to store an archive, compressing
+   entire tar files as they are written to floppy or tape makes the backup prone
+   to complete loss if one block of the archive is corrupted, say, through a
+   media error (not uncommon in the case of floppies and tapes). Most
+   compression algorithms, gzip and bzip2 included, depend on the coherency of
+   data across many bytes in order to achieve compression. If any data within a
+   compressed archive is corrupt, gunzip may not be able to uncompress the file
+   from that point on, making it completely unreadable to tar.
+** 
+   This is much worse than if the tar file were uncompressed on the tape.
+   Although tar doesn't provide much protection against data corruption within
+   an archive, if there is minimal corruption within a tar file, you can usually
+   recover most of the archived files with little trouble, or at least those
+   files up until the corruption occurs. Although far from perfect, it's better
+   than losing your entire backup.
+
+   A better solution is to use an archiving tool other than tar to make backups.
+   Several options are available. *cpio* is an archiving utility that packs
+   files together, similar in fashion to tar. However, because of the simpler
+   storage method used by cpio, it recovers cleanly from data corruption in an
+   archive. (It still doesn't handle errors well on gzipped files.)
+
+   The best solution may be to use a tool such as *afio*. afio supports
+   multivolume backups and is similar in some respects to cpio. However, afio
+   includes compression and is more reliable because each individual file is
+   compressed. This means that if data on an archive is corrupted, the damage
+   can be isolated to individual files, instead of to the entire backup.
+** 
+   These tools should be available with your Linux distribution, as well as from
+   all the Internet- based Linux archives. A number of other backup utilities,
+   with varying degrees of popularity and usability, have been developed or
+   ported for Linux. If you're serious about backups, you should look into
+   them.(Of course, this section was written after the author took the first
+   backup of his Linux system in nearly four years of use!) Among those programs
+   are the freely available taper, tob and Amanda, as well as commercial
+   programs like ARKEIA (free for use with up to two computers), BRU, and
+   Arcserve. Lots of free backup tools can also be found at
+   http://velocom.linux.tucows.com/system/backup.html.

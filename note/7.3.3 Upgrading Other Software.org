@@ -1,0 +1,126 @@
+* 
+  In order to upgrade other applications, you'll have to obtain the newest
+  release of the software. This is usually available as a gzipped or compressed
+  tar file. Such a package could come in several forms. The most common are
+  binary distributions, in which the binaries and related files are archived and
+  ready to unpack on your system, and source distributions, in which the source
+  code (or portions of the source code) for the software is provided, and you
+  have to issue commands to compile and install it on your system.
+
+  Shared libraries make distributing software in binary form easy; as long as
+  you have a version of the libraries installed that is compatible with the
+  library stubs used to build the program, you're set. However, in many cases,
+  it is easier (and a good idea) to release a program as source. Not only does
+  this make the source code available to you for inspection and further
+  development, but it also allows you to build the application specifically for
+  your system, with your own libraries. Many programs allow you to specify
+  certain options at compile time, such as selectively including various
+  features in the program when built. This kind of customization isn't possible
+  if you get prebuilt binaries.
+* 
+  There's also a security issue at play when installing binaries without source
+  code. Although on Unix systems viruses are nearly unheard of,(A "virus" in the
+  classic sense is a program that attaches to a "host," which runs when the host
+  is executed. On Unix systems, this usually requires root privileges to do any
+  harm, and if programmers could obtain such privileges, they probably wouldn't
+  bother with a virus.) it's not difficult to write a "Trojan Horse," a program
+  that appears to do something useful but, in actuality, causes damage to the
+  system. For example, someone could write an application that includes the
+  "feature" of deleting all files in the home directory of the user executing
+  the program. Because the program would be running with the permissions of the
+  user executing it, the program itself has the ability to do this kind of
+  damage. (Of course, the Unix security mechanism prevents damage being done to
+  other users' files or to any important system files owned by root .)
+* 
+  While having source won't necessarily prevent this from happening (do you read
+  the source code for every program you compile on your system?), at least it
+  gives you a way to verify what the program is really doing. Also, if source
+  code is available, it is likely that some people will peruse it so that using
+  source is a bit safer; but you can't count on that.
+
+  At any rate, dealing with source and binary distributions of software is quite
+  simple. If the package is released as a tar file, first use the tar t option
+  to determine how the files have been archived. In the case of binary
+  distributions, you may be able to unpack the tar file directly on your system
+  — say, from / or /usr. When doing this, be sure to delete any old versions of
+  the program and its support files (those that aren't overwritten by the new
+  tar file). If the old executable comes before the new one on your path, you'll
+  continue to run the old version unless you remove it.
+* 
+  Source distributions are a bit trickier. First, you must unpack the sources
+  into a directory of their own. Most systems use /usr/src for just this.
+  Because you usually don't have to be root to build a software package
+  (although you will usually require root permissions to install the program
+  once compiled!), it might be a good idea to make /usr/src writable by all
+  users, with the command:
+  #+begin_src shell
+    chmod 1777 /usr/src
+  #+end_src
+  This allows any user to create subdirectories in /usr/src and place files
+  there. The first 1 in the mode is the "sticky" bit, which prevents users from
+  deleting each other's subdirectories.
+
+  You can now create a subdirectory under /usr/src and unpack the tar file
+  there, or you can unpack the tar file directly from /usr/src if the archive
+  contains a subdirectory of its own.
+* 
+  Once the sources are available, the next step is to read any README and
+  INSTALL files or installation notes included with the sources. Nearly all
+  packages include such documentation. The basic method used to build most
+  programs is:
+* 1. Check the Makefile.
+  This file contains instructions for make, which controls the
+  compiler to build programs. Many applications require you to edit minor aspects of the
+  Makefile for your own system; this should be self-explanatory. The installation notes
+  will tell you if you have to do this. If there is no Makefile in the package, you might
+  have to generate it first. See item 3 for how to do this.
+* 2. Possibly edit other files associated with the program.
+  Some applications require you to edit a file named config.h; again, this will
+  be explained in the installation instructions.
+* 3. Possibly run a configuration script.
+  Such a script is used to determine what facilities are available on your
+  system, which is necessary to build more complex applications.
+
+  Specifically, when the sources do not contain a Makefile in the top-level
+  directory, but instead a file called Makefile.in and a file called configure,
+  the package has been built with the Autoconf system. In this (more and more
+  common) case, you run the configuration script like this:
+  #+begin_src shell
+    ./configure
+  #+end_src
+  The ./ should be used so that the local configure is run, and not another
+  configure program that might accidentally be in your path. Some packages let
+  you pass options to configure that often enable or disable specific features
+  of the package. (You can find out what these options are with configure -
+  -help.) Once the configure script has run, you can proceed with the next step.
+* 4. Run make.
+  Generally, this executes the appropriate compilation commands as given in the
+  Makefile. In many cases you'll have to give a "target" to make, as in make all
+  or make install. These are two common targets; the former is usually not
+  necessary but can be used to build all targets listed in a Makefile (e.g., if
+  the package includes several programs, but only one is compiled by default);
+  the latter is often used to install the executables and support files on the
+  system after compilation. For this reason, make install is usually run as
+  root.
+
+  Even after the installation, there is often one major difference between
+  programs installed from source or from a binary package. Programs installed
+  from source are often installed below */usr/local* by default, which is rarely
+  the case with binary packages.
+* 
+  You might have problems compiling or installing new software on your system,
+  especially if the program in question hasn't been tested under Linux, or
+  depends on other software you don't have installed. In Chapter 13, we talk
+  about the compiler, make, and related tools in detail.
+
+  Most software packages include manual pages and other files, in addition to
+  the source and executables. The installation script (if there is one) will
+  place these files in the appropriate location. In the case of manual pages,
+  you'll find files with names such as *foobar.1* or *foobar.man*. These files
+  are usually nroff source files, which are formatted to produce the
+  human-readable pages displayed by the man command. If the manual page source
+  has a numeric extension, such as .1, copy it to the directory */usr/man/man1*,
+  where 1 is the number used in the filename extension. (This corresponds to the
+  manual "section" number; for most user programs, it is 1.) If the file has an
+  extension such as .man, it usually suffices to copy the file to /usr/man/man1,
+  renaming the .man extension to .1.

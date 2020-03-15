@@ -1,0 +1,58 @@
+* 
+  There are various ways to move and duplicate blocks of text within Emacs.
+  These methods involve use of the mark, which is simply a "remembered" cursor
+  location you can set using various commands. The block of text between the
+  current cursor location (point) and the mark is called the region.
+
+  You can set the mark using the key C-@ (or C-Space on most systems). Moving
+  the cursor to a location and pressing C-@ sets the mark at that position. You
+  can now move the cursor to another location within the document, and the
+  region is defined as the text between mark and point.
+
+  Many Emacs commands operate on the region. The most important of these
+  commands deal with deleting and yanking text. The command C-w deletes the
+  current region and saves it in the kill ring. The kill ring is a list of text
+  blocks that have been deleted. You can then paste (yank) the text at another
+  location, using the C-y command. (Note that the semantics of the term yank
+  differ between vi and Emacs. In vi, "yanking" text is equivalent to adding it
+  to the undo register without deleting it, while in Emacs, "yank" means to
+  paste text.) Using the kill ring, you can paste not only the most recently
+  deleted block of text, but also blocks of text that were deleted previously.
+* 
+  For example, type the following text into an Emacs buffer:
+
+  Now, move the cursor to the beginning of the second line ("Here is a
+  line..."), and set the mark with C-@ . Move to the end of the line (with C-e
+  ), and delete the region using C-w . The buffer should now look like the
+  following:
+
+  In order to yank the text just deleted, move the cursor to the end of the
+  buffer and press C-y . The line should be pasted at the new location:
+
+  Pressing C-y repeatedly will insert the text multiple times.
+
+  You can copy text in a similar fashion. Using M-w instead of C-w will copy the
+  region into the kill ring without deleting it. (Remember that M- means holding
+  down the Alt key or pressing Escape before the w .)
+
+  Text that is deleted using other kill commands, such as C-k , is also added to
+  the kill ring. This means that you don't need to set the mark and use C-w to
+  move a block of text; any command that deletes more than one character will
+  do.
+* 
+  In order to recover previously deleted blocks of text (which are saved on the
+  kill ring), use the command M-y after yanking with C-y . M-y replaces the
+  yanked text with the previous block from the kill ring. Pressing M-y
+  repeatedly cycles through the contents of the kill ring. This feature is
+  useful if you wish to move or copy multiple blocks of text.
+
+  Emacs also provides a more general register mechanism, similar to that found
+  in vi. Among other things, you can use this feature to save text you want to
+  paste in later. A register has a one-character name; let's use a for this
+  example:
+  1) At the beginning of the text you want to save, set the mark by pressing the
+     Control key and spacebar together (or if that doesn't work, press C-@ ).
+  2) Move point (the cursor) to the end of the region you want to save.
+  3) Press *C-x x* followed by the name of the register ( a in this case).
+  4) When you want to paste the text somewhere, press *C-x g* followed by the
+     name of the register,

@@ -1,0 +1,71 @@
+* 
+  Linux is a fast-moving target. Because of the cooperative nature of the
+  project, new software is always becoming available, and programs are
+  constantly being updated with newer versions. This is especially true of the
+  Linux kernel, which has many groups of people working on it. During the
+  development process, it's not uncommon for a new kernel patch to be released
+  on a nightly basis. While other parts of the system may not be as dynamic, the
+  same principles apply.
+
+  With this constant development, how can you possibly hope to stay on top of
+  the most recent versions of your system software? The short answer is, you
+  can't. While there are people out there who have a need to stay current with,
+  say, the nightly kernel patch release, for the most part, there's no reason to
+  bother upgrading your software this often. In this section, we're going to
+  talk about why and when to upgrade and show you how to upgrade several
+  important parts of the system.
+* 
+  When should you upgrade? In general, you should consider upgrading a portion
+  of your system only when you have a demonstrated need to upgrade. For example,
+  if you hear of a new release of some application that fixes important bugs
+  (that is, those bugs that actually affect your personal use of the
+  application), you might want to consider upgrading that application. If the
+  new version of the program provides new features you might find useful, or has
+  a performance boost over your present version, it's also a good idea to
+  upgrade. When your machine is somehow connected to the Internet, another good
+  reason for upgrading would be plugging a security hole that has been recently
+  reported. However, upgrading just for the sake of having the newest version of
+  a particular program is probably silly.
+
+  Upgrading can sometimes be a painful thing to do. For example, you might want
+  to upgrade a program that requires the newest versions of the compiler,
+  libraries, and other software in order to run. Upgrading this program will
+  also require you to upgrade several other parts of the system, which can be a
+  time-consuming process. On the other hand, this can be seen as an argument for
+  keeping your software up to date; if your compiler and libraries are current,
+  upgrading the program in question won't be a problem.
+* 
+  How can you find out about new versions of Linux software? The best way is to
+  watch the Usenet newsgroup *comp.os.linux.announce* (see the section Section
+  1.8.3) where announcements of new software releases and other important
+  information are posted. If you have Internet access, you can then download the
+  software via FTP and install it on your system. Another good source to learn
+  about new Linux software is the web site http://www.freshmeat.net.
+
+  If you don't have access to Usenet or the Internet, the best way to keep in
+  touch with recent developments is to pay for a CD-ROM subscription. Here you
+  receive an updated copy of the various Linux FTP sites, on CD-ROM, every
+  couple of months. This service is available from a number of Linux vendors.
+  It's a good thing to have, even if you have Internet access. This brings us to
+  another issue: what's the best upgrade method? Some people feel it's easier to
+  completely upgrade the system by reinstalling everything from scratch whenever
+  a new version of their favorite distribution is released. This way you don't
+  have to worry about various versions of the software working together. For
+  those without Internet access, this may indeed be the easiest method; if you
+  receive a new CD-ROM only once every two months, a great deal of your software
+  may be out of date.
+* 
+  It's our opinion, however, that reinstallation is not a good upgrade plan at
+  all. Most of the current Linux distributions are not meant to be upgraded in
+  this way, and a complete reinstallation may be complex or time-consuming.
+  Also, if you plan to upgrade in this manner, you generally lose all your
+  modifications and customizations to the system, and you'll have to make
+  backups of your user's home directories and any other important files that
+  would be deleted during a reinstallation. Many novices choose this upgrade
+  path because it's the easiest to follow. In actuality, not much changes from
+  release to release, so a complete reinstallation is usually unnecessary and
+  can be avoided with a little upgrading know-how. In the rest of this section,
+  we'll show you how to upgrade various pieces of your system individually.
+  We'll show you how to upgrade your system libraries and compiler, as well as
+  give you a generic method for installing new software. In the following
+  section, we'll talk about building a new kernel.

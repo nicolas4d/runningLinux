@@ -1,0 +1,55 @@
+* 
+  In order to print from Linux, you need to install the BSD print system (or an
+  alternative system). This provides basic tools, but it does not support modern
+  printers. Indeed, it was designed to support line printers (hence the name
+  "line printing daemon") and devices common to the computer rooms of the 1960s
+  and 1970s. In order to support modern printers, powerful supplemental packages
+  provide the features most users think of as essential. (The
+  ftp://ftp.ibiblio.org FTP site and its mirrors archive the packages we mention
+  here.)
+
+  In this section, we discuss some important packages to support modern print
+  services. We assume your system will have at least the groff formatter, the
+  Ghostscript page-formatting package, and the GNU Enscript filter packages,
+  which are described in Chapter 9. Most Linux distributions already include
+  these as well as other formatting and printing utilities. If yours does not,
+  you can retrieve them from the usual Linux FTP sites or take them from the CD-
+  ROM of another distribution.
+* 
+  It matters where you get formatting and filtering packages. If you receive
+  Ghostscript from a European distribution, for example, it probably defaults to
+  an A4 paper format rather than the 8.5x11-inch paper format kept in U.S.
+  binary archives. In either case, you can easily override the default through
+  an lpr option passed to the filter. Alternatively, you can build the tools
+  from source.
+
+  The trend in printer technology is away from character-oriented output and
+  toward adoption of a page-description language (PDL) that provides
+  sophisticated graphics and font control. By far the most popular of the PDLs
+  is PostScript, which has been widely adopted in the Unix and Internet
+  communities. A major reason for its acceptance is Ghostscript, a PostScript
+  implementation copyrighted by Aladdin Enterprises. A version is also
+  distributed under the GNU Public License through the Free Software Foundation,
+  along with a large font library that can be used with either version and with
+  other PostScript interpreters. Ghostscript is indispensable if you do any kind
+  of printing besides character-based output, and it is easily extensible.
+* 
+  Ghostscript implements almost all the instructions of the PostScript language
+  and supports viewer utilities, such as Ghostview, that allow PostScript
+  documents to be displayed in an X window. Similarly, excellent filters are
+  readily available that convert PostScript output into other printing
+  languages, such as Hewlett-Packard's PCL, and into forms printable as raster
+  output on inkjet, dot matrix, and laser printers. The Ghostscript package
+  supports Adobe Type 1 and 3 PostScript fonts and provides a number of
+  utilities for graphics format conversion and filtering. It can even generate
+  PDF files — i.e., files that conform to the Adobe Portable Document Format
+  specification.
+
+  Ghostscript may be insufficient to use by itself, however, because it doesn't
+  provide printer control to switch between PostScript and text modes. Although
+  Ghostscript does provide a filter that provides this capability (and more),
+  the nenscript filter meets the tests of simplicity, flexibility, and
+  reliability for most systems, so we document it here. A typical Linux
+  formatting and printing system might primarily use groff to format documents,
+  creating PostScript output that is then processed by Ghostscript for printing
+  and display.

@@ -1,0 +1,38 @@
+* 
+  The C programming language is by far the most often used in Unix software
+  development. Perhaps this is because the Unix system was originally developed
+  in C; it is the native tongue of Unix. Unix C compilers have traditionally
+  defined the interface standards for other languages and tools, such as
+  linkers, debuggers, and so on. Conventions set forth by the original C
+  compilers have remained fairly consistent across the Unix programming board.
+
+  The GNU C compiler, gcc, is one of the most versatile and advanced compilers
+  around. Unlike other C compilers (such as those shipped with the original AT&T
+  or BSD distributions, or those available from various third-party vendors),
+  gcc supports all the modern C standards currently in use — such as the ANSI C
+  standard — as well as many extensions specific to gcc. Happily, however, gcc
+  provides features to make it compatible with older C compilers and older
+  styles of C programming. There is even a tool called protoize that can help
+  you write function prototypes for old-style C programs.
+* 
+  gcc is also a C++ compiler. For those who prefer the more modern
+  object-oriented environment, C++ is supported with all the bells and whistles
+  — including most of the C++ introduced when the C++ standard was released,
+  such as method templates. Complete C++ class libraries are provided as well,
+  such as the Standard Template Library (STL).
+
+  For those with a taste for the particularly esoteric, gcc also supports
+  Objective-C, an object- oriented C spinoff that never gained much popularity
+  but may see a second spring due to its usage in Mac OS X. And there is gcj,
+  which compiles Java code to machine code. But the fun doesn't stop there, as
+  we'll see.
+
+  In this section, we're going to cover the use of gcc to compile and link
+  programs under Linux. We assume you are familiar with programming in C/C++,
+  but we don't assume you're accustomed to the Unix programming environment.
+  That's what we'll introduce here.
+* 
+  The latest gcc version at the time of this writing is Version 3.0.4. However,
+  the 3.0 series has proven to be still quite unstable, which is why Version
+  2.95.3 is still considered the official standard version. We suggest sticking
+  with that one unless you know exactly what you are doing.

@@ -1,0 +1,38 @@
+* 
+  GNU Emacs is simply invoked as:
+  #+begin_src shell
+    emacs options
+  #+end_src
+  Likewise, XEmacs is invoked as:
+  #+begin_src shell
+    xemacs options
+  #+end_src
+  Most of the time, you don't need options. You can specify filenames on the
+  command line, but it's more straightforward to read them in after starting the
+  program.
+
+  In Emacs lingo, C-x means Ctrl-X, and M-p is equivalent to Alt-P. As you might
+  guess, C- M-p means Ctrl-Alt-P.
+
+  Using these conventions, press C-x followed by C-f to read in a file or create
+  a new one. The keystrokes display a prompt at the bottom of your screen
+  showing your current working directory. You can create a buffer now to hold
+  what will end up being the content of a new file; let's call the file
+  wibble.txt.
+* 
+  The mode line at the bottom indicates the name of the file as well as the type
+  of buffer you're in (which here is Fundamental ). Emacs supports many kinds of
+  editing modes; Fundamental is the default for plain-text files, but other
+  modes exist for editing C and T E X source, modifying directories, and so on.
+  Each mode has certain key bindings and commands associated with it, as we'll
+  see soon. Emacs typically determines the mode of the buffer based on the
+  filename extension.
+
+  To the right of the buffer type is the word All , which means that you are
+  currently looking at the entire file (which is empty). Typically, you will see
+  a percentage, which represents how far into the file you are.
+
+  If you're running Emacs under the X Window System, a new window will be
+  created for the editor with a menu bar at the top, scrollbars, and other
+  goodies. In Section 11.6.2 in Chapter 11, we discuss Emacs's special features
+  when used within X.

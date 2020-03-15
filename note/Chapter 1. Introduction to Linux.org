@@ -1,0 +1,1740 @@
+* Chapter 1. Introduction to Linux
+** 
+   This is a book about Linux, a free, open source operating system that supports
+   full multitasking, the X Window System, TCP/IP networking, and much more. Hang
+   tight and read on: in the pages that follow, we describe the system in
+   meticulous detail.
+
+   Linux has generated more excitement in the computer field than any other
+   development of the past several years. It has spread surprisingly fast, and
+   the loyalty it inspires recalls the excitement of do-it-yourself computing
+   that used to characterize earlier advances in computer technology. Ironically,
+   it succeeds by rejuvenating one of the oldest operating systems still in
+   widespread use: Unix. Linux is both a new technology and an old one.
+** 
+   In narrow technical terms, Linux is just the operating system kernel, offering
+   the basic services of process scheduling, virtual memory, file management, and
+   device I/O. In other words, Linux itself is the lowest-level part of the
+   operating system.
+
+   However, most people use the term "Linux" to refer to the complete system —
+   the kernel along with the many applications that it runs: a complete
+   development and work environment including compilers, editors, graphical
+   interfaces, text processors, games, and more. This book will be your guide to
+   Linux's shifting and many-faceted world. Linux has developed into an operating
+   system for businesses, education, and personal productivity, and this book
+   will help you get the most out of it.
+** 
+   Linux can transform any personal computer into a high-end workstation and
+   server. Corporations are installing Linux on entire networks of machines,
+   using the operating system to manage financial and hospital records,
+   distributed-user computing environments, telecommunications, and more.
+   Universities worldwide are using Linux for teaching courses on operating
+   system programming and design. And, of course, computing enthusiasts
+   everywhere are using Linux at home, for programming, document production, and
+   all-around hacking. People use Linux on high-end desktop machines, handheld
+   PDAs, mobile laptops, and even old clunkers sitting in the closet doing
+   nothing more than spooling print jobs.
+** 
+   Apart from workstation and personal use, Linux is also being used to drive big
+   servers. Increasingly, people are discovering that Linux is powerful, stable,
+   and flexible enough to run the largest disk arrays and multiprocessor systems
+   — with applications ranging from World Wide Web servers to corporate
+   databases. Linux drives many mission-critical business applications, Internet
+   sites, search engines, and content delivery networks. Scientists are
+   connecting arrays of Linux machines into enormous "clusters" to solve the most
+   computationally intensive problems in physics and engineering. With the Samba
+   software suite, Linux can even act as a Windows file and print server — with
+   better performance than Windows!
+** 
+   What makes Linux so different is that it's a free implementation of Unix. It
+   was and still is developed by a group of volunteers, primarily on the
+   Internet, who exchange code, report bugs, and fix problems in an open
+   environment. Anyone is welcome to join in the Linux development effort: all it
+   takes is interest in hacking a free Unix clone and some kind of programming
+   know-how.
+
+   In this book, we assume you're comfortable with a personal computer (running
+   any operating system, such as Windows 98, or some other version of Unix). We
+   also assume that you're willing to do some experimentation to get everything
+   working correctly — after all, this is half of the fun of getting into Linux.
+   Linux has evolved into a system that is amazingly easy to install and
+   configure, but because it is so powerful, some details are more complex than
+   you'll find in the Windows world. With this book as your guide, we hope you'll
+   find that setting up and running your own Linux system is quite easy and a
+   great deal of fun.
+* 1.1 About This Book
+** 
+   This book is an overview and entry-level guide to the Linux system. We attempt
+   to present enough general and interesting information on a number of topics to
+   satisfy Unix novices and wizards alike. This book should provide sufficient
+   material for almost anyone to install and use Linux and get the most out of
+   it. Instead of covering many of the volatile technical details — those things
+   that tend to change with rapid development — we give you enough background to
+   find out more on your own.
+
+   This book is geared for those people who really want to exploit the power that
+   Linux provides. Rather than gloss over all the tricky details, we give you
+   enough background to truly understand how the various parts of the system
+   work, so you can customize, configure, and troubleshoot the system on your
+   own. Linux is not difficult to install and use. However, as with any
+   implementation of Unix, there is often some black magic involved to get
+   everything working correctly.
+** 
+   In this book, we cover the following topics:
+   - What is Linux? The design and philosophy of this unique operating system, and what
+     it can do for you.
+   - Information on what you need to run Linux, including suggestions on what kind of
+     hardware configuration is recommended for a complete system.
+   - How to obtain and install Linux. We cover the Red Hat, SuSE, and Debian
+     distributions in more detail than others, but the background here should be adequate to
+     cover any release of the system.
+   - For new users, an introduction to the Unix system, including an overview of the most
+     important commands and concepts.
+** 
+   - The care and feeding of the Linux system, including system administration and
+     maintenance, upgrading the system, and how to fix things when they don't work.
+     Getting the most out of your Linux system, with "power tools" such as T E X, Emacs,
+     KDE, GNOME, and more.
+   - The Linux programming environment. The tools of the trade for programming and
+     developing software on the Linux system. We introduce compilation and debugging of
+     C and C++ programs, Java, Perl, and shell scripts.
+   - Using Linux for telecommunications and networking, including the basics of TCP/IP
+     configuration, PPP for Internet connectivity over a modem, ISDN configuration,
+     email, news, and web access — we even show how to configure your Linux system as
+     a web server.
+** 
+   There are a million things we'd love to show you how to do with Linux.
+   Unfortunately, in order to cover them all, this book would be the size of the
+   unabridged Oxford English Dictionary and would be impossible for anyone (let
+   alone the poor authors) to maintain.
+
+   Instead we've tried to include the most salient and interesting aspects of
+   the system and show you how to find out more.
+** 
+   While much of the discussion in this book is not overly technical, it helps
+   to have previous experience with another Unix system. For those who don't
+   have Unix experience, we have included a short tutorial in Chapter 4, for new
+   users. Chapter 5 is a complete chapter on systems administration that should
+   help even seasoned Unix users run a Linux system.
+
+   If you are new to Unix, you'll want to pick up a more complete guide to Unix
+   basics. We don't dwell for long on the fundamentals, instead preferring to
+   skip to the fun parts of the system. At any rate, while this book should be
+   enough to get you running, more information on using Unix and its many tools
+   will be essential for most readers. See Appendix A, for a list of sources of
+   information.
+* 1.2 A Brief History of Linux
+** 
+   Unix is one of the most popular operating systems worldwide because of its
+   large support base and distribution. It was originally developed as a
+   multitasking system for minicomputers and mainframes in the mid-1970s. It has
+   since grown to become one of the most widely used operating systems anywhere,
+   despite its sometimes confusing interface and lack of central
+   standardization. There is no single implementation of Unix. Originally
+   developed by Bell Labs, Unix eventually forked into several versions,
+   including a popular distribution from the University of California at
+   Berkeley, called BSD. Over the years, many vendors have developed their own
+   implementations of Unix, either from scratch or starting with another
+   version. Linux was built from the ground up, although earlier versions
+   included some code from BSD as well.
+** 
+   While Unix underwent a dip in market strength during the early 1990s, under
+   the onslaught of the new Windows NT system, it came back strong and has
+   become the mainstay of large computers.
+
+   Unix has quite a cult following in the operating systems community. Many
+   hackers feel that Unix is the Right Thing — the One True Operating System.
+   Hence, the development of Linux by an expanding group of Unix hackers who
+   want to get their hands dirty with their own system. Moreover, Linux is not a
+   "product" that ties you to a particular vendor or software developer. Because
+   Linux is free, and all the source code is available (more on that later),
+   anyone can modify the system to fit their own needs. Rather than waiting for
+   some large company to release the latest features and service packs, the
+   Linux user community is empowered to improve, adapt, and fix the system
+   themselves. It's this empowerment that has helped Linux become so powerful.
+** 
+   Linux is a freely distributable version of Unix, originally developed by Linus Torvalds, who
+   began work on Linux in 1991 as a student at the University of Helsinki in Finland. Linus now
+   works for Transmeta Corporation, a company in Santa Clara, California, and continues to
+   maintain the Linux kernel, that is, the lowest-level core component of the operating system.
+
+   Linus released the initial version of Linux for free on the Internet,
+   inadvertently spawning one of the largest software development phenomena of
+   all time. Today, Linux is authored and maintained by thousands of developers
+   loosely collaborating across the Internet. Companies have sprung up to
+   provide Linux support, to package it into easy-to-install distributions, and
+   to sell workstations preinstalled with the Linux software. In March 1999, the
+   first Linux World Expo trade show was held in San Jose, California, with
+   reportedly well over 12,000 people in attendance. These days, most estimates
+   place the number of Linux users in the millions.
+** 
+   Inspired by Andrew Tanenbaum's Minix operating system (one of the original
+   Unix systems for PCs, intended for teaching operating system design), Linux
+   began as a class project in which Linus wanted to build a simple Unix system
+   that could run on a '386-based PC. The first discussions about Linux were on
+   the Usenet newsgroup, comp.os.minix. These discussions were concerned mostly
+   with the development of a small, academic Unix system for Minix users who
+   wanted more.
+
+   The very early development of Linux dealt mostly with the task-switching features of the
+   80386 protected-mode interface, all written in assembly code. Linus writes:
+** 
+   After that it was plain sailing: hairy coding still, but I had some devices,
+   and debugging was easier. I started using C at this stage, and it certainly
+   speeds up development. This is also when I start to get serious about my
+   megalomaniac ideas to make "a better Minix than Minix." I was hoping I'd be
+   able to recompile gcc under Linux some day ...
+
+   Two months for basic setup, but then only slightly longer until I had a disk
+   driver (seriously buggy, but it happened to work on my machine) and a small
+   filesystem. That was about when I made 0.01 available [around late August of
+   1991]: it wasn't pretty, it had no floppy driver, and it couldn't do much
+   anything. I don't think anybody ever compiled that version. But by then I was
+   hooked, and didn't want to stop until I could chuck out Minix.
+** 
+   No announcement was ever made for Linux Version 0.01. The 0.01 release wasn't
+   even executable: it contained only the bare rudiments of the kernel source
+   and assumed that you had access to a Minix machine to compile and play with
+   them.
+
+   On October 5, 1991, Linus announced the first "official" version of Linux,
+   Version 0.02. At this point, Linus was able to run bash (the GNU Bourne Again
+   Shell) and gcc (the GNU C compiler), but not much else was working. Again,
+   this was intended as a hacker's system. The primary focus was kernel
+   development; none of the issues of user support, documentation, distribution,
+   and so on had even been addressed. Today, the situation is quite different —
+   the real excitement in the Linux world deals with graphical user
+   environments, easy-to-install distribution packages, and high-level
+   applications such as graphics utilities and productivity suites.
+** 
+   Linus wrote in comp.os.minix :
+
+   Do you pine for the nice days of Minix-1.1, when men were men and wrote their
+   own device drivers? Are you without a nice project and just dying to cut your
+   teeth on an OS you can try to modify for your needs? Are you finding it
+   frustrating when everything works on Minix? No more all-nighters to get a
+   nifty program working? Then this post might be just for you.
+
+   As I mentioned a month ago, I'm working on a free version of a Minix-
+   lookalike for AT-386 computers. It has finally reached the stage where it's
+   even usable (though may not be depending on what you want), and I am willing
+   to put out the sources for wider distribution. It's just version 0.02 ... but
+   I've successfully run bash, gcc, GNU make, GNU sed, compress, etc. under it.
+** 
+   After Version 0.03, Linus bumped the version number up to 0.10, as more
+   people started to work on the system. After several further revisions, Linus
+   increased the version number to 0.95, to reflect his expectation that the
+   system was ready for an "official" release very soon. (Generally, software is
+   not assigned the version number 1.0 until it's theoretically complete or
+   bug-free.) This was in March 1992. It wasn't until two years later, in March
+   1994, that Version 1.0 finally appeared. As of the time of this writing
+   (September 2002), the current kernel version is 2.4.19, while the 2.5 kernel
+   versions are being concurrently developed. (We'll explain the Linux
+   versioning conventions in detail later.)
+** 
+   Linux could not have come into being without the GNU tools created by the
+   Free Software Foundation. The Free Software Foundation is a group formed in
+   1984 by Richard Stallman to promote the development of software that can be
+   developed, redistributed, and modified by anyone — here, "free" refers to
+   freedom, not just cost. Underlying the Free Software Foundation's philosophy
+   is a deep-rooted moral conviction that all software should be free (again, in
+   the sense of freedom); this philosophy is shared by many in the Linux
+   community. This ideal is embodied in the GNU General Public License (or GPL),
+   the copyright license under which Linux is released. We'll discuss this in
+   more detail later in the chapter.
+** 
+   The GNU Project, which is the main result of the Free Software Foundation's
+   efforts, has produced many invaluable tools and applications that Linux has
+   depended upon, including the Emacs text editor, gcc compiler suite, and many
+   others. GNU tools have been intertwined with the development of Linux from
+   the beginning. Because of the critical contributions of the GNU Project, the
+   Free Software Foundation even requests that distributions of Linux with
+   accompanying utilities be called GNU/Linux.
+
+   Berkeley Unix (BSD) has also played an important role in Linux — not so much
+   in its creation, but in providing the tools that make it popular. The
+   so-called Berkeley Software Distribution was developed at the University of
+   California, Berkeley in the late 1970s by a group of developers working from
+   the original AT&T Unix sources. The BSD group made a number of enhancements
+   to the core Unix design, and soon, BSD took on a life of its own. These days,
+   many variants of the BSD system are available for a range of hardware
+   platforms, and the BSD community rivals that of Linux in terms of popularity.
+   The Mac OS X operating system is even based on a variant of BSD! Some of the
+   networking utilities and daemons used by Linux are derived from original BSD
+   sources.
+** 
+   Today, Linux is a full-featured, complete implementation of Unix, with a vast
+   array of applications, programming languages, tools, and hardware support.
+   Linux supports the X Window System GUI, TCP/IP networking, multiprocessor
+   machines, advanced hardware and software for scientific and parallel
+   computing, and much more. Nearly every major free software package has been
+   ported to Linux, and a great deal of commercial software is available. In
+   fact, many developers start by writing applications for Linux, and port them
+   to other Unix systems later. More hardware is supported than in original
+   versions of the kernel. Many people have executed benchmarks on Linux systems
+   and found them to be faster than expensive workstations, and Linux performs
+   better than or as well as Windows NT/2000/XP on a wide range of benchmarks.
+   Who would have ever guessed that this "little" Unix clone would have grown up
+   to take on the entire world of personal and server computing?
+* 1.3 Who's Using Linux
+** 
+   Application developers, system administrators, network providers, kernel
+   hackers, students, and multimedia authors are just a few of the categories of
+   people who find that Linux has a particular charm.
+
+   Unix programmers are increasingly using Linux because of its cost — they can
+   pick up a complete programming environment for a few dollars and run it on
+   cheap PC hardware — and because Linux offers a great basis for portable
+   programs. It's a modern operating system that is POSIX-compliant and looks a
+   lot like System V, so code that works on Linux should work on other
+   contemporary Unix systems.
+** 
+   Networking is one of Linux's strengths. It has been adopted with gusto by
+   people who run large networks, due to its simplicity of management,
+   performance, and low cost. Many Internet sites are making use of Linux to
+   drive large web servers, e-commerce applications, search engines, and more.
+   Linux supports common networking standards, such as Network File System (NFS)
+   and Network Information Service (NIS), making it easy to merge a Linux
+   machine into a corporate or academic network with other Unix machines. It's
+   easy to share files, support remote logins, and run applications on other
+   systems. Linux also supports the Samba software suite, which allows a Linux
+   machine to act as a Windows file and print server. Many people are
+   discovering that the combination of Linux and Samba for this purpose is
+   faster (and cheaper) than running Windows 2000.
+** 
+   One of the most popular uses of Linux is in driving large enterprise
+   applications, including web servers, databases, business-to-business systems,
+   and e-commerce sites. A large number of businesses are discovering that Linux
+   is an inexpensive, efficient, and robust system capable of driving the most
+   mission-critical applications. The fact that Linux can be readily customized
+   — even down to the guts of the kernel — makes the system very attractive for
+   companies that need to exercise control over the inner workings of the
+   system. Linux supports RAID, a mechanism which allows an array of disks to be
+   treated as a single logical storage device, greatly increasing reliability.
+   The combination of Linux, the Apache web server, the MySQL database engine,
+   and the PHP scripting language is so common that it has its own acronym —
+   LAMP. We'll cover LAMP in more detail in Chapter 18.
+** 
+   Kernel hackers were the first to come to Linux — in fact, the developers who
+   helped Linus Torvalds create Linux are still a formidable community. The
+   Linux kernel mailing lists see a great deal of activity, and it's the place
+   to be if you want to stay on the bleeding edge of operating system design. If
+   you're into tuning page replacement algorithms, twiddling network protocols,
+   or optimizing buffer caches, Linux is a great choice. Linux is also good for
+   learning about the internals of operating system design, and many
+   universities are making use of Linux systems in advanced operating system
+   courses.
+** 
+   Finally, Linux is becoming an exciting forum for multimedia. This is because
+   it's compatible with an enormous variety of hardware, including the majority
+   of modern sound and video cards. Several programming environments, including
+   the MESA 3D toolkit (a free OpenGL implementation), have been ported to
+   Linux. The GIMP (a free Adobe Photoshop work-alike) was originally developed
+   under Linux, and is becoming the graphics manipulation and design tool of
+   choice for many artists. Many movie production companies regularly use Linux
+   as the workhorse for advanced special-effects rendering — the popular movies
+   Titanic and The Matrix used "render farms" of Linux machines to do much of
+   the heavy lifting.
+** 
+   Linux also has some real-world applications. Linux systems have traveled the
+   high seas of the North Pacific, managing telecommunications and data analysis
+   for an oceanographic research vessel. Linux systems are being used at
+   research stations in Antarctica, and large "clusters" of Linux machines are
+   used at many research facilities for complex scientific simulations ranging
+   from star formation to earthquakes. On a more basic level, several hospitals
+   are using Linux to maintain patient records. One of the reviewers of this
+   book uses Linux in the U.S. Marine Corps. Linux is proving to be as reliable
+   and useful as other implementations of Unix.
+
+   So Linux is spreading out in many directions. Even naive end users can enjoy
+   it if they get the support universities and corporations typically provide
+   their computer users. Configuration and maintenance require some dedication.
+   But Linux proves to be cost-effective, powerful, and empowering for people
+   who like having that extra control over their environments.
+* 1.4 System Features
+** 
+   Linux supports most of the features found in other implementations of Unix,
+   plus quite a few not found elsewhere. This section provides a nickel tour of
+   the Linux kernel features.
+** 1.4.1 A Note on Linux Version Numbers
+*** 
+    One potentially confusing aspect of Linux for newcomers is the way in which
+    different pieces of software are assigned a version number. When you first
+    approach Linux, chances are you'll be looking at a CD-ROM distribution, such
+    as "Red Hat Version 7.1" or "SuSE Linux Version 6.0." It's important to
+    understand that these version numbers only relate to the particular
+    distribution (which is a prepackaged version of Linux along with tons of free
+    application packages, usually sold on CD-ROM). Therefore, the version number
+    assigned by Red Hat, SuSE, or Debian might not have anything to do with the
+    individual version numbers of the software in that distribution.
+*** 
+    The Linux kernel, as well as each application, component, library, or
+    software package in a Linux distribution, generally has its own version
+    number. For example, you might be using gcc Version 2.96, as well as the
+    XFree86 GUI Version 4.0.3. As you can guess, the higher the version number,
+    the newer the software is. If you install Linux in the form of a distribution
+    (such as Red Hat and SuSE), all of this is simplified for you since the
+    latest versions of each package are usually included in the distribution, and
+    the distribution vendors make sure that the software on a particular
+    distribution works together.
+*** 
+    The Linux kernel has a peculiar version numbering scheme with which you
+    should be familiar. As mentioned before, the kernel is the core operating
+    system itself, responsible for managing all the hardware resources in your
+    machine — such as disks, network interfaces, memory, and so on. Unlike
+    Windows systems, the Linux kernel doesn't include any application-level
+    libraries or GUIs. In some sense, as a user you will never interact with the
+    kernel directly, but rather through interfaces, such as the shell or the GUI
+    (more on this later). However, many people still consider the Linux kernel
+    version to be the version of the "entire system," which is somewhat
+    misleading. Someone might say, "I'm running kernel Version 2.5.12," but this
+    doesn't mean much if everything else on the system is years out of date.
+*** 
+    The Linux kernel *versioning system* works as follows. At any given time,
+    there are two "latest" versions of the kernel out there (meaning available
+    for download from the Internet) — the "stable" and "development" releases.
+    The stable release is meant for most Linux users who aren't interested in
+    hacking on bleeding-edge experimental features, but who need a stable,
+    working system that isn't changing underneath them from day to day. The
+    development release, on the other hand, changes very rapidly as new features
+    are added and tested by developers across the Internet. Changes to the stable
+    release consist mostly of bug fixes and security patches, while changes to
+    the development release can be anything from major new kernel subsystems to
+    minor tweaks in a device driver for added performance. The Linux developers
+    don't guarantee that the development kernel version will work for everyone,
+    but they do maintain the stable version with the intention of making it run
+    well everywhere.
+*** 
+    The stable kernel release has an *even minor version number* (such as 2.4),
+    while the development release has an *odd minor version number* (such as
+    2.5). Note that the current development kernel always has a minor version
+    number exactly one greater than the current stable kernel. So, when the
+    current stable kernel is 2.6, the current development kernel will be 2.7.
+    (Unless, of course, Linus decides to bump the kernel version to 3.0 — in
+    which case the development version will be 3.1, naturally).
+
+    Each kernel version has a third "patch-level" version number associated with
+    it, such as 2.4.19 or 2.5.12. The patch level specifies the particular
+    revision of that kernel version, with higher numbers specifying newer
+    revisions. As of the time of this writing in November 2002, the latest stable
+    kernel is 2.4.19 and the current development kernel is 2.5.45.
+** 1.4.2 A Bag of Features
+*** 
+    Linux is a complete multitasking, multiuser operating system (as are all
+    other versions of Unix). This means that many users can be logged onto the
+    same machine at once, running multiple programs simultaneously. Linux also
+    supports multiprocessor systems (such as dual- Pentium motherboards), with
+    support for up to 32 processors in a system, which is great for
+    high-performance servers and scientific applications.
+
+    The Linux system is mostly compatible with a number of Unix standards
+    (inasmuch as Unix has standards) on the source level, including IEEE POSIX.1,
+    System V, and BSD features. Linux was developed with source portability in
+    mind: therefore, you will probably find features in the Linux system that are
+    shared across multiple Unix implementations. A great deal of free Unix
+    software available on the Internet and elsewhere compiles on Linux out of the
+    box.
+*** 
+    If you have some Unix background, you may be interested in some other
+    specific internal features of Linux, including POSIX job control (used by
+    shells such as the C shell, csh, and bash), pseudoterminals (pty devices),
+    and support for national or customized keyboards using dynamically loadable
+    keyboard drivers. Linux also supports virtual consoles, which allow you to
+    switch between multiple login sessions from the system console in text mode.
+    Users of the screen program will find the Linux virtual console
+    implementation familiar (although nearly all users make use of a GUI desktop
+    instead).
+*** 
+    Linux can quite happily coexist on a system that has other operating systems
+    installed, such as Windows 95/98, Windows NT/2000/XP, Mac OS, or other
+    versions of Unix. The Linux bootloader (LILO) and the GRand Unified
+    Bootloader (GRUB) allow you to select which operating system to start at boot
+    time, and Linux is compatible with other bootloaders as well (such as the one
+    found in Windows 2000).
+
+    Linux can run on a wide range of CPU architectures, including the Intel x86
+    (the whole Pentium line including the '386/'486), Itanium, SPARC/UltraSPARC,
+    ARM, PA-RISC, Alpha, PowerPC, MIPS, m68k, and IBM 370/390 mainframes. Linux
+    has also been ported to a number of embedded processors, and stripped-down
+    versions have been built for various PDAs, including the PalmPilot and Compaq
+    iPaq. In the other direction, Linux is being considered for top-of-the-line
+    computers as well. In April 2002, Hewlett-Packard announced that it was going
+    to release a supercomputer with Linux as the operating system. A large number
+    of scalable clusters — supercomputers built out of arrays of PCs — run Linux
+    as well.
+*** 
+    Linux supports various filesystem types for storing data. Some filesystems,
+    such as the Second Extended Filesystem (ext2fs), have been developed
+    specifically for Linux. Other Unix filesystem types, such as the Minix-1 and
+    Xenix filesystems, are also supported. The Windows NTFS (Windows 2000 and
+    NT), VFAT (Windows 95/98), and FAT (MS-DOS) filesystems have been implemented
+    as well, allowing you to access Windows files directly. Support is included
+    for Macintosh, OS/2, and Amiga filesystems as well. The ISO 9660 CD- ROM
+    filesystem type, which reads all standard formats of CD-ROMs, is also
+    supported. We'll talk more about filesystems in Chapter 3 and Chapter 5.
+*** 
+    Networking support is one of the greatest strengths of Linux, both in terms
+    of functionality and performance. Linux provides a complete implementation of
+    TCP/IP networking. This includes device drivers for many popular Ethernet
+    cards, PPP and SLIP (allowing you to access a TCP/IP network via a serial
+    connection or modem), Parallel Line Internet Protocol (PLIP), and the NFS.
+    Linux also supports the modern IPv6 protocol suite, and many other protocols
+    including DHCP, Appletalk, IRDA, DECnet, and even AX.25 for packet radio
+    networks. The complete range of TCP/IP clients and services is supported,
+    such as FTP, Telnet, NNTP, and Simple Mail Transfer Protocol (SMTP). The
+    Linux kernel includes complete network firewall support, allowing you to
+    configure any Linux machine as a firewall (which screens network packets,
+    preventing unauthorized access to an intranet, for example). It is widely
+    held that networking performance under Linux is superior to other operating
+    systems. We'll talk more about networking in Chapter 15.
+** 1.4.3 Kernel
+*** 
+    The kernel is the guts of the operating system itself; it's the code that
+    controls the interface between user programs and hardware devices, the
+    scheduling of processes to achieve multitasking, and many other aspects of
+    the system. The kernel is not a separate process running on the system.
+    Instead, you can think of the kernel as a set of routines, constantly in
+    memory, to which every process has access. Kernel routines can be called in
+    a number of ways. One direct method to utilize the kernel is for a process
+    to execute a system call, which is a function that causes the kernel to
+    execute some code on behalf of the process. For example, the read system
+    call will read data from a file descriptor. To the programmer, this looks
+    like any other C function, but in actuality the code for read is contained
+    within the kernel.
+*** 
+    Kernel code is also executed in other situations. For example, when a
+    hardware device issues an interrupt, the interrupt handler is found within
+    the kernel. When a process takes an action that requires it to wait for
+    results, the kernel steps in and puts the process to sleep, scheduling
+    another process in its place. Similarly, the kernel switches control between
+    processes rapidly, using the clock interrupt (and other means) to trigger a
+    switch from one process to another. This is basically how multitasking is
+    accomplished.
+*** 
+    The Linux kernel is known as a monolithic kernel, in that all core functions
+    and device drivers are part of the kernel proper. Some operating systems
+    employ a microkernel architecture whereby device drivers and other
+    components (such as filesystems and memory management code) are not part of
+    the kernel — rather, they are treated as independent services or regular
+    user applications. There are advantages and disadvantages to both designs:
+    the monolithic architecture is more common among Unix implementations and is
+    the design employed by classic kernel designs, such as System V and BSD.
+    Linux does support loadable device drivers (which can be loaded and unloaded
+    from memory through user commands); this is the subject of Section 7.5 in
+    Chapter 7.
+*** 
+    The Linux kernel on Intel platforms is developed to use the special
+    protected-mode features of the Intel x86 processors (starting with the 80386
+    and moving on up to the current Pentium 4). In particular, Linux makes use
+    of the protected-mode descriptor-based memory management paradigm and many
+    of the other advanced features of these processors. Anyone familiar with x86
+    protected-mode programming knows that this chip was designed for a
+    multitasking system such as Unix (the x86 was actually inspired by Multics).
+    Linux exploits this functionality.
+*** 
+    Like most modern operating systems, Linux is a multiprocessor operating
+    system: it supports systems with more than one CPU on the motherboard. This
+    feature allows different programs to run on different CPUs at the same time
+    (or "in parallel"). Linux also supports threads, a common programming
+    technique that allows a single program to create multiple "threads of
+    control" that share data in memory. Linux supports several kernel-level and
+    user-level thread packages, and Linux's kernel threads run on multiple CPUs,
+    taking advantage of true hardware parallelism. The Linux kernel threads
+    package is compliant with the POSIX 1003.1c standard.
+*** 
+    The Linux kernel supports demand-paged loaded executables. That is, only
+    those segments of a program that are actually used are read into memory from
+    disk. Also, if multiple instances of a program are running at once, only one
+    copy of the program code will be in memory. Executables use dynamically
+    linked shared libraries, meaning that executables share common library code
+    in a single library file found on disk. This allows executable files to
+    occupy much less space on disk. This also means that a single copy of the
+    library code is held in memory at one time, thus reducing overall memory
+    usage. There are also statically linked libraries for those who wish to
+    maintain "complete" executables without the need for shared libraries to be
+    in place. Because Linux shared libraries are dynamically linked at runtime,
+    programmers can replace modules of the libraries with their own routines.
+*** 
+    In order to make the best use of the system's memory, Linux implements
+    so-called virtual memory with disk paging. That is, a certain amount of swap
+    space(If you are a real OS geek, you will note that swap space is
+    inappropriately named: entire processes are not swapped, but rather
+    individual pages of memory are paged out. While in some cases entire
+    processes will be) can be allocated on disk. When applications require more
+    physical memory than is actually installed in the machine, it will swap
+    inactive pages of memory out to disk. (A page is simply the unit of memory
+    allocation used by the operating system; on most architectures, it's
+    equivalent to 4 KB.) When those pages are accessed again, they will be read
+    from disk back into main memory. This feature allows the system to run
+    larger applications and support more users at once. Of course, swap is no
+    substitute for physical RAM; it's much slower to read pages from disk than
+    from memory.
+*** 
+    The Linux kernel keeps portions of recently accessed files in memory, to
+    avoid accessing the (relatively slow) disk any more than necessary. The
+    kernel uses all the free memory in the system for caching disk accesses, so
+    when the system is lightly loaded a large number of files can be accessed
+    rapidly from memory. When user applications require a greater amount of
+    physical memory, the size of the disk cache is reduced. In this way physical
+    memory is never left unused.
+
+    To facilitate debugging, the Linux kernel generates a core dump of a program
+    that performs an illegal operation, such as accessing an invalid memory
+    location. The core dump, which appears as a file called core in the
+    directory that the program was running, allows the programmer to determine
+    the cause of the crash. We'll talk about the use of core dumps for debugging
+    in the section Section 14.1.2 in Chapter 14.
+* 1.5 Software Features
+** 
+   In this section, we'll introduce you to many of the software applications
+   available for Linux and talk about a number of common computing tasks. After
+   all, the most important part of the system is the wide range of software
+   available for it. What's even more impressive on Linux is that most of this
+   software is freely distributable.
+** 1.5.1 Basic Commands and Utilities
+***    
+    Virtually every utility you would expect to find on standard implementations
+    of Unix has been ported to Linux. This includes basic commands such as ls,
+    awk, tr, sed, bc, more, and so on. There are Linux ports of many popular
+    software packages including Perl, Python, the Java Development Kit, and
+    more. You name it, Linux has it. Therefore, you can expect your familiar
+    working environment on other Unix systems to be duplicated on Linux. All the
+    standard commands and utilities are there.
+ 
+    Many text editors are available, including vi (as well as "modern" versions,
+    such as vim), ex, pico, and jove, as well as GNU Emacs and variants, such as
+    XEmacs (which incorporates extensions for use under the X Window System) and
+    joe. Whatever text editor you're accustomed to using has more than likely
+    been ported to Linux.
+*** 
+    The choice of a text editor is an interesting one. Many Unix users still use
+    "simple" editors such as vi (in fact, the first edition of this book was
+    written using vi under Linux). However, vi has many limitations due to its
+    age, and more modern (and complex) editors, such as Emacs, are gaining
+    popularity. Emacs supports a complete LISP-based macro language and
+    interpreter, a powerful command syntax, and other fun-filled extensions.
+    Emacs macro packages exist to allow you to read electronic mail and news,
+    edit the contents of directories, and even engage in an artificially
+    intelligent psychotherapy session (indispensable for stressed-out Linux
+    hackers). In Chapter 9, we include a complete vi tutorial and describe Emacs
+    in detail.
+***  
+    One interesting note is that most of the basic Linux utilities are *GNU
+    software*. These GNU utilities support advanced features not found in the
+    standard versions from BSD or AT&T. For example, GNU's version of the vi
+    editor, elvis, includes a structured macro language. However, the GNU
+    utilities strive to remain compatible with their BSD and System V
+    counterparts. Many people consider the GNU versions of these programs
+    superior to the originals. Examples of this are the GNU gzip and bzip2
+    file-compression utilities, which compress data much more efficiently than
+    the original Unix compress utility. (Of course, if you want to be "old
+    school," you can still use programs like ex and compress. This is a good way
+    to impress your friends who are probably used to using a cushy
+    point-and-click GUI for everything.)
+*** 
+    The most important utility to many users is the shell. The shell is a
+    program that reads and executes commands from the user. In addition, many
+    shells provide features such as job control (allowing the user to manage
+    several running processes at once — not as Orwellian as it sounds), input
+    and output redirection, and a command language for writing shell scripts. A
+    shell script is a file containing a program in the shell command language,
+    analogous to a "batch file" under MS-DOS.
+
+    Many types of shells are available for Linux. The most important difference
+    between shells is the command language. For example, the *C shell (csh)*
+    uses a command language somewhat like the C programming language. The
+    classic Bourne shell uses a different command language. One's choice of a
+    shell is often based on the command language it provides. The shell that you
+    use defines, to some extent, your working environment under Linux.
+*** 
+    No matter what Unix shell you're accustomed to, some version of it has
+    probably been ported to Linux. The most popular shell is the *GNU Bourne
+    Again Shell (bash)*, a Bourne shell variant. bash includes many advanced
+    features, such as job control, command history, command and filename
+    completion, an Emacs-like (or optionally, a vi-like) interface for editing
+    the command line, and powerful extensions to the standard Bourne shell
+    language. Another popular shell is *tcsh*, a version of the C shell with
+    advanced functionality similar to that found in bash. Other shells include
+    the Korn shell (ksh), BSD's ash, zsh, a small Bourne-like shell, and rc, the
+    Plan 9 shell.
+
+    *What's so important about these basic utilities?* Linux gives you the
+    unique opportunity to tailor a custom system to your needs. For example, if
+    you're the only person who uses your system, and you prefer to use the vi
+    editor and the bash shell exclusively, there's no reason to install other
+    editors or shells. The "do it yourself" attitude is prevalent among Linux
+    hackers and users.
+** 1.5.2 Text Processing and Word Processing
+***    
+    Almost every computer user has a need for some kind of document preparation
+    system. (In fact, one of the authors has almost entirely forgotten how to
+    write with pen and paper.) In the PC world, word processing is the norm: it
+    involves editing and manipulating text (often in a
+    "What-You-See-Is-What-You-Get" [WYSIWYG] environment) and producing printed
+    copies of the text, complete with figures, tables, and other garnishes.
+
+    In the Unix world, text processing is much more common, which is quite
+    different from the concept of word processing. With a text processing
+    system, the author enters text using a "typesetting language" that describes
+    how the text should be formatted. Instead of entering the text within a
+    special word processing environment, the author may modify the source with
+    any text editor, such as vi or Emacs. Once the source text (in the
+    typesetting language) is complete, the user formats the text with a separate
+    program, which converts the source to a format suitable for printing. This
+    is somewhat analogous to programming in a language such as C, and
+    "compiling" the document into a printable form.
+*** 
+    Many text-processing systems are available for Linux. One is *groff*, the
+    GNU version of the classic troff text formatter originally developed by Bell
+    Labs and still used on many Unix systems worldwide. Another modern text
+    processing system is *T E X*, developed by Donald Knuth of computer science
+    fame. Dialects of T E X, such as *L A T E X*, are also available, as are
+    numerous extensions and packages. One example is PDF&LATEX, a package that
+    Adobe generates PDF files directly from L A T E X documents.
+
+    Text processors such as T E X and groff differ mostly in the syntax of their
+    formatting languages. The choice of one formatting system over another is
+    also based upon what utilities are available to satisfy your needs, as well
+    as personal taste.
+*** 
+    For example, some people consider the groff formatting language to be a bit
+    obscure, so they use T E X, which is more readable by humans. However, groff
+    is capable of producing plain ASCII output, viewable on a terminal, while T
+    E X is intended primarily for output to a printing device. Still, various
+    programs exist to produce plain ASCII from T E X-formatted documents or to
+    convert T E X to groff, for example.
+
+    Another text processing system is *Texinfo*, an extension to T E X used for
+    software documentation by the Free Software Foundation. Texinfo is capable
+    of producing a printed document, or an online-browsable hypertext "Info"
+    document from a single source file. Info files are the main format of
+    documentation used by GNU software, such as Emacs.
+*** 
+    Text processors are used widely in the computing community for producing
+    papers, theses, magazine articles, and books. (In fact, this book was
+    originally written in the L A T E X format, filtered into a home-grown SGML
+    system, and printed from groff by the publisher.) The ability to process the
+    source language as a plain-text file opens the door to many extensions to
+    the text processor itself. Because source documents are not stored in an
+    obscure format, readable only by a particular word processor, programmers
+    are able to write parsers and translators for the formatting language, thus
+    extending the system. This approach closely follows the *Unix philosophy* of
+    building up applications as a set of smaller tools that work together,
+    rather than as large, monolithic "black box" systems.
+
+    What does such a formatting language look like? In general, the formatting
+    language source consists mostly of the text itself, along with "control
+    codes" to produce a particular effect, such as changing fonts, setting
+    margins, creating lists, and so on.
+*** 
+    The most famous text formatting language is *HTML*, the markup language used
+    by virtually every page on the World Wide Web. Another popular text
+    processing language is *Docbook*, a kind of industry-standard set of tags
+    for marking up technical documentation, which is also used by the Linux
+    Documentation Project (to be discussed later in this chapter). Here is what
+    one of the earlier paragraphs looks like written in Docbook:
+*** 
+    #+begin_src DocBook
+<sect2><title>Basic Commands and Utilities</title>
+<para>
+Virtually every utility you would expect to find on standard
+implementations of Unix has been ported to Linux. This
+includes basic commands such as <command>ls</command>,
+<command>awk</command>, <command>tr</command>,
+<command>sed</command>, <command>bc</command>,
+<command>more</command>, and so on. There are Linux ports
+of many popular software packages including Perl, Python,
+the Java Development Kit, and more. You name it, Linux has it.
+Therefore, you can expect your familiar working
+environment on other Unix systems to be duplicated on
+Linux. All the standard commands and utilities are
+there.
+</para>
+    #+end_src
+*** 
+    At first glance, the typesetting language may appear to be obscure, but it's
+    actually quite easy to learn. Using at processing system enforces
+    typographical standards when writing. For example, all enumerated lists
+    within a document will look the same, unless the author modifies the
+    definition of the enumerated list "environment."
+
+    The *primary goal of typesetting languages* is to allow the author to
+    concentrate on writing the actual text, instead of worrying about
+    typesetting conventions. When the example just shown is printed, the
+    commands in <command> tags will be printed using whatever font, color, or
+    other convention the publisher has chosen, and a command index can easily be
+    generated too. Furthermore, the correct chapter number and title are plugged
+    in where the strange-looking <xref> tag was written, so they are correct
+    even if the authors reorder the chapters after writing the paragraph.
+*** 
+    While there are WYSIWYG editors for HTML, getting used to entering tags by
+    hand, like those in the previous example, actually takes only a little
+    practice. The more advanced text editors, such as Emacs and vim, have
+    special macros and environments for editing HTML, L A T E X, and other
+    documents, and include nice features such as special fonts and colors to
+    represent different kinds of tags. Tools can then generate output in a
+    standard format, such as PostScript or PDF, and display it on the author's
+    screen or send it to a printer.
+
+    WYSIWYG word processors are attractive for many reasons; they provide a
+    powerful, and sometimes complex, visual interface for editing the document.
+    However, this interface is inherently limited to those aspects of text
+    layout that are accessible to the user. For example, many word processors
+    provide a special "format language" for producing complicated expressions
+    such as mathematical formulae. This format language is identical to text
+    processing, albeit on a much smaller scale.
+*** 
+    The subtle benefit of text processing is that the system allows you to
+    specify exactly what you mean. Also, text processing systems allow you to
+    edit the source text with any text editor, and the source is easily
+    converted to other formats. The tradeoff for this flexibility and power is
+    the lack of a WYSIWYG interface. Many users of word processors are used to
+    seeing the formatted text as they edit it. On the other hand, when writing
+    with a text processor, one generally doesn't worry about how the text will
+    appear once it's formatted. The writer learns to expect how the text should
+    look from the formatting commands used in the source.
+
+    There are programs that allow you to view the formatted document on a
+    graphics display before printing. One example is the xdvi program, which
+    displays a "device-independent" file generated by the system under the X
+    Window System. Other software applications, such as xfig, provide a WYSIWYG
+    graphics interface for drawing figures and diagrams, which are subsequently
+    converted to the text processing language for inclusion in your document.
+*** 
+    Many other text processing utilities are available. The powerful METAFONT
+    system, used to design fonts for T E X, is included with the Linux port of T
+    E X. Other programs include ispell, an interactive spell checker; makeindex,
+    an index generator for L A T E X documents; and many groff and T E X-based
+    macro packages for formatting various types of documents and mathematical
+    texts. Conversion programs are available to translate between T E X or groff
+    source and many other formats.
+** 1.5.3 Commercial Applications
+*** 
+    There has been a groundswell of support by commercial application developers
+    for Linux. These products include office productivity suites, word
+    processors, scientific applications, network administration utilities, and
+    large-scale database engines. Linux has become a major force in the
+    commercial software market, so you may be surprised to find how many popular
+    commercial applications are available for Linux. We can't possibly discuss
+    all of them here, so we'll only touch on the most popular applications and
+    briefly mention some of the others.
+
+    *StarOffice* is a complete office productivity suite for Linux, released by
+    Sun Microsystems (originally developed by a smaller company called Star
+    Division, which was bought by Sun). This suite, which is also available for
+    Windows and Solaris, is more or less a clone of Microsoft Office, including
+    a word processor, spreadsheet, HTML editor, presentation manager, and other
+    tools. It is capable of reading file formats from a wide range of similar
+    applications (including Microsoft Office) and is available for free download
+    for noncommercial use.
+*** 
+    Corel has released *WordPerfect Office 2000* for Linux, another office suite
+    which includes a word processor, spreadsheet, presentation software,
+    personal information manager, and other applications. It is free for
+    personal use and commercial licenses are also available. Corel has also
+    released the CorelDRAW professional graphics suite for Linux.
+
+    Oracle, IBM, Informix, Sybase, and Interbase have released commercial
+    database engines for Linux. Many of the Linux database products have
+    demonstrated better performance than their counterparts running on Windows
+    2000 systems.
+*** 
+    One very popular database for Linux is *MySQL*, a free and easy-to-use
+    database engine available from http://www.mysql.com. Because MySQL is easy
+    to install, configure, and use, it has rapidly become the database engine of
+    choice for many applications that can forego the complexity of the various
+    proprietary engines. Furthermore, even though it's free software, MySQL is
+    supported professionally by the company that developed it, MySQL AB. We
+    describe the basic use of MySQL in Chapter 18.
+
+    MySQL does not include some of the more advanced features of the proprietary
+    databases, however. Some database users prefer the open source database
+    PostgresSQL, and Red Hat features it in some of its products.
+*** 
+    A wide range of enterprise applications are available for Linux in addition
+    to databases. Linux is one of the most popular platforms for Internet
+    service hosting, so it is appropriate that high-end platforms for scalable
+    web sites, including BEA WebLogic and IBM WebSphere, have been released for
+    Linux. Commercial, high-performance Java Virtual Machines and other software
+    are available from Sun, IBM, and other vendors. IBM has released the popular
+    Lotus Domino messaging and web application server, as well as the WebSphere
+    MQ (formerly MQSeries) messaging platform.
+
+    Scientists, engineers, and mathematicians will find that a range of popular
+    commercial products are available for Linux, such as Maple, Mathematica,
+    MATLAB, and Simulink. Other commercial applications for Linux include
+    high-end CAD systems, network management tools, firewalls, and software
+    development environments.
+** 1.5.4 Programming Languages and Utilities
+*** 
+    *Linux provides a complete Unix programming environment*, including all the
+    standard libraries, programming tools, compilers, and debuggers that you
+    would expect to find on other Unix systems. The most commonly used compiler
+    on Linux is the GNU's Compiler Collection, or *gcc*. gcc is capable of
+    compiling C, C++, Objective C (another object-oriented dialect of C), Chill
+    (a programming language mainly used for telecommunications), FORTRAN, and
+    Java. Within the Unix software development world, applications and systems
+    programming is usually done in C or C++, and gcc is one of the best C/C++
+    compilers around, supporting many advanced features and optimizations.
+*** 
+    *Java*, a relative newcomer on the programming-language scene, is fully
+    supported under Linux. Several vendors and independent projects have
+    released ports of the Java Development Kit for Linux, including Sun, IBM,
+    and the Blackdown Project (which did one of the first ports of Java for
+    Linux). Java is an object-oriented programming language and runtime
+    environment that supports a diverse range of applications like web page
+    applets, Internet-based distributed systems, database connectivity, and
+    more. Programs written for Java can be run on any system (regardless of CPU
+    architecture or operating system) that supports the Java Virtual Machine. A
+    number of Java "just-in-time" (or JIT) compilers are available, and the IBM
+    and Sun Java Development Kits (JDKs) for Linux come bundled with
+    high-performance JIT compilers that perform as well as those found on
+    Windows or other Unix systems. IBM has released VisualAge for Java, a
+    complete Java integrated development environment. gcc is also capable of
+    compiling Java programs directly to executables, and includes limited
+    support for the standard JDK libraries.
+*** 
+    Besides C, C++, and Java, many other compiled and interpreted programming
+    languages have been ported to Linux, such as Smalltalk, FORTRAN, Pascal,
+    LISP, Scheme, and Ada. In addition, various assemblers for writing machine
+    code are available. A network of open source developers is developing a
+    project called Mono with the goal of duplicating the building blocks of
+    Microsoft's .NET project on Unix and Linux systems. Perhaps the most
+    important class of programming languages for Linux are the many scripting
+    languages, including Perl (the script language to end all script languages),
+    Python (the first scripting language to be designed as object-oriented from
+    the ground up), and Tcl/Tk (a shell-like command-processing system that
+    includes support for developing simple X Window System applications).
+*** 
+    Linux systems make use of the advanced *gdb debugger*, which allows you to
+    step through a program to find bugs or examine the cause for a crash using a
+    core dump. *gprof*, a profiling utility, will give you performance
+    statistics for your program, letting you know where your program is spending
+    most of its time. The Emacs and vim text editors provide interactive editing
+    and compilation environments for various programming languages. Other tools
+    that are available for Linux include the GNU make build utility, used to
+    manage compilation of large applications, as well as source-code control
+    systems such as CVS and Revision Control System.
+***     
+    Linux is an ideal system for developing Unix applications. It provides a
+    modern programming environment with all the bells and whistles, and many
+    professional Unix programmers claim that Linux is their favorite operating
+    system for development and debugging. Computer science students can use
+    Linux to learn Unix programming and to explore other aspects of the system,
+    such as kernel architecture. With Linux, not only do you have access to the
+    complete set of libraries and programming utilities, but you also have the
+    complete kernel and library source code at your fingertips. Chapter 13, and
+    Chapter 14 are devoted to the programming languages and tools available for
+    Linux.
+** 1.5.5 The X Window System
+*** 
+    The X Window System is the *standard GUI for Unix systems.* It was
+    originally developed at MIT in the 1980s with the goal of allowing
+    applications to run across a range of Unix workstations from different
+    vendors. X is a powerful graphical environment supporting many applications.
+    Many X-specific applications have been written, such as games, graphics
+    utilities, programming and documentation tools, and so on.
+
+    Unlike Microsoft Windows, the X Window System has built-in support for
+    networked applications: for example, you can run an X application on a
+    server machine and have its windows display on your desktop, over the
+    network. Also, X is extremely customizable: you can easily tailor just about
+    any aspect of the system to your liking. You can adjust the fonts, colors,
+    window decorations, and icons for your personal taste. You can go so far as
+    to configure keyboard macros to run new applications at a keystroke. It's
+    even possible for X to emulate the Windows and Macintosh desktop
+    environments, if you want to keep a familiar interface.
+***    
+    The X Window System is freely distributable. However, many commercial
+    vendors have distributed proprietary enhancements to the original X
+    software. The version of X available for Linux is known as XFree86, which is
+    a port of X11R6 (X Window System Version 11, Release 6) made freely
+    distributable for PC-based Unix systems, such as Linux. XFree86 supports a
+    wide range of video hardware, including standard VGA and many accelerated
+    video adapters. XFree86 is a complete distribution of the X software,
+    containing the X server itself, many applications and utilities, programming
+    libraries, and documentation. It comes bundled with nearly every Linux
+    distribution.
+*** 
+    Standard X applications include *xterm* (a terminal emulator used for most
+    text-based applications within an X window), *xdm* (the X Session Manager,
+    which handles logins), *xclock* (a simple clock display), *xman* (an X-based
+    manual page reader), and more. The many X applications available for Linux
+    are too numerous to mention here, but the base XFree86 distribution includes
+    the "standard" applications found in the original MIT release. Many others
+    are available separately, and theoretically any application written for X
+    should compile cleanly under Linux.
+***  
+    The look and feel of the X interface are controlled to a large extent by the
+    window manager. This friendly program is in charge of the placement of
+    windows, the user interface for resizing, iconifying, and moving windows,
+    the appearance of window frames, and so on. The standard XFree86
+    distribution includes several window managers, including the popular fvwm2.
+    fvwm2 provides a number of advanced features, including a virtual desktop:
+    if the user moves the mouse to the edge of the screen, the entire desktop is
+    shifted as if the display were much larger than it actually is. fvwm2 is
+    greatly customizable and allows all functions to be accessed from the
+    keyboard as well as from the mouse.
+*** 
+    The XFree86 distribution contains programming libraries and includes files
+    for those wily programmers who wish to develop X applications. Various
+    widget sets, such as Athena, Open Look, and Xaw3D, are supported. All the
+    standard fonts, bitmaps, manual pages, and documentation are included. PEX
+    (a programming interface for 3D graphics) is also supported, as is Mesa, a
+    free implementation of the OpenGL 3D graphics primitives.
+    
+    In Chapter 10 and Chapter 11, we'll discuss how to install and use the X
+    Window System on your Linux machine.
+** 1.5.6 KDE and GNOME
+*** 
+    While the X Window System provides a flexible windowing system, many users
+    want a complete desktop environment, with a customizable look and feel for
+    all windows and widgets (such as buttons and scrollbars), a simplified user
+    interface, and advanced features such as the ability to "drag and drop" data
+    from one application to another. The KDE and GNOME projects are separate
+    efforts that are striving to provide such an advanced desktop environment for
+    Linux. By building up a powerful suite of development tools, libraries, and
+    applications that are integrated into the desktop environment, KDE and GNOME
+    aim to usher in the next era of Linux desktop computing. Both systems provide
+    a rich GUI, window manager, utilities, and applications that rival or exceed
+    the features of systems such as the Windows 2000 desktop.
+*** 
+    With KDE and GNOME, even casual users and beginners will feel right at home
+    with Linux. Most distributions automatically configure one of these desktop
+    environments during installation, making it unnecessary to ever touch the
+    text-only console interface.
+
+    While both KDE and GNOME aim to make the Unix environment more user-friendly,
+    they have different emphases. KDE's main goals are ease of use, stability,
+    and user-interface compatibility with other computing environments (such as
+    Windows 2000). GNOME, on the other hand, aims more at good looks and maximum
+    configurability. We discuss both of these systems in Chapter 11.
+** 1.5.7 Networking
+***    
+    Linux boasts one of the most powerful and robust networking systems in the
+    world—more and more people are finding that Linux makes an excellent choice
+    as a network server. Linux supports the TCP/IP networking protocol suite
+    that drives the entire Internet, as well as many other protocols, including
+    IPv6 (a new version of the IP protocol for the next-generation Internet),
+    and UUCP (used for communication between Unix machines over serial lines).
+    With Linux, you can communicate with any computer on the Internet, using
+    Ethernet (including Fast and Gigabit Ethernet), Token Ring, dial-up
+    connection, wireless network, packet radio, serial line, ISDN, ATM, IRDA,
+    AppleTalk, IPX (Novell NetWare), and many other network technologies. The
+    full range of Internet-based applications is available, including World Wide
+    Web browsers, web servers, FTP, email, chat, news, ssh, telnet, and more.
+*** 
+    Most Linux users use a dial-up connection through an ISP to connect to the
+    Internet from home. Linux supports the popular PPP and SLIP protocols, used
+    by most ISPs for dial-in access. If you have a broadband connection, such as
+    a T1 line, cable modem, DSL, or other service, Linux supports those
+    technologies as well. You can even configure a Linux machine to act as a
+    router and firewall for an entire network of computers, all connecting to
+    the Internet through a single dial-up or broadband connection.
+
+    Linux supports a wide range of web browsers, including Netscape Navigator,
+    Mozilla (the open source spin-off of the Netscape browser), Konquerer
+    (another open source browser packaged with KDE), and the text-based Lynx
+    browser. The Emacs text editor even includes a small text-based web browser.
+
+    Linux also hosts a range of web servers, such as the popular and free Apache
+    web server. In fact, it's estimated that Apache running on Linux systems
+    drives more web sites than any other platform in the world. Apache is easy
+    to set up and use; we'll show you how in Chapter 16.
+*** 
+    A full range of mail and news readers are available for Linux, such as MH,
+    Elm, Pine, trn, as well as the mail/news readers included with the Netscape
+    and Mozilla web browsers. Many of these are compatible with standard mail
+    and news protocols such as IMAP and POP. Whatever your preference, you can
+    configure your Linux system to send and receive electronic mail and news
+    from all over the world.
+
+    A variety of other network services are available for Linux. Samba is a
+    package that allows Linux machines to act as a Windows file and print
+    server. NFS allows your system to share files seamlessly with other machines
+    on the network. With NFS, remote files look to you as if they were located
+    on your own system's drives. FTP allows you to transfer files to and from
+    other machines on the network. Other networking features include NNTP-based
+    electronic news systems such as C News and INN; the sendmail, exim, and
+    smail mail transfer agents; ssh, telnet, and rsh, which allow you to log in
+    and execute commands on other machines on the network; and finger, which
+    allows you to get information on other Internet users. There are tons of
+    TCP/IP-based applications and protocols out there.
+*** 
+    If you have experience with TCP/IP applications on other Unix systems, Linux
+    will be familiar to you. The system provides a standard socket programming
+    interface, so virtually any program that uses TCP/IP can be ported to Linux.
+    The Linux X server also supports TCP/IP, allowing you to display
+    applications running on other systems on your Linux display. Administration
+    of Linux networking will be familiar to those coming from other Unix
+    systems, as the configuration and monitoring tools are similar to their BSD
+    counterparts.
+    
+    In Chapter 15, we'll discuss the configuration and setup of TCP/IP,
+    including PPP, for Linux. We'll also discuss configuration of web browsers,
+    web servers, and mail software.
+** 1.5.8 Laptop Support
+   Linux includes a number of laptop-specific features, such as PCMCIA (or "PC
+   Card") support and APM. The PCMCIA Tools package for Linux includes drivers
+   for many PCMCIA devices, including modems, Ethernet cards, and SCSI adapters.
+   APM allows the kernel to keep track of the laptop's battery power and perform
+   certain actions (such as an automated shutdown) when power is low; it also
+   allows the CPU to go into "low-power" mode when not in use. This is easy to
+   configure as a kernel option. Various tools interact with APM, such as apm
+   (which displays information on battery status) and apmd (which logs battery
+   status and can be used to trigger power events). These should be included
+   with most Linux distributions.
+** 1.5.9 Interfacing with Windows and MS-DOS
+***    
+    Various utilities exist to interface with the world of Windows and MS-DOS.
+    The most well-known application is a project known as *Wine* — a Microsoft
+    Windows emulator for the X Window System under Linux. The intent of this
+    project, which is still under development, is to allow Microsoft Windows
+    applications to run directly under Linux and other Intel-based operating
+    systems. This is similar to the proprietary WABI Windows emulator from Sun
+    Microsystems. Wine is in a process of continual development, and now runs a
+    wide variety of Windows software, including many desktop applications and
+    games. See http://www.winehq.com for details of the project's progress.
+
+    Linux provides a seamless interface for transferring files between Linux and
+    Windows systems. You can mount a Windows partition or floppy under Linux,
+    and directly access Windows files as you would any others. In addition,
+    there is the mtools package, which allows direct access to MS-DOS-formatted
+    floppies, as well as htools, which does the same for Macintosh floppy disks.
+*** 
+    Another application is the Linux MS-DOS Emulator, or DOSEMU, which allows
+    you to run many MS-DOS applications directly from Linux. While MS-DOS-based
+    applications are rapidly becoming a thing of the past, there are still a
+    number of interesting MS-DOS tools and games that you might want to run
+    under Linux. It's even possible to run the old Microsoft Windows 3.1 under
+    DOSEMU.
+
+    Although Linux does not have complete support for emulating Windows and
+    MS-DOS environments, you can easily run these other operating systems on the
+    same machine with Linux, and choose which operating system to run when you
+    boot the machine. We'll show you how to set up the LILO bootloader, which
+    allows you to select between Linux, Windows, and other operating systems at
+    boot time.
+*** 
+    Another popular option is to run a system-level "*virtual machine*," which
+    literally allows you to run Linux and Windows at the same time. A virtual
+    machine is a software application that emulates many of the hardware
+    features of your system, tricking the operating system into believing that
+    it is running on a physical computer. Using a virtual machine, you can boot
+    Linux and then run Windows at the same time — with both Linux and Windows
+    applications on your desktop at once. Alternately, you can boot Windows and
+    run Linux under the virtual machine. While there is some performance loss
+    when using virtual machines, many people are very happy employing them for
+    casual use, such as running a Windows-based word processor within a Linux
+    desktop. The most popular virtual machines are VMWare
+    (http://www.vmware.com/), which is a commercial product, and Plex86
+    (http://www.plex86.org/), which is an open source project.
+** 1.5.10 Other Applications
+*** 
+    A host of miscellaneous applications are available for Linux, as one would
+    expect from an operating system with such a diverse set of users. Linux's
+    primary focus is currently for personal Unix computing, but this is rapidly
+    changing. Business and scientific software are expanding, and commercial
+    software vendors have contributed a growing pool of applications.
+
+    The scientific community has wholly embraced Linux as the platform of choice
+    for inexpensive numerical computing. A large number of scientific
+    applications have been developed for Linux, including the popular technical
+    tools MATLAB and Mathematica. A wide range of free packages are also
+    available, including FELT (a finite-element analysis tool), Spice (a circuit
+    design and analysis tool), and Khoros (an image/digital signal processing
+    and visualization system). Many popular numerical computing libraries have
+    been ported to Linux, including the LAPACK linear algebra library. There is
+    also a Linux- optimized version of the BLAS code upon which LAPACK depends.
+*** 
+    Linux is one of the most popular platforms for parallel computing using
+    clusters, which are collections of inexpensive machines usually connected
+    with a fast (gigabit-per-second or faster) network. The NASA Beowulf project
+    first popularized the idea of tying a large number of Linux-based PCs into a
+    massive supercomputer for scientific and numerical computing. Today,
+    Linux-based clusters are the rule, rather than the exception, for many
+    scientific applications. In fact, Linux clusters are finding their way into
+    increasingly diverse applications — for example, the Google search engine
+    uses a cluster of 4,000 Linux machines!
+*** 
+    As with any operating system, Linux has its share of games. A number of
+    popular commercial games have been released for Linux, including Quake,
+    Quake II, Quake III Arena, Doom, SimCity 3000, Descent, and more. Most of
+    the popular games support play over the Internet or a local network, and
+    clones of other commercial games are popping up for Linux. There are also
+    classic text-based dungeon games such as Nethack and Moria; MUDs (multiuser
+    dungeons, which allow many users to interact in a text-based adventure) such
+    as DikuMUD and TinyMUD; and a slew of free graphical games, such as xtetris,
+    netrek, and Xboard (the X11 frontend to gnuchess).
+*** 
+    For audiophiles, Linux has support for a wide range of sound hardware and
+    related software, such as CDplayer (a program that can control a CD-ROM
+    drive as a conventional CD player, surprisingly enough), MIDI sequencers and
+    editors (allowing you to compose music for playback through a synthesizer or
+    other MIDI-controlled instrument), and sound editors for digitized sounds.
+    
+    Can't find the application you're looking for? A number of web sites provide
+    comprehensive directories of Linux applications. A few of the most popular
+    Linux software directories are Freshmeat (http://www.freshmeat.net),
+    Icewalkers (http://www.icewalkers.com), and Linux on Dave Central
+    (http://linux.davecentral.com/). While these directories are far from
+    complete, they contain a great deal of software, all categorized and rated
+    by users. Take a look at these sites just to see the enormous amount of code
+    that has been developed for Linux.
+***  
+    If you absolutely can't find what you need, you can always attempt to port
+    the application from another platform to Linux. Or, if all else fails, you
+    can write the application yourself. That's the spirit of Free Software — if
+    you want something to be done right, do it yourself! While it's sometimes
+    daunting to start a major software project on your own, many people find
+    that if they can release an early version of the software to the public,
+    many helpers pop up in the free software community to carry on the project.
+* 1.6 About Linux's Copyright
+***   
+    *Linux is covered by what is known as the GNU GPL.* The GPL, which is
+    sometimes referred to as a "copyleft" license, was developed for the GNU
+    project by the Free Software Foundation. It makes a number of provisions for
+    the distribution and modification of "free software." *"Free," in this
+    sense, refers to freedom, not just cost.* The GPL has always been subject to
+    misinterpretation, and we hope that this summary will help you to understand
+    the extent and goals of the GPL and its effect on Linux. A complete copy of
+    the GPL is available at http://www.gnu.org/copyleft/gpl.html.
+
+    Originally, Linus Torvalds released Linux under a license more restrictive
+    than the GPL, which allowed the software to be freely distributed and
+    modified, but prevented any money changing hands for its distribution and
+    use. The GPL allows people to sell and make profit from free software, but
+    doesn't allow them to restrict the right for others to distribute the
+    software in any way.
+*** 
+    First, we should explain that "free software" covered by the GPL is not in
+    the public domain. Public domain software is software that is not
+    copyrighted and is literally owned by the public. *Software covered by the
+    GPL, on the other hand, is copyrighted to the author or authors.* This means
+    that the software is protected by standard international copyright laws and
+    that the author of the software is legally defined. Just because the
+    software may be freely distributed doesn't mean it is in the public domain.
+
+    GPL-licensed software is also not "shareware." Generally, shareware software
+    is owned and copyrighted by the author, but the author requires users to
+    send in money for its use after distribution. On the other hand, software
+    covered by the GPL may be distributed and used free of charge.
+*** 
+    The GPL also allows people to take and modify free software, and distribute
+    their own versions of the software. However, any derived works from GPL
+    software must also be covered by the GPL. In other words, a company could
+    not take Linux, modify it, and sell it under a restrictive license. If any
+    software is derived from Linux, that software must be covered by the GPL as
+    well.
+
+    People and organizations can distribute GPL software for a fee and can even
+    make a profit from its sale and distribution. However, in selling GPL
+    software, the distributor can't take those rights away from the purchaser;
+    that is, if you purchase GPL software from some source, you may distribute
+    the software for free or sell it yourself as well.
+*** 
+    This might sound like a contradiction at first. Why sell software for profit
+    when the GPL allows anyone to obtain it for free? When a company bundles a
+    large amount of free software on a CD-ROM and distributes it, it needs to
+    charge for the overhead of producing and distributing the CD-ROM, and it may
+    even decide to make profit from the sale of the software. This is allowed by
+    the GPL.
+
+    Organizations that sell free software must follow certain restrictions set
+    forth in the GPL. First, they can't restrict the rights of users who
+    purchase the software. This means that if you buy a CD-ROM of GPL software,
+    you can copy and distribute that CD-ROM free of charge, or you can resell it
+    yourself. Second, distributors must make it obvious to users that the
+    software is indeed covered by the GPL. Third, distributors must provide,
+    free of charge, the complete source code for the software being distributed,
+    or they must point their customers on demand to where the software can be
+    downloaded. This will allow anyone who purchases GPL software to make
+    modifications to that software.
+*** 
+    Allowing a company to distribute and sell free software is a very good
+    thing. Not everyone has access to the Internet to download software, such as
+    Linux, for free. The GPL allows companies to sell and distribute software to
+    those people who do not have free (cost-wise) access to the software. For
+    example, many organizations sell Linux on floppy, tape, or CD- ROM via mail
+    order, and make profit from these sales. The developers of Linux may never
+    see any of this profit; that is the understanding that is reached between
+    the developer and the distributor when software is licensed by the GPL. In
+    other words, Linus knew that companies may wish to sell Linux and that he
+    may not see a penny of the profits from those sales. (If Linus isn't rich,
+    at least he's famous!)
+
+    In the free-software world, the important issue is not money. The goal of
+    free software is always to develop and distribute fantastic software and to
+    allow anyone to obtain and use it. In the next section, we'll discuss how
+    this applies to the development of Linux.
+* 1.7 Open Source and the Philosophy of Linux
+** 
+***    
+    When new users encounter Linux, they often have a few misconceptions and
+    false expectations of the system. Linux is a unique operating system, and
+    it's important to understand its philosophy and design in order to use it
+    effectively. *At the center of the Linux philosophy is a concept that we now
+    call open source software.*
+
+    *Open source* is a term that applies to software for which the source code —
+    the inner workings of the program — is freely available for anyone to
+    download, modify, and redistribute. Software covered under the GNU GPL,
+    described in the previous section, fits into the category of open source.
+    Not surprisingly, though, so does software that uses copyright licenses that
+    are similar, but not identical, to the GPL. For example, software that can
+    be freely modified but that does not have the same strict requirements for
+    redistribution as the GPL is also considered open source. Various licenses
+    fit this category, including the BSD License and the Apache Software
+    License.
+*** 
+    The so-called "open source" and "free software" development models started
+    with the Free Software Foundation and were popularized with Linux. They
+    represent a totally different way of producing software that opens up every
+    aspect of development, debugging, testing, and study to anyone with enough
+    interest in doing so. Rather than relying upon a single corporation to
+    develop and maintain a piece of software, open source allows the code to
+    evolve, openly, in a community of developers and users who are motivated by
+    desire to create good software, rather than simply make a profit.
+    
+    O'Reilly & Associates, Inc. has published a book, Open Sources, which serves
+    as a good introduction to the open source development model. It's a
+    collection of essays about the open source process by leading developers
+    (including Linus Torvalds and Richard Stallman) and was edited by Chris
+    DiBona, Sam Ockman, and Mark Stone.
+*** 
+    Open source has received a lot of media attention, and some are calling the
+    phenomenon the "next wave" in software development, which will sweep the old
+    way of doing things under the carpet. It still remains to be seen whether
+    that will happen, but there have been some encouraging events that make this
+    outcome seem likely. For example, Netscape Corporation has released the code
+    for its web browser as an open source project called Mozilla, and companies
+    such as Sun Microsystems, IBM, and Apple have released certain products as
+    open source in the hopes that they will flourish in a community-driven
+    software development effort.
+
+    Open source has received a lot of media attention, and Linux is at the
+    center of all of it. In order to understand where the Linux development
+    mentality is coming from, however, it might make sense to take a look at how
+    commercial software has traditionally been built.
+*** 
+    Commercial software houses tend to base development on a rigorous policy of
+    quality assurance, source and revision control systems, documentation, and
+    bug reporting and resolution. Developers are not allowed to add features or
+    to change key sections of code on a whim: they must validate the change as a
+    response to a bug report and consequently "check in" all changes to the
+    source control system so that the changes can be backed out if necessary.
+    Each developer is assigned one or more parts of the system code, and only
+    that developer may alter those sections of the code while it is "checked
+    out."
+
+    Internally, the quality assurance department runs rigorous test suites
+    (so-called "regression tests") on each new pass of the operating system and
+    reports any bugs. It's the responsibility of the developers to fix these
+    bugs as reported. A complicated system of statistical analysis is employed
+    to ensure that a certain percentage of bugs are fixed before the next
+    release, and that the system as a whole passes certain release criteria.
+*** 
+    In all, the process used by commercial software developers to maintain and
+    support their code is very complicated, and quite reasonably so. The company
+    must have quantitative proof that the next revision of the software is ready
+    to be shipped. It's a big job to develop a commercial software system, often
+    large enough to employ hundreds (if not thousands) of programmers, testers,
+    documenters, and administrative personnel. Of course, no two commercial
+    software vendors are alike, but you get the general picture. Smaller
+    software houses, such as startups, tend to employ a scaled-down version of
+    this style of development.
+*** 
+    On the opposite end of the spectrum sits Linux, which is, and more than
+    likely always will be, a hacker's operating system. (Our definition of
+    "hacker" is a feverishly dedicated programmer — a person who enjoys
+    exploiting computers and generally doing interesting things with them. This
+    is in contrast to the common connotation of "hacker" as a computer wrongdoer
+    or an outlaw.) Although many open source projects have adopted elements of
+    commercial software development techniques, such as source control and bug
+    tracking systems, the collaborative and distributed nature of Linux's
+    development is a radical departure from the traditional approach.
+*** 
+    Linux is primarily developed as a group effort by volunteers on the Internet
+    from all over the world. No single organization is responsible for
+    developing the system. For the most part, the Linux community communicates
+    via various mailing lists and web sites. A number of conventions have sprung
+    up around the development effort: for example, programmers wanting to have
+    their code included in the "official" kernel should mail it to Linus
+    Torvalds. He will test the code and include it in the kernel (as long as it
+    doesn't break things or go against the overall design of the system, he will
+    more than likely include it). As Linux has grown, this job has become too
+    large for Linus to do himself (plus, he has kids now), so other volunteers
+    are responsible for testing and integrating code into certain aspects of the
+    kernel, such as the network subsystem.
+*** 
+    The system itself is designed with a very open-ended, feature-rich approach.
+    A new version of the Linux kernel will typically be released about every few
+    weeks (sometimes even more frequently than this). Of course, this is a very
+    rough figure; it depends on several factors, including the number of bugs to
+    be fixed, the amount of feedback from users testing prerelease versions of
+    the code, and the amount of sleep that Linus has had that week.
+
+    Suffice it to say that not every single bug has been fixed and not every
+    problem ironed out between releases. (Of course, this is always true of
+    commercial software as well!) As long as the system appears to be free of
+    critical or oft-manifesting bugs, it's considered "stable" and new revisions
+    are released. The thrust behind Linux development is not an effort to
+    release perfect, bug-free code; it's to develop a free implementation of
+    Unix. Linux is for the developers, more than anyone else.
+*** 
+    Anyone who has a new feature or software application to add to the system
+    generally makes it available in an "alpha" stage — that is, a stage for
+    testing by those brave users who want to bash out problems with the initial
+    code. Because the Linux community is largely based on the Internet, alpha
+    software is usually uploaded to one or more of the various Linux web sites
+    (see Appendix A), and a message is posted to one of the Linux mailing lists
+    about how to get and test the code. Users who download and test alpha
+    software can then mail results, bug fixes, or questions to the author.
+
+    After the initial problems in the alpha code have been fixed, the code
+    enters a "beta" stage, in which it's usually considered stable but not
+    complete (that is, it works, but not all the features may be present).
+    Otherwise, it may go directly to a "final" stage in which the software is
+    considered complete and usable. For kernel code, once it's complete, the
+    developer may ask Linus to include it in the standard kernel, or as an
+    optional add-on feature to the kernel. Keep in mind these are only
+    conventions, not rules. Some people feel so confident with their software
+    that they don't need to release an alpha or test version. It's always up to
+    the developer to make these decisions.
+*** 
+    What happened to regression testing and the rigorous quality process? It's
+    been replaced by the philosophy of "release early and often." Real users are
+    the best testers because they try out the software in a variety of
+    environments and in a host of demanding real-life applications that can't be
+    easily duplicated by any software Quality Assurance group. One of the best
+    features of this development and release model is that bugs (and security
+    flaws) are often found, reported, and fixed within hours, not days or weeks.
+
+    You might be amazed that such a nonstructured system of volunteers
+    programming and debugging a complete Unix system could get anything done at
+    all. As it turns out, it's one of the most efficient and motivated
+    development efforts ever employed. The entire Linux kernel was written from
+    scratch, without employing any code from proprietary sources. A great deal
+    of work was put forth by volunteers to port all the free software under the
+    sun to the Linux system. Libraries were written and ported, filesystems
+    developed, and hardware drivers written for many popular devices.
+*** 
+    The Linux software is generally released as a distribution, which is a set
+    of prepackaged software making up an entire system. It would be quite
+    difficult for most users to build a complete system from the ground up,
+    starting with the kernel, then adding utilities, and installing all
+    necessary software by hand. Instead, there are a number of software
+    distributions including everything you need to install and run a complete
+    system. Again, there is no standard distribution; there are many, each with
+    their own advantages and disadvantages. In this book, we describe how to
+    install the Red Hat, SuSE, and Debian distributions, but this book can help
+    you with any distribution you choose.
+*** 
+    Despite the completeness of the Linux software, you still need a bit of Unix
+    know-how to install and run a complete system. No distribution of Linux is
+    completely bug-free, so you may be required to fix small problems by hand
+    after installation. While some readers might consider this a pain, a better
+    way to think about it is as the "joy of Linux" — that of having fun
+    tinkering with, learning about, and fixing up your own system. It's this
+    very attitude that distinguishes Linux enthusiasts from mere users. Linux
+    can be either a hobby, an adventure sport, or a lifestyle. (Just like
+    snowboarding and mountain biking, Linux geeks have their own lingo and style
+    of dress — if you don't believe us, hang out at any Linux trade show!) Many
+    new Linux users report having a great time learning about this new system,
+    and find that Linux rekindles the fascination they had when first starting
+    to experiment with computers.
+** 1.7.1 Hints for Unix Novices
+***    
+    Installing and using your own Linux system doesn't require a great deal of
+    background in Unix. In fact, many Unix novices successfully install Linux on
+    their systems. This is a worthwhile learning experience, but keep in mind
+    that it can be very frustrating to some. If you're lucky, you will be able
+    to install and start using your Linux system without any Unix background.
+    However, once you are ready to delve into the more complex tasks of running
+    Linux — installing new software, recompiling the kernel, and so forth —
+    having background knowledge in Unix is going to be a necessity. (Note,
+    however, that many distributions of Linux are as easy to install and
+    configure as Windows 98 and certainly easier than Windows 2000.)
+
+    Fortunately, by running your own Linux system, you will be able to learn the
+    essentials of Unix necessary to perform these tasks. This book contains a
+    good deal of information to help you get started. Chapter 4 is a tutorial
+    covering Unix basics, and Chapter 5 contains information on Linux system
+    administration. You may wish to read these chapters before you attempt to
+    install Linux at all; the information contained therein will prove to be
+    invaluable should you run into problems.
+*** 
+    Just remember that nobody can expect to go from being a Unix novice to a
+    Unix system administrator overnight. No implementation of Unix is expected
+    to run trouble- and maintenance-free, and you will undoubtedly encounter
+    hang-ups along the way. Treat this as an opportunity to learn more about
+    Linux and Unix, and try not to get discouraged when things don't always go
+    as expected!
+** 1.7.2 Hints for Unix Gurus
+***    
+    Even those people with years of Unix programming and system administration
+    experience may need assistance before they are able to pick up and install
+    Linux. There are still aspects of the system Unix wizards need to be
+    familiar with before diving in. For one thing, Linux is not a commercial
+    Unix system. It doesn't attempt to uphold the same standards as other Unix
+    systems you may have come across. But in some sense, Linux is redefining the
+    Unix world by giving all other systems a run for their money. To be more
+    specific, while stability is an important factor in the development of
+    Linux, it's not the only factor.
+
+    More important, perhaps, is functionality. In many cases, new code will make
+    it into the standard kernel even though it's still buggy and not
+    functionally complete. The assumption is that it's more important to release
+    code that users can test and use than delay a release until it's "complete."
+    Nearly all open source software projects have an alpha release before they
+    are completely tested. In this way, the open source community at large has a
+    chance to work with the code, test it, and develop it further, while those
+    who find the alpha code "good enough" for their needs can use it. Commercial
+    Unix vendors rarely, if ever, release software in this manner.
+*** 
+    Even if you're a Unix ultra-wizard who can disassemble Solaris kernels in
+    your sleep and recode an AIX superblock with one hand tied behind your back,
+    Linux might take some getting used to. The system is very modern and
+    dynamic, with a new kernel release approximately every few months and new
+    utilities constantly being released. One day your system may be completely
+    up to date with the current trend, and the next day the same system is
+    considered to be in the Stone Age.
+
+    With all of this dynamic activity, how can you expect to keep up with the
+    ever-changing Linux world? For the most part, it's best to upgrade
+    incrementally; that is, upgrade only those parts of the system that need
+    upgrading, and then only when you think an upgrade is necessary. For
+    example, if you never use Emacs, there is little reason to continuously
+    install every new release of Emacs on your system. Furthermore, even if you
+    are an avid Emacs user, there is usually no reason to upgrade it unless you
+    find that a missing feature is in the next release. There is little or no
+    reason to always be on top of the newest version of software.
+*** 
+    Keep in mind that Linux was developed by its users. This means, for the most
+    part, that the hardware supported by Linux is that which users and
+    developers actually have access to. As it turns out, most of the popular
+    hardware and peripherals for 80x86 systems are supported (in fact, Linux
+    probably supports more hardware than any commercial implementation of Unix).
+    However, some of the more obscure and esoteric devices, as well as those
+    with proprietary drivers for which the manufacturers do not easily make the
+    specifications available, aren't supported yet. As time goes on, a wider
+    range of hardware will be supported, so if your favorite devices aren't
+    listed here, chances are that support for them is forthcoming.
+*** 
+    Another drawback for hardware support under Linux is that many companies
+    have decided to keep the hardware interface proprietary. The upshot of this
+    is that volunteer Linux developers simply can't write drivers for those
+    devices (if they could, those drivers would be owned by the company that
+    owned the interface, which would violate the GPL). The companies that
+    maintain proprietary interfaces write their own drivers for operating
+    systems, such as Microsoft Windows; the end user (that's you) never needs to
+    know about the interface. Unfortunately, this does not allow Linux
+    developers to write drivers for those devices.
+
+    Little can be done about the situation. In some cases, programmers have
+    attempted to write hackish drivers based on assumptions about the interface.
+    In other cases, developers work with the company in question and attempt to
+    obtain information about the device interface, with varying degrees
+    ofsuccess.
+* 1.8 Sources of Linux Information
+** 
+   As you have probably guessed, many sources of information about Linux are
+   available, apart from this book.
+** 1.8.1 Online Documents
+***    
+    If you have access to the Internet, you can get many Linux documents via web
+    and anonymous FTP sites all over the world. If you do not have direct
+    Internet access, these documents may still be available to you; many Linux
+    distributions on CD-ROM contain all the documents mentioned here and are
+    often available off the retail shelf. Also, they are distributed on many
+    other networks, such as Fidonet and CompuServe.
+
+    A great number of web and FTP archive sites carry Linux software and related
+    documents. Appendix A contains a listing of some of the Linux documents
+    available via the Internet.
+*** 
+    Examples of available online documents are the Linux FAQ, a collection of
+    frequently asked questions about Linux; the Linux HOWTO documents, each
+    describing a specific aspect of the system — including the Installation
+    HOWTO, the Printing HOWTO, and the Ethernet HOWTO; and the Linux META-FAQ, a
+    list of other sources of Linux information on the Internet.
+
+    Most of these documents are also posted regularly to one or more
+    Linux-related Usenet newsgroups; see Section 1.8.3 later in this chapter.
+
+    The Linux Documentation home page is available to web users at
+    http://www.tlpd.org. This page contains many HOWTOs and other documents, as
+    well as pointers to other sites of interest to Linux users, including the
+    Linux Documentation Project manuals (see the following section).
+** 1.8.2 Books and Other Published Works
+*** 
+    The Bibliography at the end of this book points you to a wealth of sources
+    that will help you use your system. There are a number of published works
+    specifically about Linux. In addition, a number of free books are
+    distributed on the Internet by the *Linux Documentation Project (LDP)*, a
+    project carried out over the Internet to write and distribute a bona fide
+    set of "manuals" for Linux. These manuals are analogs to the documentation
+    sets available with commercial versions of Unix: they cover everything from
+    installing Linux to using and running the system, programming, networking,
+    kernel development, and more.
+
+    The LDP manuals are available via the Web, as well as via mail order from
+    several sources. The Bibliography lists the manuals that are available and
+    covers the means of obtaining them in detail. O'Reilly & Associates, Inc.
+    has published the Linux Network Administrator's Guide from the LDP.
+*** 
+    Aside from the growing number of Linux books, there are a large number of
+    books about Unix in general that are certainly applicable to Linux — as far
+    as using and programming the system is concerned, Linux doesn't differ
+    greatly from other implementations of Unix in most respects. In fact, this
+    book is meant to be complemented by the large library of Unix books
+    currently available; here, we present the most important Linux-specific
+    details and hope you will look to other sources for more in-depth
+    information.
+
+    Armed with a number of good books about using Unix, as well as the book you
+    hold in your hands, you should be able to tackle just about anything. The
+    Bibliography includes a list of highly recommended Unix books, for Unix
+    newcomers and wizards alike.
+
+    There are at least two monthly magazines about Linux: Linux Journal and
+    Linux Magazine. These are an excellent way to keep in touch with the many
+    goings-on in the Linux community.
+** 1.8.3 Usenet Newsgroups
+   Usenet is a worldwide electronic news and discussion forum with a heavy
+   contingent of so-called "newsgroups," or discussion areas devoted to a
+   particular topic. Much of the development of Linux has been done over the
+   waves of the Internet and Usenet, and not surprisingly, a number of Usenet
+   newsgroups are available for discussions about Linux.
+
+   There are far too many newsgroups devoted to Linux to list here. The ones
+   dealing directly with Linux are under the comp.os.linux hierarchy, and you'll
+   find others on related topics like comp.windows.x.
+** 1.8.4 Internet Mailing Lists
+   If you have access to Internet electronic mail, you can participate in a
+   number of mailing lists devoted to Linux. These run the gamut from kernel
+   hacking to basic user questions. Many of the popular Linux mailing lists have
+   associated web sites with searchable archives, allowing you to easily find
+   answers to common questions. We list some of these resources in Appendix A.
+* 1.9 Getting Help
+**   
+   You will undoubtedly require some degree of assistance during your adventures
+   in the Linux world. Even the most wizardly of Unix wizards is occasionally
+   stumped by some quirk or feature of Linux, and it's important to know how and
+   where to find help when you need it.
+
+   The primary means of getting help in the Linux world are Internet mailing
+   lists and Usenet newsgroups, as described earlier. A number of businesses
+   also provide commercial support for Linux. A "subscription fee" allows you to
+   call consultants for help with your Linux problems. Several Linux
+   distribution vendors provide online and telephone-based technical support,
+   which can often be very helpful. However, if you have access to Usenet and
+   Internet mail, you may find the free support found there just as good.
+** 
+   Keeping the following suggestions in mind should improve your experiences
+   with Linux and guarantee you more success in finding help to your problems:
+*** Consult all available documentation first.
+    The first thing to do when encountering a problem is consult the various
+    sources of information listed in the previous section and Appendix A. These
+    documents were laboriously written for people like you — people who need
+    help with the Linux system. Even books written for Unix in general are
+    applicable to Linux, and you should take advantage of them. Impossible as it
+    might seem, more than likely you will find the answer to your problems
+    somewhere in this documentation.
+
+    If you have access to the Web, Usenet news, or any of the Linux-related
+    mailing lists, be sure to actually read the information there before posting
+    for help with your problem. Many times, solutions to common problems are not
+    easy to find in documentation and are instead well-covered in the newsgroups
+    and mailing lists devoted to Linux. If you only post to these groups and
+    don't actually read them, you are asking for trouble.
+*** Use the search engines!
+    It's amazing how much Linux-specific information you can turn up simply by
+    using popular web search engines. In fact, Google even has an entire search
+    engine devoted just to Linux, at http://www.google.com/linux. The Google
+    usenet newsgroup archive (http://groups.google.com/) is also a good place to
+    start. Instead of hunting for information by surfing the many Linux web
+    sites, HOWTO guides, and mailing list archives, a few pointed queries to
+    your favorite search engine can usually turn up results much more quickly.
+
+    Of course, you should learn how to use search engines effectively: a generic
+    query like "Linux help" isn't likely to turn up exactly what you're looking
+    for. On the other hand, "Linux Sony Vaio CD-ROM" is a much better way to go
+    (assuming, of course, you're looking for help on your Vaio CD-ROM!).
+*** Learn to appreciate self-maintenance.
+    In most cases, it's preferable to do as much independent research and
+    investigation into the problem as possible before seeking outside help.
+    Remember that Linux is about hacking and fixing problems yourself. It's not
+    a commercial operating system, nor does it try to look like one. Hacking
+    won't kill you. In fact, it will teach you a great deal about the system to
+    investigate and solve problems yourself — maybe even enough to one day call
+    yourself a Linux guru. Learn to appreciate the value of hacking the system
+    and fixing problems yourself. You can't expect to run a complete, home-brew
+    Linux system without some degree of handiwork.
+*** Remain calm.
+    It's vital to refrain from getting frustrated with the system. Nothing is
+    earned by taking an axe — or worse, a powerful electromagnet — to your Linux
+    system in a fit of anger. The authors have found that a large punching bag
+    or similar inanimate object is a wonderful way to relieve the occasional
+    stress attack. As Linux matures and distributions become more reliable, we
+    hope that this problem will go away. However, even commercial Unix
+    implementations can be tricky at times. When all else fails, sit back, take
+    a few deep breaths, and go after the problem again when you feel relaxed.
+    Your mind will be clearer, and your system will thank you. Remember our Zen
+    advice from the preface!
+*** Refrain from posting spuriously.
+    Many people make the mistake of posting to Usenet or mailing messages
+    pleading for help prematurely. When encountering a problem, do not — we
+    repeat, do not — rush immediately to your nearest terminal and post a
+    message to one of the Linux Usenet newsgroups. Often, you will catch your
+    own mistake five minutes later and find yourself in the curious situation of
+    defending your own sanity in a public forum. Before posting anything to any
+    of the Linux mailing lists or newsgroups, first attempt to resolve the
+    problem yourself and be absolutely certain what the problem is. Does your
+    system not respond when you turn it on? Perhaps the machine is unplugged.
+*** If you do post for help, make it worthwhile.
+**** 
+     If all else fails, you may wish to post a message for help in any of the
+     number of electronic forums dedicated to Linux, such as Usenet newsgroups
+     and mailing lists. When posting, remember that the people reading your post
+     are not there to help you. The network is not your personal consulting
+     service. Therefore, it's important to remain as polite, terse, and
+     informative as possible.
+
+     How can one accomplish this? First, you should include as much (relevant)
+     information about your system and your problem as possible. Posting the
+     simple request "I can't seem to get email to work" will probably get you
+     nowhere unless you include information on your system, what software you
+     are using, what you have attempted to do so far, and what the results were.
+     When including technical information, it's usually a good idea to include
+     general information on the version(s) of your software (Linux kernel
+     version, for example), as well as a brief summary of your hardware
+     configuration. However, don't overdo it — including information on the
+     brand and type of monitor that you have is probably irrelevant if you're
+     trying to configure networking software.
+**** 
+     Second, remember that you need to make some attempt — however feeble — at
+     solving your problem before you go to the Net. If you have never attempted
+     to set up electronic mail, for instance, and first decide to ask folks on
+     the Net how to go about doing it, you are making a big mistake. A number of
+     documents are available (see the previous section Section 1.8) on how to
+     get started with many common tasks under Linux. The idea is to get as far
+     along as possible on your own and then ask for help if and when you get
+     stuck.
+
+     Also remember that the people reading your message, however helpful, may
+     occasionally get frustrated by seeing the same problem over and over again.
+     Be sure to actually read the Linux HOWTOs, FAQs, newsgroups, and mailing
+     lists before posting your problems. Many times, the solution to your
+     problem has been discussed repeatedly, and all that's required to find it
+     is to browse the current messages.
+**** 
+     Third, when posting to electronic newsgroups and mailing lists, try to be
+     as polite as possible. It's much more effective and worthwhile to be
+     polite, direct, and informative — more people will be willing to help you
+     if you master a humble tone. To be sure, the flame war is an art form
+     across many forms of electronic communication, but don't allow that to
+     preoccupy your and other people's time. The network is an excellent way to
+     get help with your Linux problems — but it's important to know how to use
+     the network effectively.

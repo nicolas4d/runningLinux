@@ -1,0 +1,21 @@
+As is usually the case, undoing a task is easier than doing it. To disable swap
+space, simply use the command:
+#+begin_src shell
+  swapoff device
+#+end_src
+where device is the name of the swap partition or file that you wish to disable.
+For example, to disable swapping on the device /dev/hda3, use the command:
+#+begin_src shell
+  swapoff /dev/hda3
+#+end_src 
+If you wish to disable a swap file, you can simply remove the file, using rm,
+after using swapoff. Don't remove a swap file before disabling it; this can
+cause disaster.
+
+If you have disabled a swap partition using swapoff, you are free to reuse that
+partition as you see fit: remove it using fdisk or your preferred repartitioning
+tool.
+
+Also, if there is a corresponding entry for the swap area in /etc/fstab, remove
+it. Otherwise, you'll get errors when you next reboot the system and the swap
+area can't be found.

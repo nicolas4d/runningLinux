@@ -1,0 +1,22 @@
+Large projects tend to break parts of their makefiles into separate files.
+This makes it easy for different makefiles in different directories to share
+things, particularly macro definitions. The line:
+#+begin_src 
+  include  filename
+#+end_src
+reads in the contents of filename . You can see this in the Linux kernel
+makefile, for instance:
+#+begin_src makefile
+    include .depend
+#+end_src
+If you look in the file .depend, you'll find a bunch of makefile entries:
+these lines declare that object files depend on particular header files. (By
+the way, .depend might not exist yet; it has to be created by another entry in
+the makefile.)
+
+Sometimes include lines refer to macros instead of filenames, as in:
+#+begin_src makefile
+    include ${INC_FILE}
+#+end_src
+In this case, INC_FILE must be defined either as an environment variable or as
+a macro. Doing things this way gives you more control over which file is used.

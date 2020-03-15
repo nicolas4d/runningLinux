@@ -1,0 +1,35 @@
+* 
+  In this chapter, we'll show you how to upgrade software on your system,
+  including rebuilding and installing a new operating system kernel. Although
+  most Linux distributions provide some automated means to install, remove, and
+  upgrade specific software packages on your system, it is often necessary to
+  install software by hand.
+
+  Non-expert users will find it easiest to install and upgrade software by using
+  a package system, which most distributions provide. If you don't use a package
+  system, installations and upgrades are more complicated than with most
+  commercial operating systems. Even though precompiled binaries are available,
+  you may have to uncompress them and unpack them from an archive file. You may
+  also have to create symbolic links or set environment variables so that the
+  binaries know where to look for the resources they use. In other cases, you'll
+  need to compile the software yourself from sources.
+* 
+  Another common Linux activity is building the kernel. This is an important
+  task for several reasons. First of all, you may find yourself in a position
+  where you need to upgrade your current kernel to a newer version, to pick up
+  new features or hardware support. Second, building the kernel yourself allows
+  you to select which features you do (and do not) want included in the compiled
+  kernel.
+
+  Why is the ability to select features a win for you? All kernel code and data
+  are "locked down" in memory; that is, it cannot be swapped out to disk. For
+  example, if you use a kernel image with support for hardware you do not have
+  or use, the memory consumed by the support for that hardware cannot be
+  reclaimed for use by user applications. Customizing the kernel allows you to
+  trim it down for your needs.
+* 
+  It should be noted here that most distributions today ship with modularized
+  kernels. This means that the kernel they install by default contains only the
+  minimum functionality needed to bring up the system; everything else is then
+  contained in modules that add any additionally needed functionality on demand.
+  We will talk about modules in much greater detail later.

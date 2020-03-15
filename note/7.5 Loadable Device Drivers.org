@@ -1,0 +1,214 @@
+* 
+  Traditionally, device drivers have been included as part of the kernel. There
+  are several reasons for this. First of all, nearly all device drivers require
+  the special hardware access provided by being part of the kernel code. Such
+  hardware access can't be obtained easily through a user program. Also, device
+  drivers are much easier to implement as part of the kernel; such drivers would
+  have complete access to the data structures and other routines in the kernel
+  and could call them freely.
+
+  A conglomerate kernel containing all drivers in this manner presents several
+  problems. First of all, it requires the system administrator to rebuild the
+  kernel in order to selectively include device drivers, as we saw in the
+  previous section. Also, this mechanism lends itself to sloppy programming on
+  the part of the driver writers: there's nothing stopping a programmer from
+  writing code that is not completely modular — code which, for example,
+  directly accesses data private to other parts of the kernel. The cooperative
+  nature of the Linux kernel development compounds this problem, and not all
+  parts of the code are as neatly contained as they should be. This can make it
+  more difficult to maintain and debug the code.
+* 
+  In an effort to move away from this paradigm, the Linux kernel supports
+  loadable device drivers — device drivers that are added to or removed from
+  memory at runtime, with a series of commands. Such drivers are still part of
+  the kernel, but they are compiled separately and enabled only when loaded.
+  Loadable device drivers, or modules, are generally loaded into memory using
+  commands in one of the boot-time rc scripts.
+
+  Modules provide a cleaner interface for writing drivers. To some extent, they
+  require the code to be somewhat modular and to follow a certain coding
+  convention. (Note that this doesn't actually prevent a programmer from abusing
+  the convention and writing nonmodular code. Once the module has been loaded,
+  it is just as free to wreak havoc as if it were compiled directly into the
+  kernel.) Using modules makes drivers easier to debug; you can simply unload a
+  module, recompile it, and reload it without having to reboot the system or
+  rebuild the kernel as a whole. Modules can be used for other parts of the
+  kernel, such as filesystem types, in addition to device drivers.
+* 
+  Most device drivers, and a lot of other kernel functionality under Linux, are
+  implemented as modules. One of them is the floppy tape driver (or ftape
+  driver), for tape drives that connect to the floppy controller, such as the
+  Colorado Memory Jumbo 120/250 models. If you plan to use this driver on your
+  system, it is good to know how to build, load, and unload modules. While
+  nobody stops you from compiling this module statically into your kernel, a
+  tape drive is something that you need only rarely (normally once a day or so),
+  and its driver shouldn't occupy valuable RAM during the times it is not
+  needed. See the Linux ftape HOWTO for more about these devices and supported
+  hardware.
+
+  The first thing you'll need is the modules package, which contains the
+  commands used to load and unload modules from the kernel. On the FTP archive
+  sites, this is usually found as modules.tar.gz in the directory where the
+  kernel sources are kept. This package contains the sources to the commands
+  *insmod, modprobe, rmmod, and lsmod*. Most Linux distributions include these
+  commands (found in sbin). If you already have these commands installed, you
+  probably don't need to get the modules package. However, it can't hurt to get
+  the package and rebuild these commands, to be sure that you have the most
+  up-to-date version.
+* 
+  To rebuild these commands, unpack modules.tar.gz (say, in a subdirectory of
+  /usr/src). Follow the installation instructions contained there; usually all
+  you have to do is execute make followed by make install (as root ). The three
+  commands will now be installed in /sbin and will be ready to use.
+
+  A module is simply a single object file containing all the code for the
+  driver. For example, the ftape module might be called ftape.o. On many
+  systems, the modules themselves are stored in a directory tree below
+  */lib/modules/kernelversion* , where you can find different directories for
+  the various types of modules. For example, the modules compiled for the 2.4.4
+  kernel would be below /lib/modules/2.4.4. You might already have a number of
+  modules on your system; check the appropriate directory.
+* 
+  Modules can be either in the kernel sources or external to it. The former is
+  the case for those device drivers, filesystems, and other functionality that
+  are used most often and are maintained as part of the official kernel sources.
+  Using these modules is very easy: during the make config, make menuconfig, or
+  make xconfig step, type m to build a feature as a module. Repeat this for
+  everything you want to compile as a module. Then, after the make bzImage step,
+  execute the commands make modules and make modules_install. This will compile
+  the modules and install them in /lib/modules/kernelversion . It is a good idea
+  (for reasons to be explained later in this section) to run the command depmod
+  -a afterward to correct module dependencies.
+
+  New modules that are not yet integrated into the official kernel sources, or
+  those that are simply too esoteric to be put into the kernel sources (e.g., a
+  device driver for some custom- built hardware that is not publicly available)
+  can be available as stand-alone, external modules. Unpack the archive of this
+  module, compile it according to the instructions that are hopefully included,
+  and copy the resulting module file to the appropriate subdirectory of
+  /lib/modules/kernelversion. Some modules might have an install script, or
+  allow you to issue the command make install to perform the last step.
+* 
+  Once you have a compiled module (either from the kernel sources or external),
+  you can load it using the command:
+  #+begin_src shell
+    insmod module
+  #+end_src
+  where module is the name of the module object file. For example:
+  #+begin_src shell
+    insmod /lib/modules/2.4.4/kernel/drivers/char/ftape/lowlevel/ftape.o
+  #+end_src
+  installs the ftape driver if it is found in that file.
+
+  Once a module is installed, it may display some information to the console (as
+  well as to the system logs), indicating that it is initialized. For example,
+  the ftape driver might display the following:
+* 
+  #+begin_src shell
+    ftape v1.14 29/10/94 (c) 1993, 1994 Bas Laarhoven (bas@vimec.nl)
+    QIC-117 driver for QIC-40 and QIC-80 tape drives
+    [000] kernel-interface.c (init_module) - installing QIC-117 ftape\
+          driver....
+    [001] kernel-interface.c (init_module) - 3 tape_buffers @ 001B8000.
+    [002] calibr.c (time_inb) - inb( ) duration: 1436 nsec.
+    [003] calibr.c (calibrate) - TC for 'udelay( )' = 2944 nsec (at 2049\
+                                                                    counts).
+    [004] calibr.c (calibrate) - TC for 'fdc_wait( )' = 2857 nsec (at 2049\
+                                                                      counts).
+  #+end_src
+* 
+  The exact messages printed depend on the module, of course. Each module should
+  come with ample documentation describing just what it does and how to debug it
+  if there are problems.
+
+  It is likely that insmod will tell you it could not load the module into the
+  kernel because there were "symbols missing." This means that the module you
+  want to load needs functionality from another part of the kernel that is
+  neither compiled into the kernel nor contained in a module already loaded. You
+  could now try to find out which module contains those functions, load that
+  module first with insmod, and try again. You will eventually succeed with this
+  method, but it can be cumbersome, and this would not be Linux if there weren't
+  a better way.
+* 
+  You first need a module database in the file /lib/modules/kernelversion/modules.dep.
+  You can create this database by calling:
+  #+begin_src shell
+    depmod -a
+  #+end_src
+  This goes through all the modules you have and records whether they need any
+  other modules. With this database in place, you can simply replace the insmod
+  command with the modprobe command, which checks the module database and loads
+  any other modules that might be needed before loading the requested module.
+  For example, our modules.dep file contains — among others — the following
+  line:
+  #+begin_src shell
+  /lib/modules/2.4.4/kernel/drivers/isdn/hisax/hisax.o: /lib/modules/2.4.4/
+  kernel/drivers/isdn/isdn.o
+  #+end_src
+* 
+  This means that in order to load the hisax module (a device driver for a
+  number of ISDN boards), the isdn module must be loaded. If we now load the
+  hisax module with modprobe (this example is slightly simplified because the
+  hisax module needs additional parameters):
+  #+begin_src shell
+    modprobe hisax
+  #+end_src
+  modprobe will detect the dependency and load the isdn module. If you have
+  compiled a module for the current kernel, you first need to run depmod -a,
+  though, so that modprobe can find it.
+
+  Some modules need so-called module parameters. For example, a device driver
+  might need to be assigned an IRQ. You can pass those parameters in the form
+  parameter_name=parameter_value with both the insmod and the modprobe command.
+  In the following example, several parameters are passed to the hisax module:
+  #+begin_src shell
+    tigger # modprobe hisax type=3 protocol=2 io=0x280 irq=10
+  #+end_src
+* 
+  The documentation for each module should tell you which parameters the module
+  supports. If you are too lazy to read the documentation, a nifty tool you can
+  use is modinfo which tells you — among other things — which parameters the
+  module specified as the argument accepts.
+
+  One caveat about modules if you use the Debian distribution: Debian uses a
+  file called /etc/modules that lists the modules that should be loaded at boot
+  time. If a module that you do not want keeps reappearing, check whether it is
+  listed here.
+
+  You can list the drivers that are loaded with the command lsmod, as in:
+  #+begin_src shell
+  rutabaga% lsmod
+  Module:  #pages:  Used by
+  ftape  40
+  #+end_src
+* 
+  The memory usage of the module is displayed as well; under Linux on an Intel
+  x86 system, a page is 4 KB. The ftape driver here is using 160 KB of memory.
+  If any other modules are dependent on this module, they are shown in the third
+  column.
+
+  A module can be unloaded from memory using the rmmod command, as long as it is
+  not in use. For example:
+  #+begin_src shell
+    rmmod ftape
+  #+end_src
+  The argument to rmmod is the name of the driver as it appears in the lsmod
+  listing.
+
+  Once you have modules working to your satisfaction, you can include the
+  appropriate insmod commands in one of the rc scripts executed at boot time.
+  One of your rc scripts might already include a place where insmod commands can
+  be added, depending on your distribution.
+* 
+  One feature of the current module support is that you must rebuild a module
+  any time you upgrade your kernel to a new version or patch level. (Rebuilding
+  your kernel while keeping the same kernel version doesn't require you to do
+  this.) This is done to ensure that the module is compatible with the kernel
+  version you're using. If you attempt to load a module with a kernel that is
+  newer or older than that for which it was compiled, insmod will complain and
+  not allow the module to be loaded. When rebuilding a module, you must be
+  running the kernel under which it will be used. Therefore, when upgrading your
+  kernel, upgrade and reboot the new kernel first, then rebuild your modules and
+  load them. There is an option that allows you to keep your modules when
+  switching kernels, but a number of problems are associated with it, and we
+  recommend against using it.

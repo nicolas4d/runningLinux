@@ -1,0 +1,206 @@
+* 
+  Most of the programs on a Linux system are compiled to use shared libraries.
+  These libraries contain useful functions common to many programs. Instead of
+  storing a copy of these routines in each program that calls them, the
+  libraries are contained in files on the system that are read by all programs
+  at runtime. That is, when a program is executed, the code from the program
+  file itself is read, followed by any routines from the shared library files.
+  This saves a great deal of disk space; only one copy of the library routines
+  is stored on disk.
+
+  In some instances, it's necessary to compile a program to have its own copy of
+  the library routines (usually for debugging) instead of using the routines
+  from the shared libraries. We say that programs built in this way are
+  *statically linked*, while programs built to use shared libraries are
+  *dynamically linked*.
+* 
+  Therefore, dynamically linked executables depend upon the presence of the
+  shared libraries on disk. Shared libraries are implemented in such a way that
+  the programs compiled to use them generally don't depend on the version of the
+  available libraries. This means that you can upgrade your shared libraries,
+  and all programs that are built to use those libraries will automatically use
+  the new routines. (There is an exception: if major changes are made to a
+  library, the old programs won't work with the new library. You'll know this is
+  the case because the major version number is different; we'll explain more
+  later. In this case, you keep both the old and new libraries around. All your
+  old executables will continue to use the old libraries, and any new programs
+  that are compiled will use the new libraries.)
+
+  When you build a program to use shared libraries, a piece of code is added to
+  the program that causes it to execute *ld.so*, the dynamic linker, when the
+  program is started. ld.so is responsible for finding the shared libraries the
+  program needs and loading the routines into memory. Dynamically linked
+  programs are also linked against *"stub"* routines, which simply take the
+  place of the actual shared library routines in the executable. ld.so replaces
+  the stub routine with the code from the libraries when the program is
+  executed.
+* 
+  The *ldd* command can be used to list the shared libraries on which a given executable
+  depends. For example:
+  #+begin_src shell
+    ldd /usr/bin/X11/xterm
+    libXft.so.1 => /usr/X11R6/lib/libXft.so.1 (0x40032000)
+    libXrender.so.1 => /usr/X11R6/lib/libXrender.so.1 (0x40088000)
+    libXaw.so.7 => /usr/X11R6/lib/libXaw.so.7 (0x4008d000)
+    libXmu.so.6 => /usr/X11R6/lib/libXmu.so.6 (0x400e4000)
+    libXt.so.6 => /usr/X11R6/lib/libXt.so.6 (0x400fa000)
+    libSM.so.6 => /usr/X11R6/lib/libSM.so.6 (0x40148000)
+    libICE.so.6 => /usr/X11R6/lib/libICE.so.6 (0x40152000)
+    libXpm.so.4 => /usr/X11R6/lib/libXpm.so.4 (0x4016a000)
+    libXext.so.6 => /usr/X11R6/lib/libXext.so.6 (0x40179000)
+    libX11.so.6 => /usr/X11R6/lib/libX11.so.6 (0x40188000)
+    libncurses.so.5 => /lib/libncurses.so.5 (0x4026b000)
+    libc.so.6 => /lib/libc.so.6 (0x402b5000)
+    /lib/ld-linux.so.2 => /lib/ld-linux.so.2 (0x40000000)
+  #+end_src
+* 
+  Here, we see that the xterm program depends on a number of shared libraries,
+  including libXaw, libXt, libX11, and libc. (The libraries starting with libX
+  are all related to the X Window System; libc is the standard C library.) We
+  also see the version numbers of the libraries for which the program was
+  compiled (that is, the version of the stub routines used), and the name of the
+  file which contains each shared library. This is the file that ld.so will find
+  when the program is executed.
+* 
+  In order to use a shared library, the version of the stub routines (in the
+  executable) must be compatible with the version of the shared libraries.
+  Basically, a library is compatible if its major version number matches that of
+  the stub routines. The major version number is the part right after the .so.
+  In this case, libX11 (the most basic library used by the X Window System) is
+  used with the major Version 6. The library file libX11.so.6 (which usually
+  resides in /usr/X11R6/lib) might very well just be a symbolic link — e.g., to
+  libX11.so.6.2. This means that the library has the major version number 6 and
+  the minor version number 2. Library versions with the same major version
+  number are supposed to be interchangeable. This way, if a program was compiled
+  with Version 6.0 of the stub routines, shared library Versions 6.1, 6.2, and
+  so forth could be used by the executable. If a new version with the major
+  version number 6 and the minor version number 3 were released (and thus had
+  the filename libX11.so.6.3), all you would need to do to use this new version
+  is change the symbolic link libX11.so.6 to point to the new version. The xterm
+  executable would then automatically benefit from any bug fixes or similar that
+  are included in the new version. In Section 13.1.7 in Chapter 13, we describe
+  how to use shared libraries with your own programs.
+* 
+  The file */etc/ld.so.conf* contains a list of directories that ld.so searches to find shared library
+  files. An example of such a file is:
+  #+begin_src shell
+    /usr/lib
+    /usr/local/lib
+    /usr/X11R6/lib
+  #+end_src
+  *ld.so always looks in /lib and /usr/lib, regardless of the contents of
+  ld.so.conf.* Usually, there's no reason to modify this file, and the
+  environment variable *LD_LIBRARY_PATH* can add additional directories to this
+  search path (e.g., if you have your own private shared libraries that
+  shouldn't be used systemwide). However, if you do add entries to
+  /etc/ld.so.conf or upgrade or install additional libraries on your system, be
+  sure to use the ldconfig command which will regenerate the shared library
+  cache in /etc/ld.so.cache from the ld.so search path. This cache is used by
+  ld.so to find libraries quickly at runtime without actually having to search
+  the directories on its path. For more information, check the manual pages for
+  *ld.so* and *ldconfig*.
+* 
+  Now that you understand how shared libraries are used, let's move on to
+  upgrading them. The two libraries that are most commonly updated are *libc*
+  (the standard C library) and *libm* (the math library). Because naming is a
+  little bit special for these, we will look at another library here, namely
+  libncurses, which "emulates" a graphical windowing system on the text console.
+* 
+  For each shared library, there are two separate files:
+  - library.a :: This is the static version of the library. When a program is
+                 statically linked, routines are copied from this file directly
+                 into the executable, so the executable contains its own copy of
+                 the library routines.(On some distributions, the static
+                 versions of the libraries are moved into a separate package and
+                 not necessarily installed by default. If this is the case, you
+                 won't find the .a files unless you install them.)
+  - library.so.version :: This is the shared library image itself. When a
+       program is dynamically linked, the stub routines from this file are
+       copied into the executable, allowing ld.so to locate the shared library
+       at runtime. When the program is executed, ld.so copies routines from the
+       shared library into memory for use by the program. If a program is
+       dynamically linked, the library.a file is not used for this library.
+* 
+  For the libncurses library, you'll have files, such as libncurses.a and
+  libncurses.so.5.2. The .a files are generally kept in */usr/lib*, while .so
+  files are kept in */lib*. When you compile a program, either the .a or the .so
+  file is used for linking, and the compiler looks in /lib and /usr/lib (as well
+  as a variety of other places) by default. If you have your own libraries, you
+  can keep these files anywhere, and control where the linker looks with the -L
+  option to the compiler. See Section 13.1.7 in Chapter 13 for details.
+
+  The shared library image, library.so.version , is kept in /lib for most
+  systemwide libraries. Shared library images can be found in any of the
+  directories that ld.so searches at runtime; these include /lib, /usr/lib, and
+  the files listed in ld.so.conf. See the *ld.so* manual page for details.
+
+  If you look in /lib, you'll see a collection of files such as the following:
+  
+  [[file:../img/7.2.1.png]]
+* 
+  Here, we see the shared library images for two libraries — libncurses and
+  libz. Note that each image has a symbolic link to it, named library.so.major ,
+  where major is the major version number of the library. The minor number is
+  omitted because ld.so searches for a library only by its major version number.
+  When ld.so sees a program that has been compiled with the stubs for Version
+  5.2 of libncurses, it looks for a file called libncurses.so.5 in its search
+  path. Here, /lib/libncurses.so.5 is a symbolic link to /lib/libncurses.so.5.2,
+  the actual version of the library we have installed.
+
+  When you upgrade a library, you must replace the .a and .so.version files
+  corresponding to the library. Replacing the .a file is easy: just copy over it
+  with the new versions. However, you must use some caution when replacing the
+  shared library image, .so.version ; many of the text-based programs on the
+  system depend on shared library images, so you can't simply delete them or
+  rename them. To put this another way, the symbolic link library .so.major must
+  always point to a valid library image. To accomplish this, first copy the new
+  image file to /lib, and then change the symbolic link to point to the new file
+  in one step, using ln -sf. This is demonstrated in the following example.
+* 
+  Let's say you're upgrading from Version 5.2 of the libncurses library to Version 5.4. You
+  should have the files libncurses.a and libncurses.so.5.4. First, copy the .a file to the
+  appropriate location, overwriting the old version:
+  #+begin_src shell
+    cp libncurses.a /usr/lib
+  #+end_src
+  Now, copy the new image file to /lib (or wherever the library image should be):
+  #+begin_src shell
+    cp libncurses.so.5.4 /lib
+  #+end_src
+  Now, if you use the command ls -l /lib/libncurses, you should see something like:
+  
+  [[file:../img/7.2.1-0.png]]
+* 
+  To update the symbolic link to point to the new library, use the command:
+  #+begin_src shell
+    ln -sf /lib/libncurses.so.5.4 /lib/libncurses.so.5
+  #+end_src
+  This gives you:
+  
+  [[file:../img/7.2.1-1.png]]
+
+  Now you can safely remove the old image file, libncurses.so.5.2. You must use
+  *ln -sf* to replace the symbolic link in one step, especially when updating
+  crucial libraries, such as libc. If you were to remove the symbolic link
+  first, and then attempt to use ln -s to add it again, more than likely ln
+  would not be able to execute because the symbolic link is gone, and as far as
+  ld.so is concerned, the libc library can't be found. Once the link is gone,
+  nearly all the programs on your system will be unable to execute. Be very
+  careful when updating shared library images. For libncurses, things are less
+  critical because you will always have command-line programs left to clean up
+  any mess you have made, but if you are used to using ncurses-based programs,
+  such as Midnight Commander, this might still be an inconvenience for you.
+* 
+  Whenever you upgrade or add a library to the system, it's not a bad idea to
+  run *ldconfig* to regenerate the library cache used by ld.so. In some cases, a
+  new library may not be recognized by ld.so until you run ldconfig.
+
+  One question remains: where can you obtain the new versions of libraries?
+  Several of the basic system libraries (libc, libm, and so on) can be
+  downloaded from the directory /pub/Linux/GCC on ftp://ftp.ibiblio.org. It
+  contains the Linux versions of the gcc compiler, libraries, include files, and
+  other utilities. Each file there should have a README or release file that
+  describes what to do and how to install it. Other libraries are maintained and
+  archived separately. At any rate, all libraries you install should include the
+  .so.version files and possibly the .a files, as well as a set of include files
+  for use with the compiler.

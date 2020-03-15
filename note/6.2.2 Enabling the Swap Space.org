@@ -1,0 +1,30 @@
+* 
+  In order for the new swap space to be utilized, you must enable it with the
+  swapon command. For example, after creating the previous swap file and running
+  mkswap and sync, we could use the command:
+  #+begin_src shell
+    swapon /swap
+  #+end_src
+  This adds the new swap area to the total amount of available swap; use the
+  free command to verify that this is indeed the case. If you are using a new
+  swap partition, you can enable it with a command, such as:
+  #+begin_src shell
+    swapon /dev/hda3
+  #+end_src
+  if /dev/hda3 is the name of the swap partition.
+* 
+  Like filesystems, swap areas are automatically enabled at boot time using the
+  swapon -a command from one of the system startup files (usually in
+  /etc/rc.d/rc.sysinit). This command looks in the file /etc/fstab, which, as
+  you'll remember from Section 6.1.2 earlier in this chapter, includes
+  information on filesystems and swap areas. All entries in /etc/fstab with the
+  options field set to sw are enabled by swapon -a.
+
+  Therefore, if /etc/fstab contains the entries:
+  #+begin_src shell
+    # device directory type options   
+    /dev/hda3 none swap sw   
+    /swap none swap sw
+  #+end_src   
+  the two swap areas /dev/hda3 and /swap will be enabled at boot time. For each
+  new swap area, you should add an entry to /etc/fstab.

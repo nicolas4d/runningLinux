@@ -1,0 +1,30 @@
+* 
+  In this section, we're going to cover the use of the vi (pronounced "vee-eye")
+  text editor. vi was the first real screen-based editor for Unix systems. It is
+  also simple, small, and sleek. If you're a system administrator, learning vi
+  can be invaluable; in many cases, larger editors, such as Emacs, won't be
+  available in emergency situations (for instance, when booting Linux from a
+  maintenance disk).
+
+  vi is based on the same principles as many other Unix applications: that each
+  program provide a small, specific function and be able to interact with other
+  programs. For example, vi doesn't include its own spellchecker or paragraph
+  filler, but those features are provided by other programs that are easy to
+  fire off from within vi. Therefore, vi itself is a bit limited, but is able to
+  interact with other applications to provide virtually any functionality you
+  might want.
+* 
+  At first, vi may appear to be somewhat complex and unwieldy. However, its
+  single-letter commands are fast and powerful once you've learned them. In the
+  next section, we're going to describe Emacs, a more flexible editor (really an
+  integrated work environment) with an easier learning curve. Do keep in mind
+  that knowing vi may be essential to you if you are in a situation where Emacs
+  is not available, so we encourage you to learn the basics, as odd as they may
+  seem. It should also be added that a number of vi clones are now available
+  that are much more comfortable to use than the original vi, the most popular
+  of which is vim (vi improved). Chances are that your distribution has things
+  set up so that when starting vi, you actually start one of those. We'll stick
+  to the basics here, though, so that you can use the information presented here
+  no matter which version of vi you use. You can find coverage of the newer
+  versions in the book Learning the vi Editor by Linda Lamb and Arnold Robbins
+  (O'Reilly).

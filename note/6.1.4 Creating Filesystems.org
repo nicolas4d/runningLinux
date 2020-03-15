@@ -1,0 +1,101 @@
+* 
+  You can create a filesystem using the *mkfs* command. Creating a filesystem is
+  analogous to "formatting" a partition or floppy, allowing it to store files.
+
+  Each filesystem type has its own mkfs command associated with it — for
+  example, MS-DOS filesystems may be created using mkfs.msdos, Second Extended
+  filesystems using mkfs.ext2, and so on. The program mkfs itself is a frontend
+  that creates a filesystem of any type by executing the appropriate version of
+  mkfs for that type.(Under Linux the mkfs command historically created a Minix
+  filesystem. On newer Linux systems, mkfs is a frontend for any filesystem
+  type, and Minix filesystems are created using mkfs.minix.)
+
+  When you installed Linux, you may have created filesystems by hand using a
+  command such as mke2fs. (If not, the installation software created the
+  filesystems for you.) In fact, mke2fs is equivalent to mkfs.ext2. The programs
+  are the same (and on many systems, one is a symbolic link to the other), but
+  the mkfs. fs-type filename makes it easier for mkfs to execute the appropriate
+  filesystem-type-specific program. If you don't have the mkfs frontend, you can
+  use mke2fs or mkfs.ext2 directly.
+* 
+  Assuming that you're using the mkfs frontend, you can create a filesystem
+  using this command:
+  #+begin_src shell
+    mkfs -t type device
+  #+end_src
+  where type is the type of filesystem to create, given in Table 6-1, and device
+  is the device on which to create the filesystem (such as /dev/fd0 for a
+  floppy).
+
+  For example, to create an ext2 filesystem on a floppy, you use this command:
+  #+begin_src shell
+    mkfs -t ext2 /dev/fd0
+  #+end_src
+  You could create an MS-DOS floppy using -t msdos instead.
+
+  We can now mount the floppy, as described in the previous section, copy files
+  to it, and so forth. Remember to unmount the floppy before removing it from
+  the drive.
+* 
+  Creating a filesystem deletes all data on the corresponding physical device
+  (floppy, hard-drive partition, whatever). mkfs usually does not prompt you
+  before creating a filesystem, so be absolutely sure you know what you're
+  doing.
+
+  Creating a filesystem on a hard-drive partition is done exactly as shown
+  earlier, except that you would use the partition name, such as /dev/hda2, as
+  the device . Don't try to create a filesystem on a device, such as /dev/hda.
+  This refers to the entire drive, not just a single partition on the drive. You
+  can create partitions using *fdisk*, as described in Section 3.1.3. You should
+  be especially careful when creating filesystems on hard-drive partitions. Be
+  absolutely sure that the device and size arguments are correct. If you enter
+  the wrong device , you could end up destroying the data on your current
+  filesystems, and if you specify the wrong size , you could overwrite data on
+  other partitions. Be sure that size corresponds to the partition size as
+  reported by Linux fdisk.
+* 
+  When creating filesystems on floppies, it's usually best to do a *low-level
+  format first*. This lays down the sector and track information on the floppy
+  so that its size can be automatically detected using the devices /dev/fd0 or
+  /dev/fd1. One way to do a low-level format is with the MS-DOS FORMAT command;
+  another way is with the Linux program *fdformat*.(Debian users should use
+  superformat instead.) For example, to format the floppy in the first floppy
+  drive, use the command:
+  #+begin_src shell
+    rutabaga# fdformat /dev/fd0
+    Double-sided, 80 tracks, 18 sec/track. Total capacity 1440 kB.
+    Formatting ... done
+    Verifying ... done
+  #+end_src
+  Using the -n option with fdformat will skip the verification step.
+* 
+  Each filesystem-specific version of *mkfs* supports several options you might
+  find useful. Most types support the -c option, which causes the physical media
+  to be checked for bad blocks while creating the filesystem. If bad blocks are
+  found, they are marked and avoided when writing data to the filesystem. In
+  order to use these type-specific options, include them after the -t type
+  option to mkfs, as follows:
+  #+begin_src shell
+    mkfs -t type -c device blocks
+  #+end_src
+  To determine what options are available, see the manual page for the
+  type-specific version of mkfs. (For example, for the Second Extended
+  filesystem, see mke2fs.)
+
+  You may not have all available type-specific versions of mkfs installed. If
+  this is the case, mkfs will fail when you try to create a filesystem of a type
+  for which you have no mkfs.type. Many filesystem types supported by Linux have
+  a corresponding mkfs.type available, somewhere.
+* 
+  If you run into trouble using mkfs, it's possible that Linux is having
+  problems accessing the physical device. In the case of a floppy, this might
+  just mean a bad floppy. In the case of a hard drive, it could be more serious;
+  for example, the disk device driver in the kernel might be having problems
+  reading your drive. This could be a hardware problem or a simple matter of
+  your drive geometry being specified incorrectly. See the manual pages for the
+  various versions of mkfs, and read the sections in Chapter 3 on
+  troubleshooting installation problems. They apply equally here.(Also, the
+  procedure for making an ISO 9660 filesystem for a CD-ROM is more complicated
+  than simply formatting a filesystem and copying files. See the CD-Writing
+  HOWTO for more details.)
+

@@ -1,0 +1,16 @@
+The hardest thing about maintaining makefiles, at least if you're new to them,
+is getting the syntax right. OK, let's be straight about it, make syntax is
+really stupid. If you use spaces where you're supposed to use tabs or vice
+versa, your makefile blows up. And the error messages are really confusing.
+
+Always put a *tab* — not spaces — at the beginning of a command. And don't use a
+tab before any other line.
+
+You can place a hash sign (#) anywhere on a line to start a comment. Everything
+after the hash sign is ignored.
+
+If you put a *backslash* at the end of a line, it continues on the next line.
+That works for long commands and other types of makefile lines, too.
+
+Now let's look at some of the powerful features of make, which form a kind of
+programming language of their own.

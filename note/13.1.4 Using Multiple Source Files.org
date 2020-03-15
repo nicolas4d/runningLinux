@@ -1,0 +1,32 @@
+* 
+  The next step on your path to gcc enlightenment is to understand how to
+  compile programs using multiple source files. Let's say you have a program
+  consisting of two source files, foo.c and bar.c. Naturally, you would use one
+  or more header files (such as foo.h) containing function declarations shared
+  between the two programs. In this way, code in foo.c knows about functions in
+  bar.c, and vice versa.
+
+  To compile these two source files and link them together (along with the
+  libraries, of course) to produce the executable baz, you'd use the command:
+  #+begin_src shell
+    papaya$ gcc -o baz foo.c bar.c
+  #+end_src
+  This is roughly equivalent to the three commands:
+  #+begin_src shell
+    papaya$ gcc -c foo.c
+    papaya$ gcc -c bar.c
+    papaya$ gcc -o baz foo.o bar.o
+  #+end_src
+  gcc acts as a nice frontend to the linker and other "hidden" utilities invoked
+  during compilation.
+* 
+  Of course, compiling a program using multiple source files in one command can
+  be time-consuming. If you had, say, five or more source files in your
+  program, the gcc command in the previous example would recompile each source
+  file in turn before linking the executable. This can be a large waste of time,
+  especially if you only made modifications to a single source file since last
+  compilation. There would be no reason to recompile the other source files, as
+  their up-to-date object files are still intact.
+
+  The answer to this problem is to use a project manager such as make. We'll
+  talk about make later in the chapter, in Section 13.2.

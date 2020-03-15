@@ -1,0 +1,26 @@
+* 
+  If you have deleted important system files, it might be necessary to restore
+  backups while booting from an emergency disk. For this reason, it's important
+  to be sure your emergency disk has the tools you need to restore backups; this
+  includes programs such as tar and gzip, as well as the drivers necessary to
+  access the backup device. For instance, if your backups are made using the
+  floppy tape device driver, be sure that the ftape module and insmod command
+  are available on your emergency disk. See Section 7.5 in Chapter 7 for more
+  about this.
+
+  All that's required to restore backups to your hard-drive filesystems is to
+  mount those filesystems, as described earlier, and unpack the contents of the
+  archives over those filesystems (using the appropriate tar and gzip commands,
+  for example; see Section 8.1 earlier in this chapter). Remember that every
+  time you restore a backup you will be overwriting other system files; be sure
+  you're doing everything correctly so that you don't make the situation worse.
+  With most archiving programs, you can extract individual files from the
+  archive.
+* 
+  Likewise, if you want to use your original CD-ROM to restore files, be sure
+  the kernel used on your emergency disks has the drivers necessary to access
+  the CD-ROM drive. You can then mount the CD-ROM (remember the mount flags -r
+  -t iso9660) and copy files from there. The filesystems on your emergency disks
+  should also contain important system files; if you have deleted one of these
+  from your system, it's easy to copy the lost file from the emergency disk to
+  your hard-drive filesystem.

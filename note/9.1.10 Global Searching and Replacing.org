@@ -1,0 +1,45 @@
+* 
+  There are many more features of vi than are documented here; most of these
+  features are implemented through combinations of the simple features we've seen.
+  Here are one or two other tidbits most vi users find useful.
+
+  The command:
+  #+begin_src 
+  :[x,y]s/pattern/replacement/flags
+  #+end_src
+  searches for pattern between lines x and y in the buffer, and replaces instances
+  of pattern with the replacement text. pattern is a regular expression;
+  replacement is literal text but can contain several special characters to refer
+  to elements in the original pattern . The following command replaces the first
+  occurrence of weeble with wobble on lines 1 through 10, inclusive:
+  #+begin_src 
+  :1,10s/weeble/wobble
+  #+end_src
+* 
+  Instead of giving line-number specification, you can use the *%* symbol to
+  refer to the entire file. Other special symbols can be used in place of x and
+  y . *$* refers to the last line of the file. Leave x or y blank to refer to
+  the current line.
+
+  Among the flags you can use are *g* to replace all instances of pattern on
+  each line, and *c* to ask for confirmation for each replacement. In most
+  instances, you will want to use the g flag, unless you want to replace only
+  the first occurrence of pattern on each line.
+* 
+  You can also use marks to refer to lines. Marks are just single-letter names
+  that are given to cursor locations within the document. Moving the cursor to a
+  location in the file and typing *ma* will set the mark a at that point. (Marks
+  may be named any of the letters a-z or A-Z.) You can move the cursor directly
+  to the mark a with the command *`* a (with a backquote). Using a regular
+  single quote (as in *'* a ) will move the cursor to the beginning of the line
+  that the mark a is on.
+* 
+  Marks allow you to "remember" cursor locations that denote a region of text.
+  For example, if you want to search and replace a block of text, you can move
+  the cursor to the beginning of the text, set a mark, move the cursor to the
+  end of the text, and use the command:
+  #+begin_src 
+  :'a,.s/weeble/wobble/
+  #+end_src
+  where 'a refers to the line containing mark a , and . refers to the current
+  line.

@@ -1,0 +1,71 @@
+* 
+  Any shell commands can be executed in a makefile. But things can get kind of
+  complicated because make executes each command in a separate shell. So this
+  would not work:
+  #+begin_src makefile
+    target:
+      cd obj
+      HOST_DIR=/home/e
+      mv *.o $HOST_DIR
+  #+end_src
+  Neither the cd command nor the definition of the variable HOST_DIR has any
+  effect on subsequent commands. You have to string everything together into one
+  command. The shell uses a semicolon as a separator between commands, so you
+  can combine them all on one line, as in:
+  #+begin_src makefile
+    target:
+      cd obj ; HOST_DIR=/home/e ; mv *.o $$HOST_DIR
+  #+end_src
+* 
+  One more change: to define and use a shell variable within the command, you
+  have to double the *dollar sign*. This lets make know that you mean it to be a
+  shell variable, not a macro.
+
+  You may find the file easier to read if you break the semicolon-separated commands onto
+  multiple lines, using backslashes so that make considers them to be on one line:
+  #+begin_src makefile
+    target:
+      cd obj ; \
+      HOST_DIR=/home/e ; \
+      mv *.o $$HOST_DIR
+  #+end_src
+  Sometimes makefiles contain their own make commands; this is called recursive make. It
+  looks like this:
+  #+begin_src makefile
+    linuxsubdirs: dummy
+      set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i; done
+  #+end_src
+* 
+  The macro $(MAKE) invokes make. There are a few reasons for nesting makes. One
+  reason, which applies to this example, is to perform builds in multiple
+  directories (each of these other directories has to contain its own makefile).
+  Another reason is to define macros on the command line, so you can do builds
+  with a variety of macro definitions.
+
+  GNU make offers another powerful interface to the shell as an extension. You
+  can issue a shell command and assign its output to a macro. A couple of
+  examples can be found in the Linux kernel makefile, but we'll just show a
+  simple example here:
+  #+begin_src makefile
+    HOST_NAME = $(shell uname -n)
+  #+end_src
+  This assigns the name of your network node — the output of the uname -n
+  command — to the macro HOST_NAME .
+* 
+  make offers a couple of conventions you may occasionally want to use. One is
+  to put an at sign before a command, which keeps make from echoing the command
+  when it's executed:
+  #+begin_src makefile
+    @if [ -x /bin/dnsdomainname ]; then \
+      echo #define LINUX_COMPILE_DOMAIN \"`dnsdomainname`\"; \
+    else \
+      echo #define LINUX_COMPILE_DOMAIN \"`domainname`\"; \
+    fi >> tools/version.h
+  #+end_src
+  Another convention is to put a hyphen before a command, which tells make to
+  keep going even if the command fails. This may be useful if you want to
+  continue after an mv or cp command fails:
+  #+begin_src makefile
+  - mv edimh /usr/local
+  - mv readimh /usr/local
+  #+end_src

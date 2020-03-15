@@ -1,0 +1,34 @@
+* 
+  While using vi, at any one time you are in one of two (or three, depending on
+  how you look at it) modes of operation. These modes are known as *command mode*,
+  *edit mode*, and *ex mode*.
+
+  After starting vi, you are in command mode. This mode allows you to use a number
+  of (usually single-letter) commands to modify text, as we'll see soon. Text is
+  actually inserted and modified within edit mode. To begin inserting text, press
+  *i* (which will place you into edit mode) and begin typing:
+
+  While inserting text, you may type as many lines as you wish (pressing the Enter
+  key after each, of course), and you may correct mistakes using the Backspace
+  key. To end edit mode and return to command mode, press the *Escape* key.
+
+  While in command mode, you can use the arrow keys to move around the file.
+  Alternatively, or when the arrow keys don't work, you may use *h, j, k, and l*,
+  which move the cursor left, down, up, and right, respectively.
+* 
+  There are several ways to insert text other than using the i command. The *a*
+  command (for "append") inserts text after the current cursor position. For
+  example, use the left arrow key to move the cursor between the words good and
+  men :
+
+  Press a, type wo, and then press Escape to return to command mode:
+
+  To open a line below the current one and begin inserting text, use the *o*
+  command. Press *o* and type another line or two:
+
+  Remember that at any time you're either in command mode (where commands such
+  as i, a, or o are valid) or in edit mode (where you're inserting text,
+  followed by Escape to return to command mode). If you're not sure which mode
+  you're in, press Escape. This takes you out of edit mode, if you are in it,
+  and does nothing except beep if you're already in command mode.
+

@@ -1,0 +1,63 @@
+* 
+  By now, you must be itching to know how to invoke all these wonderful
+  features. It is important, especially to novice Unix and C programmers, to
+  know how to use gcc effectively. Using a command-line compiler such as gcc is
+  quite different from, say, using a development system such as Visual Studio or
+  C++ Builder under Windows.(A number of IDEs are available for Linux now. These
+  include both commercial ones like Kylix, the Linux version of Delphi, and open
+  source ones like KDevelop, which we will mention in the next chapter.) Even
+  though the language syntax is similar, the methods used to compile and link
+  programs are not at all the same. Let's return to our innocent-looking "Hello,
+  World!" example. How would you go about compiling and linking this program?
+
+  The first step, of course, is to enter the source code. You accomplish this
+  with a text editor, such as Emacs or vi. The would-be programmer should enter
+  the source code and save it in a file named something like hello.c. (As with
+  most C compilers, gcc is picky about the filename extension; that is, how it
+  can distinguish C source from assembly source from object files, and so on.
+  You should use the .c extension for standard C source.)
+* 
+  To compile and link the program to the executable hello, the programmer would
+  use the command:
+  #+begin_src sh
+    gcc -o hello hello.c
+  #+end_src
+  and (barring any errors), in one fell swoop, gcc compiles the source into an
+  object file, links against the appropriate libraries, and spits out the
+  executable hello, ready to run. In fact, the wary programmer might want to
+  test it:
+  #+begin_src shell
+    papaya$ ./hello
+      Hello, World!
+    papaya$
+  #+end_src
+  As as can be expected.
+
+  Obviously, quite a few things took place behind the scenes when executing this
+  single gcc command. First of all, gcc had to compile your source file,
+  hello.c, into an object file, hello.o. Next, it had to link hello.o against
+  the standard libraries and produce an executable.
+* 
+  By default, gcc assumes that you want not only to compile the source files you
+  specify, but also to have them linked together (with each other and with the
+  standard libraries) to produce an executable. First, gcc compiles any source
+  files into object files. Next, it automatically invokes the linker to glue all
+  the object files and libraries into an executable. (That's right, the linker
+  is a separate program, called *ld*, not part of gcc itself — although it can
+  be said that gcc and ld are close friends.) gcc also knows about the
+  "standard" libraries used by most programs and tells ld to link against them.
+  You can, of course, override these defaults in various ways.
+
+  You can pass multiple filenames in one gcc command, but on large projects
+  you'll find it more natural to compile a few files at a time and keep the .o
+  object files around. If you want only to compile a source file into an object
+  file and forego the linking process, use the -c switch with gcc, as in:
+  #+begin_src shell
+    gcc -c hello.c
+  #+end_src
+  This produces the object file hello.o and nothing else.
+* 
+  By default, the linker produces an executable named, of all things, a.out.
+  This is just a bit of left-over gunk from early implementations of Unix, and
+  nothing to write home about. By using the -o switch with gcc, you can force
+  the resulting executable to be named something different, in this case, hello.

@@ -1,0 +1,9 @@
+Let's fire up vi and edit a file. The syntax for vi is:
+#+begin_src shell
+  vi filename
+#+end_src
+For example:
+#+begin_src shell
+  vi test
+#+end_src
+The column of ~ characters indicates that you are at the end of the file.

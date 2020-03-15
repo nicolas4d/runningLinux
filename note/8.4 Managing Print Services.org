@@ -1,0 +1,67 @@
+* 
+  Linux has a fairly complicated printing system, compared to the printing
+  services most PCs use. It allows many users to print documents at the same
+  time, and each user can send documents from one or more applications without
+  waiting for the previous document to finish printing. The printing system
+  processes the files to be printed correctly on different kinds of printers
+  connected to the computer in different ways. If you print on a network, files
+  can be created on one host and printed out on a printer controlled by another
+  host. Before we go into the inner workings of the Linux printing system, we
+  would like to point you to *www.linuxprinting.org*+, a very comprehensive site
+  with information about printing on Linux. If you have problems or questions
+  concerning printing that this chapter cannot answer, this site should be your
+  next stop.
+* 
+  The whole process happens without much fuss, when you press the Print button
+  in an application or issue a command, such as *lpr*, to print a document. That
+  document does not go directly to the printer, though, because it might already
+  be busy. Instead, the document is stored in a temporary file in a directory
+  called the *printer spool directory*. As the word "spool" suggests, the
+  documents get taken out of the directory one by one as the printer becomes
+  free. Each printer has its own spool directory.
+
+  When Linux starts, it sets up a printer daemon (an independently running
+  process) called *lpd*. This process waits around, checking each spool
+  directory for files that should be printed. When the process finds a file, it
+  makes a copy of itself. The new lpd takes control of the print spool where the
+  file was placed and queues it for printing. It won't send the next file to
+  that printer until the last file has finished printing. The master lpd starts
+  an lpd for each spooling directory on the system when a file is sent to it, so
+  there may be as many lpd daemons running as the number of active spooling
+  directories, plus the master lpd. Each subordinate lpd stays around until its
+  spool directory is empty.
+* 
+  Your Linux installation process associates the printer port on your system to
+  a device named in the */dev* directory. You must then link that device name to
+  the convenient printer names you use in your commands; that's the role of the
+  printer capability file called */etc/printcap*.
+
+  Another key task in printer management is to make sure you have *filters* in
+  place for lpd to use when formatting documents for printing. These filters are
+  also specified in the */etc/printcap* file, and we'll talk a lot about them in
+  this section.
+
+  There are several printer-support packages for Linux. Most distributions use
+  the BSD-derived package that contains the lpd printer daemon. These packages
+  include a set of utilities and manpage documents to support traditional
+  Unix-style printing on Linux. The BSD printing system doesn't have as many
+  administrative tools or user controls as, for example, the System V Unix
+  printer-management system (which uses the lpsched or lprng daemon), but each
+  user controls the files that she sends to the printer. This section describes
+  installation and configuration of the BSD printer-support package. (The
+  various printing utilities are described in Section 9.6 in Chapter 9.)
+* 
+  There is a new system called Common Unix Printer System (CUPS) that is bound
+  to take over the Linux (if not Unix) printing world. At this point, very few
+  distributions come with CUPS preinstalled — the BSD printing system is still
+  ubiquitous — which is why we concentrate on the older system here. We'll look
+  at CUPS in brief later in this chapter, though.
+
+  Some Linux distributions provide a printer-management tool that simplifies
+  printer installation and management through a GUI. These tools are documented
+  by the vendor that supplies them. They manage printing by controlling the same
+  tools and files we are about to describe, but with less fine control. They can
+  save you a lot of trouble getting started, but they don't always get things
+  right. If you want to correct an installation set up through these tools or
+  want to improve on their performance, you still should work through the
+  procedures in this section.

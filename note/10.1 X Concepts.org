@@ -1,0 +1,58 @@
+* 
+  *X is based on a client-server model in which the X server is a program that
+  runs on your system and handles all access to the graphics hardware.* An X
+  client is an applications program that communicates with the server, sending
+  it requests, such as "draw a line" or "pay attention to keyboard input." The X
+  server takes care of servicing these requests by drawing a line on the display
+  or sending user input (via the keyboard, mouse, or whatever) to the client
+  application. Examples of X clients are the now-famous image manipulation
+  program GIMP and the many programs coming out of the aforementioned desktop
+  environments KDE and GNOME — e.g., the KDE email program kmail.
+
+  It is important to note that X is a network-oriented graphics system. That is,
+  X clients can run either locally (on the same system that the server is
+  running) or remotely (on a system somewhere on a TCP/IP network). The X server
+  listens to both local and remote network sockets for requests from clients.
+  This feature is obviously quite powerful. If you have a connection to a TCP/IP
+  network, you can log in to another system over the network and run an X
+  application there, directing it to display on your local X server.
+* 
+  Further advantages of X are security (if the user so desires), the modular
+  separation of functions, and the support for many different architectures. All
+  this makes the X Window System technically superior by far to all other window
+  systems.
+
+  The X Window System makes a distinction between application behavior and
+  window management. Clients running under X are displayed within one or more
+  windows on your screen. However, how windows are manipulated (placed on the
+  display, resized, and so forth) and how they are decorated (the appearance of
+  the window frames) are not controlled by the X server. Instead, such things
+  are handled by another X client called a window manager that runs concurrently
+  with the other X clients. Your choice of window manager will decide to some
+  extent how X as a whole looks and feels. Most window managers are utterly
+  flexible and configurable; the user can select the look of the window
+  decoration, the focus policy, the meaning of the mouse buttons when the mouse
+  is on the background part of the screen rather than on an application window,
+  and many other things by editing the configuration files of the window
+  manager. More modern systems even let you configure those aspects over a GUI.
+* 
+  In order to fully understand the concept of window managers, you need to know
+  that the window manager does not affect what the client application does
+  within the window. The window manager is only in charge of painting the window
+  decoration — that is, the frame and the buttons that let you close, move, and
+  resize windows.
+
+  There can be only one window manager on any X server. Theoretically, it is
+  even possible to completely do away with window managers, but then you would
+  not be able to move windows around the screen; put a hidden window on top; or
+  minimize, maximize, or resize windows unless the programs themselves provide
+  this functionality.
+  
+  Let's shortly mention the desktop environments again. A desktop environment
+  like KDE and GNOME is a collection of applications and tools with a common
+  look-and-feel as well as many other common properties — e.g., the menus of the
+  applications could all be set up according to the same concepts. Desktop
+  environments on X always need a window manager, as described earlier. Some
+  desktop environments provide their own window manager (such as kwin in the KDE
+  desktop environment), while others do not have their own window manager. It is
+  up to the user to install a window manager of his or her choice.

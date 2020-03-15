@@ -1,0 +1,1660 @@
+* 
+** 
+   If you're running your own Linux system, one of the first tasks at hand is to
+   learn the ropes of system administration. You won't be able to get by for
+   long without having to perform some kind of system maintenance, software
+   upgrade, or mere tweaking to keep things in running order.
+
+   Running a Linux system is not unlike riding and taking care of a motorcycle.
+   (At least one author attests a strong correspondence between Linux system
+   administration and Robert Pirsig's Zen and the Art of Motorcycle Maintenance.
+   Does Linux have the Buddha nature?) Many motorcycle hobbyists prefer caring
+   for their own equipment — routinely cleaning the points, replacing worn-out
+   parts, and so forth. Linux gives you the opportunity to experience the same
+   kind of "hands-on" maintenance with a complex operating system.
+
+   While a passionate administrator can spend any amount of time tuning it for
+   performance, you really have to perform administration only when a major
+   change occurs: you install a new disk, a new user comes on the system, or a
+   power failure causes the system to go down unexpectedly. We discuss all these
+   situations over the next four chapters.
+** 
+   Linux is surprisingly accessible, in all respects — from the more mundane
+   tasks of upgrading shared libraries to the more esoteric, such as mucking
+   about with the kernel. Because all the source code is available, and the body
+   of Linux developers and users has traditionally been of the hackish breed,
+   system maintenance is not only a part of daily life but also a great learning
+   experience. Trust us: there's nothing like telling your friends how you
+   upgraded from XFree86 3.3.6 to XFree86 4.0.3 in less than half an hour, and
+   all the while you were recompiling the kernel to support the ISO 9660
+   filesystem. (They may have no idea what you're talking about, in which case
+   you can give them a copy of this book.)
+
+   In the next few chapters, we explore your Linux system from the mechanic's
+   point of view — showing you what's under the hood, as it were — and explain
+   how to take care of it all, including software upgrades, managing users,
+   filesystems, and other resources, performing backups, and what to do in
+   emergencies.
+** 
+   Once you put the right entries in startup files, your Linux system will, for
+   the most part, run itself. As long as you're happy with the system
+   configuration and the software that's running on it, very little work will be
+   necessary on your part. However, we'd like to encourage Linux users to
+   experiment with their system and customize it to taste. Very little about
+   Linux is carved in stone, and if something doesn't work the way that you'd
+   like it to, you should be able to change that. For instance, if you'd prefer
+   to read blinking green text on a cyan background rather than the traditional
+   white-on-black, we'll show you how to configure that. (As long as you promise
+   not to let anyone know who told you.) But we'll also show you something even
+   more important: after installing a Linux distribution, you usually have lots
+   of services running that you may not need (like a web server). Any of these
+   services could be a potential *security hole*, so you might want to fiddle
+   with the startup files to get only the services you absolutely need.
+** 
+   It should be noted that many Linux systems include fancy tools to simplify
+   many system administration tasks. These include YaST on SuSE systems, COAS on
+   Caldera systems, and a number of utilities on Red Hat systems. These tools
+   can do everything from managing user accounts to creating filesystems to
+   doing your laundry. These utilities can make your life either easier or more
+   difficult, depending on how you look at them. In these chapters, we present
+   the "guts" of system administration, demonstrating the tools that should be
+   available on any Linux system and indeed nearly all Unix systems. These are
+   the core of the system administrator's toolbox: the metaphorical hammer,
+   screwdriver, and socket wrench that you can rely on to get the job done. If
+   you'd rather use the 40-hp circular saw, feel free, but it's always nice to
+   know how to use the hand tools in case the power goes out. Good follow-up
+   books, should you wish to investigate more topics in Unix system
+   administration, include the Unix System Administration Handbook, by Evi
+   Nemeth et. al. (Prentice Hall) and Essential System Administration, by Æleen
+   Frisch (O'Reilly).
+* 5.1 Maintaining the System
+** 
+   Being the system administrator for any Unix system requires a certain degree
+   of responsibility and care. This is equally true for Linux, even if you're
+   the only user on your system. Many of the system administrator's tasks are
+   done by logging into the *root account*. This account has special properties
+   on Unix systems; specifically, the usual file permissions and other security
+   mechanisms simply don't apply to root . That is, root can access and modify
+   any file on the system, no matter to whom it belongs. Whereas normal users
+   can't damage the system (say, by corrupting filesystems or touching other
+   users' files), root has no such restrictions.
+
+   Why does the Unix system have security in the first place? The most obvious
+   reason for this is to allow users to choose how they wish their own files to
+   be accessed. By changing file-permission bits (with the chmod command), users
+   can specify that certain files should be readable, writable, or executable
+   only by certain groups of other users, or by no other users at all.
+   Permissions help ensure privacy and integrity of data; you wouldn't want
+   other users to read your personal mailbox, for example, or to edit the source
+   code for an important program behind your back.
+** 
+   The Unix security mechanisms also prevent users from damaging the system. The
+   system restricts access to many of the raw device files (accessed via /dev —
+   more on this in Section 6.3 in Chapter 6) corresponding to hardware, such as
+   your hard drives. If normal users could read and write directly to the
+   disk-drive device, they could wreak all kinds of havoc: say, completely
+   overwriting the contents of the drive. Instead, the system requires normal
+   users to access the drives via the filesystem — where security is enforced
+   via the file permission bits described previously.
+** 
+   It is important to note that not all kinds of "damage" that can be caused are
+   necessarily malevolent. System security is more a means to protect users from
+   their own natural mistakes and misunderstandings rather than to enforce a
+   police state on the system. And, in fact, on many systems security is rather
+   lax; Unix security is designed to foster the sharing of data between groups
+   of users who may be, say, cooperating on a project. The system allows users
+   to be assigned to groups, and file permissions may be set for an entire
+   group. For instance, one development project might have free read and write
+   permission to a series of files, while at the same time other users are
+   prevented from modifying those files. With your own personal files, you get
+   to decide how public or private the access permissions should be.
+
+   The Unix security mechanism also prevents normal users from performing
+   certain actions, such as calling certain system calls within a program. For
+   example, there is a system call that causes the system to halt, called by
+   programs such as shutdown (more on this later in the chapter) to reboot the
+   system. If normal users could call this function within their programs, they
+   could accidentally (or purposefully) halt the system at any time.
+** 
+   In many cases, you have to bypass Unix security mechanisms in order to
+   perform system maintenance or upgrades. This is what the root *account is
+   for.* Because no such restrictions apply to root , it is easy for a
+   knowledgeable system administrator to get work done without worrying about
+   the usual file permissions or other limitations. The usual way to log in as
+   root is with the *su* command. su allows you to assume the identification of
+   another user. For example:
+   #+begin_src shell
+     su andy
+   #+end_src
+** 
+   will prompt you for the password for andy , and if it is correct it will set
+   your user ID to that of andy . A superuser often wants to temporarily assume
+   a regular user's identity to correct a problem with that user's files or some
+   similar reason. Without a username argument, su will prompt you for the root
+   password, validating your user ID as root . Once you are finished using the
+   root account, you log out in the usual way and return to your own mortal
+   identity. Why not simply log in as root from the usual login prompt? As we'll
+   see, this is desirable in some instances, but most of the time it's best to
+   use su after logging in as yourself. On a system with many users, use of su
+   records a message, such as:
+   #+begin_src shell
+     Nov 1 19:28:50 loomer su: mdw on /dev/ttyp1
+   #+end_src
+** 
+   in the system logs, such as /var/log/messages (we'll talk more about these
+   files later). This message indicates that the user mdw successfully issued an
+   su command, in this case for root . If you were to log in directly as root ,
+   no such message would appear in the logs; you wouldn't be able to tell which
+   user was mucking about with the root account. This is important if multiple
+   administrators are on the machine: it is often desirable to find out who used
+   su and when.
+   
+   There is an additional little twist to the su command. Just running it as
+   described previously while only change your user ID, but not give you the
+   settings made for this ID. You might have special configuration files for
+   each user (we'll show you later how to create these), but these are not
+   executed when using su this way. *In order to emulate a real login with all
+   the configuration files being executed, you need to add a -* , like this:
+** 
+   #+begin_src shell
+     su - andy
+   #+end_src
+   or
+   #+begin_src shell
+     su -
+   #+end_src
+   for becoming root and executing root 's configuration files.
+
+   The root account can be considered a magic wand — both a useful and
+   potentially dangerous tool. Fumbling the magic words you invoke while holding
+   this wand can wreak unspeakable damage on your system. For example, the
+   simple eight-character sequence __rm - rf /__ will delete every file on your
+   system, if executed as root , and if you're not paying attention. Does this
+   problem seem far-fetched? Not at all. You might be trying to delete an old
+   directory, such as /usr/src/oldp, and accidentally slip in a space after the
+   first slash, producing the following: 
+   #+begin_src shell
+     rm -rf / usr/src/oldp
+   #+end_src
+** 
+   Also problematic are directory names with spaces in them. Let's say you have
+   directory names Dir\ 1 and Dir\ 2, where the backslash indicates that Dir\ 1
+   is really one filename containing a space character. Now you want to delete
+   both directories, but by mistake add an extra space again:
+   #+begin_src shell
+     rm -rf Dir\*
+   #+end_src
+   Now there are two spaces between the backslash and the asterisk. The first
+   one is protected by the backslash, but not the second one, so it separates
+   the arguments and makes the asterisk a new argument. Oops, your current
+   directory and everything below it are gone.
+
+   Another common mistake is to confuse the arguments for commands such as *dd*,
+   a command often used to copy large chunks of data from one place to another.
+   For instance, in order to save the first 1024 bytes of data from the device
+   /dev/hda (which contains the boot record and partition table for that drive),
+   one might use the command:
+** 
+   #+begin_src shell
+     dd if=/dev/hda of=/tmp/stuff bs=1k count=1
+   #+end_src
+   However, if we reverse if and of in this command, something quite different
+   happens: the contents of /tmp/stuff are written to the top of /dev/hda. More
+   likely than not, you've just succeeded in hosing your partition table and
+   possibly a filesystem superblock. Welcome to the wonderful world of system
+   administration!
+
+   The point here is that you should sit on your hands before executing any
+   command as root . Stare at the command for a minute before pressing Enter and
+   make sure it makes sense. If you're not sure of the arguments and syntax of
+   the command, quickly check the manual pages or try the command in a safe
+   environment before firing it off. Otherwise you'll learn these lessons the
+   hard way; mistakes made as root can be disastrous.
+** 
+   A nice tip is to use the alias command to make some of the commands less
+   dangerous for root . For example, you could use:
+   #+begin_src shell
+     alias rm="rm -i"
+   #+end_src
+   The -i option stands for interactively and means that the rm command will ask
+   you before deleting each file. Of course, this does not protect you against
+   the horrible mistake shown above; the -f option (which stands for force)
+   simply overrides the -i because it comes later.
+
+   In many cases, the prompt for the root account differs from that for normal
+   users. Classically, the root prompt contains a hash mark ( # ), while normal
+   user prompts contain $ or % . (Of course, use of this convention is up to
+   you; it is utilized on many Unix systems, however.) Although the prompt may
+   remind you that you are wielding the root magic wand, it is not uncommon for
+   users to forget this or accidentally enter a command in the wrong window or
+   virtual console.
+** 
+   Like any powerful tool, the root account can also be abused. It is important,
+   as the system administrator, to protect the root password, and if you give it
+   out at all, to give it only to those users whom you trust (or who can be held
+   responsible for their actions on the system). If you're the only user of your
+   Linux system, this certainly doesn't apply — unless, of course, your system
+   is connected to a network or allows dial-in login access.
+   
+   The primary benefit of not sharing the root account with other users is not
+   so much that the potential for abuse is diminished, although this is
+   certainly the case. Even more important is that if you're the one person with
+   the ability to use the root account, you have complete knowledge of how the
+   system is configured. If anyone were able to, say, modify important system
+   files (as we'll talk about in this chapter), the system configuration could
+   be changed behind your back, and your assumptions about how things work would
+   be incorrect. Having one system administrator act as the arbiter for the
+   system configuration means that one person always knows what's going on.
+** 
+   Also, allowing other people to have the root password means that it's more
+   likely someone will eventually make a mistake using the root account.
+   Although each person with knowledge of the root password may be trusted,
+   anybody can make mistakes. If you're the only system administrator, you have
+   only yourself to blame for making the inevitable human mistakes as root .
+
+   That being said, let's dive into the actual tasks of system administration
+   under Linux. Buckle your seatbelt.
+* 5.2 Booting the System
+** 
+   There are several ways of booting Linux on your system. The most common
+   methods involve booting from the hard drive or using a boot floppy. In many
+   cases, the installation procedure will have configured one or both of these
+   for you; in any case, it's important to understand how to configure booting
+   for yourself.
+** 5.2.1 Using a Boot Floppy
+*** 
+    Traditionally, a Linux boot floppy simply contains a kernel image, which is
+    loaded into memory when you insert the floppy and start the system.( A Linux
+    boot floppy may instead contain a LILO boot record, which causes the system
+    to boot a kernel from the hard drive. We'll discuss this in the next section,
+    when we talk more about LILO.)
+
+    Many Linux distributions create a boot floppy for you in this way when
+    installing the system. Using a boot floppy is an easy way to boot Linux if
+    you don't want to bother booting from the hard drive. (For example, Windows
+    NT/2000's boot manager is somewhat difficult to configure for booting Linux.
+    We'll talk about this in the next section.) Once the kernel has booted from
+    the floppy, you are free to use the floppy drive for other purposes.
+
+    We'll include some technical information here in order to explain the boot
+    process, but rest assured that in most cases, you can just insert the floppy
+    disk, and booting works. Reading the following paragraphs will help you
+    understanding your system, though.
+*** 
+    The kernel image is usually compressed, using the same algorithm as the gzip
+    or the bzip2 compression programs (more on this in Section 7.4.2 in Chapter
+    7 ). Compression allows the kernel, which may be a megabyte or more in size,
+    to require only a few hundred kilobytes of disk space. Part of the kernel
+    code is not compressed: this part contains the routines necessary to
+    uncompress the kernel from the disk image and load it into memory.
+    Therefore, the kernel actually "bootstraps" itself at boot time by
+    uncompressing into memory.
+
+    A number of parameters are stored in the kernel image. Among these
+    parameters is the name of the device to use as the root filesystem once the
+    kernel boots. Another parameter is the text mode to use for the system
+    console. All these parameters may be modified using the *rdev* command,
+    which we'll discuss later in this section.
+*** 
+    After the kernel has started, it attempts to mount a filesystem on the root
+    device hardcoded in the kernel image itself. This will serve as the root
+    filesystem — that is, the filesystem on /. Section 6.1 in Chapter 6
+    discusses filesystems in more detail; all that you need to know for now is
+    that the kernel image must contain the name of your root filesystem device.
+    If the kernel can't mount a filesystem on this device, it gives up, issuing
+    a kernel "panic" message. (Essentially, a kernel panic is a fatal error
+    signaled by the kernel itself. A panic will occur whenever the kernel is
+    terminally confused and can't continue with execution. For example, if there
+    is a bug in the kernel itself, a panic might occur when it attempts to
+    access memory that doesn't exist. We'll talk about kernel panics more in the
+    section Section 8.6 in Chapter 8.)
+
+    The root device stored in the kernel image is that of your root filesystem
+    on the hard drive. This means that once the kernel boots, it mounts a
+    hard-drive partition as the root filesystem, and all control transfers to
+    the hard drive. Once the kernel is loaded into memory, it stays there — the
+    boot floppy need not be accessed again (until you reboot the system, of
+    course).
+*** 
+    Given a kernel image, you can create your own boot floppy. On many Linux
+    systems, the kernel itself is stored in the file */boot/vmlinuz*.(Why the
+    silly filename? On many Unix systems, the kernel is stored in a file named
+    /vmunix where vm stands for "virtual memory." Naturally, Linux has to be
+    different and names its kernel images vmlinux, and places them in the
+    directory /boot to get them out of the root directory. The name vmlinuz was
+    adopted to differentiate compressed kernel images from uncompressed images.
+    Actually, the name and location of the kernel don't matter a bit, as long as
+    you have either a boot floppy containing a kernel, or LILO knows how to find
+    the kernel image.) This is not a universal convention, however; other Linux
+    systems store the kernel in /vmlinuz or /vmlinux, and still others in a file
+    such as /Image. (If you have multiple kernel images, you can use LILO to
+    select which one to boot. See the next section.) Note that newly installed
+    Linux systems may not have a kernel image on the hard drive if a boot floppy
+    was created for you. In any case, you can build your own kernel. It's often
+    a good idea to do this anyway; you can "customize" the kernel to include
+    only those drivers for your particular hardware. See Section 7.4.2 in
+    Chapter 7 for details.
+*** 
+    All right. Let's say that you have a kernel image in the file /boot/vmlinuz.
+    To create a boot floppy, the first step is to use rdev to set the root
+    device to that of your Linux root filesystem. (If you built the kernel
+    yourself, this should be already set to the correct value, but it can't hurt
+    to check with rdev.) We discussed how to create the root device in Section
+    3.1.2 and Section 3.1.3 in Chapter 3.
+
+    As root , use rdev -h to print a usage message. As you will see, there are many supported
+    options, allowing you to specify the root device (our task here), the swap device, ramdisk size,
+    and so on. For the most part, you needn't concern yourself with these options now.
+
+    If we use the command rdev /boot/vmlinuz, the root device encoded in the
+    kernel found in /boot/vmlinuz will be printed:
+    #+begin_src shell
+    courgette:/# rdev /boot/vmlinuz
+    Root device /dev/hda1
+    #+end_src
+*** 
+    If this is incorrect, and the Linux root filesystem is actually on
+    /dev/hda3, we should use the following command:
+    #+begin_src shell
+    courgette:/# rdev /boot/vmlinuz /dev/hda3
+    courgette:/#
+    #+end_src
+    rdev is the strong, silent type; nothing is printed when you set the root
+    device, so run rdev /boot/vmlinuz again to check that it is set correctly.
+
+    Now you're ready to create the boot floppy. For best results, use a
+    brand-new, formatted floppy. You can format the floppy under Windows or
+    using *fdformat* under Linux;(Some versions of the Debian distribution don't
+    have an fdformat command; use the *aptly* named superformat instead.) this
+    will lay down the sector and track information so that the system can
+    auto-detect the size of the floppy. (See the section Section 6.1 in Chapter
+    6 for more on using floppies.)
+*** 
+    To create the boot floppy, use dd to copy the kernel image to it, as in:
+    #+begin_src shell
+      courgette:/# dd if=/boot/vmlinuz of=/dev/fd0 bs=8192
+    #+end_src
+    If you're interested in dd, the manual page will be illustrative; in brief,
+    this copies the input file (if option) named /boot/vmlinuz to the output
+    file (of option) named /dev/fd0 (the first floppy device), using a block
+    size (bs) of 8192 bytes. Of course, the plebian cp can be used as well, but
+    we Unix sysadmins love to use cryptic commands to complete relatively simple
+    tasks. That's what separates us from mortal users.
+
+    Your boot floppy should now be ready to go. You can shut down the system
+    (see Section 5.5 later in this chapter) and boot with the floppy, and if all
+    goes well, your Linux system should boot as it usually does. It might be a
+    good idea to make an extra boot floppy as a spare, and in Section 8.6 in
+    Chapter 8, we describe methods by which boot floppies can be used to recover
+    from disaster.
+** 5.2.2 Using LILO
+***   
+    LILO is a general-purpose boot manager that can boot whatever operating
+    systems you have installed on your machine, including Linux. There are
+    dozens of ways to configure LILO. Here, we're going to discuss the two most
+    common methods: installing LILO on the master boot record of your hard drive
+    and installing LILO as a secondary boot loader for Linux only.
+
+    LILO is the most common way to boot Linux from the hard drive. (By the
+    expression "boot from the hard drive," we mean that the kernel itself is
+    stored on the hard drive and no boot floppy is required, but remember that
+    even when you use a boot floppy, control is transferred to the hard drive
+    once the kernel is loaded into memory.) If LILO is installed on your drive's
+    master boot record, or MBR, it is the first code to run when the hard drive
+    is booted. LILO can then boot other operating systems — such as Linux or
+    Windows — and allow you to select between them at boot time.
+
+    It should be mentioned here that LILO is not the only boot manager available
+    for booting Linux. There are alternatives like grub (Grand Unified
+    Bootloader) that work just as well. However, because most distributions use
+    LILO, this is also what we will cover here.
+*** 
+    However, Windows NT and later versions of Windows have boot managers of
+    their own that occupy the MBR. If you are using one of these systems, in
+    order to boot Linux from the hard drive, you may have to install LILO as the
+    "secondary" boot loader for Linux only. In this case, LILO is installed on
+    the boot record for just your Linux root partition, and the boot manager
+    software (for Windows NT/2000) takes care of executing LILO from there when
+    you wish to boot Linux.
+
+    As we'll see, however, the Windows NT/2000 boot managers are somewhat
+    uncooperative when it comes to booting LILO. This is a poor design decision,
+    and if you must absolutely use one of these boot managers, it might be
+    easier to boot Linux from floppy instead. Read on. Or, if you really want to
+    go with Linux all the way, you can use LILO to boot Windows NT/2000 and dump
+    the Windows boot managers completely.
+*** 
+    Use of LILO with Windows 95/98/ME/2000 is quite simple. You just configure
+    LILO to boot Windows 95/98/ME/2000 (see the next section). However, if you
+    install Windows 95/98/ME/2000 after installing LILO, you need to reinstall
+    LILO (as the Windows 95/98/ME/2000 installation procedure overwrites the MBR
+    of your primary hard drive). Just be sure you have a Linux boot floppy on
+    hand so that you can boot Linux and rerun LILO.
+
+    Before proceeding you should note that a number of Linux distributions are
+    capable of configuring and installing LILO when you first install the Linux
+    software. However, it's often best to configure LILO yourself, just to
+    ensure that everything is done correctly.
+*** 5.2.2.1 The /etc/lilo.conf file
+**** 
+     The first step in configuring LILO is to set up the LILO configuration file,
+     which is often stored in /etc/lilo.conf. (On other systems, the file may be
+     found in /boot/lilo.conf or /etc/lilo/config.)
+
+     We are going to walk through a sample lilo.conf file. You can use this file
+     as a base for your own lilo.conf and edit it for your own system.
+
+     The first section of this file sets up some basic parameters:
+     #+begin_src shell
+      boot = /dev/hda
+      compact
+      install = /boot/boot.b
+      map = /boot/map
+     #+end_src
+**** 
+     The boot line sets the name of the device where LILO should install itself
+     in the boot record. In this case, we want to install LILO in the master boot
+     record of /dev/hda, the first non-SCSI hard drive. If you're booting from a
+     SCSI hard drive, use a device name such as /dev/sda instead. If you give a
+     partition device name (such as /dev/hda2), instead of a drive device, LILO
+     will be installed as a secondary boot loader on the named partition. We'll
+     talk about this in more detail later.
+**** 
+     The compact line tells LILO to perform some optimization; always use this
+     unless you are seriously hacking on your LILO configuration.(In some cases,
+     you will need the linear option, which should not be used together with
+     compact. See the LILO documentation for more information.) Likewise, always
+     use the install and map lines as shown. install names the file containing
+     the boot sector to use on the MBR, and map specifies the "map file" that
+     LILO creates when installed. On many distributions (like SuSE), these files
+     should be in the directory /boot, although on other systems they may be
+     found in /etc/lilo. /boot/map won't be created until you install LILO for
+     the first time.
+**** 
+     Now, for each operating system you wish LILO to boot, add a stanza to
+     /etc/lilo.conf. For example, a Linux stanza might look like this:
+     #+begin_src shell
+       # Stanza for Linux with root  partition on /dev/hda2.
+       image = /boot/vmlinuz    # Location of kernel
+       label = linux    #  Name of OS (for the LILO boot menu)
+       root = /dev/hda2   #  Location of root partition
+       vga = ask    #  Ask for VGA text mode at boot time
+     #+end_src
+     The image line specifies the name of the kernel image. Subfields include
+     label , which gives this stanza a name to use with the LILO boot menu (more
+     on this later); root , which specifies the Linux root partition; and vga ,
+     which specifies the VGA text mode to use for the system console.
+**** 
+     Valid modes for vga are normal (for standard 80x25 display), extended (for
+     extended text mode, usually 132x44 or 132x60), ask (to be prompted for a
+     mode at boot time), or an integer (such as 1, 2, or 3). The integer
+     corresponds to the number of the mode you select when using ask . The exact
+     text modes available depend on your video card; use vga = ask to get a
+     list.
+
+     If you wish to boot multiple Linux kernels — for example, if you're doing
+     some kernel debugging — you can add an image stanza for each one. The only
+     required subfield of the image stanza is label . If you don't specify root
+     or vga , the defaults coded into the kernel image itself using rdev will be
+     used. If you do specify root or vga , these override the values you may
+     have set using rdev. Therefore, if you are booting Linux using LILO,
+     there's no need to use rdev; the LILO configuration file sets these boot
+     parameters for you.
+**** 
+     A stanza for booting Windows 95/98/ME/2000 would look like the following:
+     #+begin_src shell
+       # Stanza for Win 95/Win 98/Win ME/Win 2000 partition on /dev/hda1.
+       other  = /dev/hda1 # Location of partition
+       table  = /dev/hda # Location of partition table for /dev/hda2
+       label  = windows # Name of OS (for boot menu)
+     #+end_src
+     If you wish to boot a Windows 95/98/ME/2000 partition located on the second
+     drive, you should add the line:
+     #+begin_src shell
+       loader = /boot/any_d.b
+     #+end_src
+     to the Windows other stanza.
+
+     Many more options are available for LILO configuration. The LILO
+     distribution itself (found on most Linux FTP sites and distributions)
+     includes an extensive manual describing them all. The previous examples
+     should suffice for most systems, however.
+**** 
+     Once you have your /etc/lilo.conf ready, you can run the command:
+     #+begin_src shell
+       /sbin/lilo
+     #+end_src
+     as root . This should display information, such as the following:
+     #+begin_src shell
+       courgette:/# /sbin/lilo
+       Added linux
+       Added windows
+       courgette:/#
+     #+end_src
+     Using the -v option with lilo prints more diagnostic information should
+     something go wrong; also, using the -C option allows you to specify a
+     configuration file other than /etc/lilo.conf.
+**** 
+     Once this is done, you're ready to shut down your system (again, see
+     Section 5.5 later in this chapter for details), reboot, and try it out. The
+     first operating system stanza listed in /etc/lilo.conf will be booted by
+     default. To select one of the other kernels or operating systems listed in
+     /etc/lilo.conf, hold down the Shift or Ctrl key or simply press the Scroll
+     Lock key while the system boots. This should present you with a LILO boot
+     prompt:
+     #+begin_src shell
+       boot:
+     #+end_src
+     Here, you can press Tab to get a list of available boot options:
+     #+begin_src shell
+       boot: tab-key
+       linux windows
+     #+end_src
+**** 
+     These are the names given with label lines in /etc/lilo.conf. Enter the
+     appropriate label, and that operating system will boot. In this case,
+     entering windows causes Windows to boot from /dev/hda1, as we specified in
+     the lilo.conf file.
+
+     It should be noted here that some distributions add a fancy GUI to LILO
+     (typically, this involves a Tux, the Linux penguin, in the background).
+     However, configuring these should be no different from configuring the
+     plain, old text-mode LILO.
+*** 5.2.2.2 Using LILO as a secondary bootloader
+**** 
+     If you're using the Windows NT/2000 boot manager, installing the Debian
+     distribution of Linux, or don't want LILO to inhabit the master boot record
+     of your drive, you can configure LILO as a secondary bootloader, which will
+     live on the boot record of just your Linux root partition.
+
+     To do this, simply change the boot = ... line of /etc / lilo.conf to the
+     name of the Linux root partition. For example:
+     #+begin_src shell
+       boot = /dev/hda2
+     #+end_src
+**** 
+     will install LILO on the boot record of /dev/hda2, to boot Linux only. Note
+     that this works only for primary partitions on the hard drive (not for
+     extended or logical partitions). This restriction does not apply to the
+     Debian distribution, however, where the MBR can boot an operating system
+     from a boot sector in an extended (but not logical) partition. In order to
+     boot Linux in this way, the Linux root partition should be marked as
+     "active" in the partition table. This can be done using fdisk under Linux
+     or Windows. When booting the system, the BIOS will read the boot record of
+     the first "active" partition to start Linux.
+
+     If you are using Windows NT/2000's boot manager, you should install LILO in
+     this way, and then tell the boot manager to boot another operating system
+     from that partition on your hard drive. The method for doing this depends
+     on the boot manager in question; see your documentation for details.
+*** 5.2.2.3 Specifying boot time options
+**** 
+     When you first installed Linux, more than likely you booted either from a
+     floppy or a CD- ROM, which gave you the now-familiar LILO boot prompt. At
+     this prompt you can enter several boot time options, such as:
+     #+begin_src shell
+      hd= cylinders , heads , sectors
+     #+end_src
+     to specify the hard-drive geometry. Each time you boot Linux, it may be
+     necessary to specify these parameters in order for your hardware to be
+     detected correctly, as described in Section 3.1.1 in Chapter 3. If you are
+     using LILO to boot Linux from the hard drive, you can specify these
+     parameters in /etc/lilo.conf instead of entering them at the boot prompt
+     each time. To the Linux stanza of the lilo.conf file, just add a line, such
+     as:
+     #+begin_src shell
+      append = "hd=683,16,38"
+     #+end_src
+**** 
+     This causes the system to behave as though hd=683,16,38 were entered at the
+     LILO boot prompt. If you wish to specify multiple boot options, you can do
+     so with a single append line, as in:
+     #+begin_src shell
+      append = "hd=683,16,38 hd=64,32,202"
+     #+end_src
+     In this case, we specify the geometry for the first and second hard drives,
+     respectively. Note that you need to use such boot options only if the kernel
+     doesn't detect your hardware at boot time, which is unlikely unless you have
+     very old or very uncommon hardware. You should already know if this is
+     necessary, based on your experiences with installing Linux; in general, you
+     should have to use an append line in lilo.conf only if you had to specify
+     these boot options when first booting the Linux installation media.
+**** 
+     There are a number of other boottime options. Most of them deal with
+     hardware detection, which has already been discussed in Chapter 3. However,
+     the following additional options may also be useful to you:
+**** 
+     single
+     Boot the system in single-user mode; skip all the system configuration and start a root
+     shell on the console. See Section 8.6 in Chapter 8 for hints on using this.
+     root= partition
+     Mounts the named partition as the Linux root filesystem. This overrides any value
+     given in /etc/lilo.conf.
+     ro
+     Mounts the root filesystem as read-only. This is usually done in order to run fsck; see
+     Section 6.1.5 in Chapter 6.
+     ramdisk= size
+     Specifies a size, in bytes, for the ramdisk device. This overrides any value in
+     /etc/lilo.conf. Most users need not worry about using the ramdisk; it's useful primarily
+     for installation.
+     vga= mode
+     Sets the VGA display mode. This overrides any value in /etc/lilo.conf. Valid modes
+     are normal , extended , ask , or an integer. This option is equivalent to the vga =
+     values used in lilo.conf; see Section 5.2.2.1 earlier in this chapter.
+**** 
+     mem= size
+     Tells the kernel how much RAM you have. If you have 64 MB or less, the kernel can
+     get this information from the BIOS, but if you use an older kernel and you have more,
+     you will have to tell the kernel the exact amount, or it will use only the first 64 MB.
+     For example, if you have 128 MB, specify mem=128m . Fortunately, this is no longer
+     necessary with newer kernels.
+     Any of these options can be entered by hand at the LILO boot prompt or specified with the
+     append option in /etc/lilo.conf.
+     LILO includes complete documentation that describes all the configuration options available.
+     On many Linux systems this documentation can be found in /usr/src/lilo; on Debian systems,
+     it is in /usr/share/doc/lilo/Manual.txt.gz. If you can't seem to find anything, grab the LILO
+     distribution from one of the Linux archive sites, or ask your Linux vendor to provide the
+     sources and documentation for LILO. This documentation includes a manual that describes all
+     the concepts of booting and using LILO in detail, as well as a README file that contains
+     excerpts from this manual, formatted as plain text.
+*** 5.2.2.4 Removing LILO
+**** 
+     If you have LILO installed on your MBR, the easiest way to remove it is to
+     use Windows fdisk. The command:
+     #+begin_src shell
+    FDISK /MBR
+     #+end_src
+     runs fdisk and overwrites the MBR with a valid Windows boot record.
+
+     LILO saves backup copies of your original boot record in the files
+     /boot/boot.0300 (for IDE drives) and /boot/boot.0800 (for SCSI drives).
+     These files contain the MBR of the drive before LILO was installed. You can
+     use the dd command to replace the boot record on the drive with this backup
+     copy. For example:
+     #+begin_src shell
+      dd if=/boot/boot.0300 of=/dev/hda bs=446 count=1
+     #+end_src
+**** 
+     copies the first 446 bytes of the file /boot/boot.0300 to /dev/hda. Even though the files are 512
+     bytes in size, only the first 446 bytes should be copied back to the MBR.
+     Be very careful when using this command! This is one of those cases where blindly executing
+     commands you find in a book can cause real trouble if you're not sure what you're doing. Use
+     this method only as a last resort and only if you're certain that the files /boot/boot.0300 or
+     /boot/boot.0800 contain the boot record you want. Many distributions of Linux come installed
+     with bogus versions of these two files; you might need to delete them before you install LILO.
+     The LILO documentation contains further hints for removing LILO and debugging your
+     LILO configuration.
+* 5.3 System Startup and Initialization
+** 
+   In this section, we're going to talk about exactly what happens when the
+   system boots. Understanding this process and the files involved is important
+   for performing various kinds of system configuration.
+** 5.3.1 Kernel Boot Messages
+***   
+    The first step is booting the kernel. As described in the previous section,
+    this can be done from floppy or hard drive. As the kernel loads into memory,
+    it will print messages to the system console, but usually also saves them in
+    the system log files as well. As root , you can always check the file
+    */var/log/messages* (which contains kernel messages emitted during runtime
+    as well). The command dmesg prints out the last lines of the kernel message
+    ring buffer; directly after booting, naturally, you will get the boot
+    messages.
+
+    In the following few paragraphs, we'll go through a couple of the more
+    interesting messages and explain what they mean. These messages are all
+    printed by the kernel itself, as each device driver is initialized. The
+    exact messages printed depend on what drivers are compiled into your kernel
+    and what hardware you have on your system. You are likely to have more,
+    fewer or different messages; we'll concentrate here on the messages that are
+    quite common. The line:
+*** 
+    #+begin_src shell
+      Linux version 2.4.10-64GB-SMP (root@SMP_X86.suse.de) \
+      (gcc version 2.95.3 20010315) #1 SMP Fri Sep 28 17:26:36 GMT 2001
+    #+end_src
+    tells you the version number of the kernel, on which machine, when, and with
+    which compiler it was built.
+
+    Next, the kernel reports which processors it has found and, because this
+    output is from a system with two processors, how the processors will work
+    together:
+*** 
+    #+begin_src shell
+    Intel MultiProcessor Specification v1.1
+    Virtual Wire compatibility mode.
+    OEM ID: OEM00000 Product ID: PROD00000000 APIC at: 0xFEE00000
+    Processor #0 Pentium(tm) Pro APIC version 17
+    Floating point unit present.
+    Machine Exception supported.
+    64 bit compare & exchange supported.
+    Internal APIC present.
+    Bootup CPU
+**** 
+     Processor #1 Pentium(tm) Pro APIC version 17
+     Floating point unit present.
+     Machine Exception supported.
+     64 bit compare & exchange supported.
+     Internal APIC present.
+     ...
+     I/O APIC #2 Version 17 at 0xFEC00000.
+     Processors: 2
+     mapped APIC to ffffe000 (fee00000)
+     mapped IOAPIC to ffffd000 (fec00000)
+     Detected 498673 kHz processor.
+     #+end_src
+***     
+    Then, it tells us which console font it has picked and which console type it
+    has detected:
+    #+begin_src shell
+      Console: color VGA+ 80x25
+    #+end_src
+    Note that this involves only the text mode being used by the kernel, not the
+    capabilities of your video card. (An SVGA video card is reported as VGA+ as
+    far as the console text mode is concerned.)
+
+    The kernel gathers information about the PCI bus and checks for any PCI
+    cards present in the system:
+*** 
+    #+begin_src shell
+      PCI: PCI BIOS revision 2.10 entry at 0xfb140, last bus=1
+      PCI: Using configuration type 1
+      PCI: Probing PCI hardware
+      PCI: Using IRQ router PIIX [8086/7110] at 00:07.0
+      PCI: Found IRQ 14 for device 00:07.2
+      PCI: Sharing IRQ 14 with 00:0b.0
+      Limiting direct PCI/PCI transfers.
+      You'll then see the "BogoMIPS" calculation for your processor:
+      Calibrating delay loop... 996.14 BogoMIPS
+      Calibrating delay loop... 996.14 BogoMIPS
+      Total of 2 processors activated (1992.29 BogoMIPS).
+    #+end_src
+*** 
+    This is an utterly bogus (hence the name) measurement of processor speed,
+    which is used to obtain optimal performance in delay loops for several
+    device drivers. The kernel also prints information on the system memory:
+    #+begin_src shell
+      Memory: 770672k/786368k available (1390k kernel code, 15308k reserved, 392k
+      data, 128k init, 0k highmem)
+    #+end_src
+    Here, we see that 770672 KB of RAM are available for the system to use; the
+    kernel itself is using 1390 KB.
+    
+    Various memory structures and properties of the CPU are then determined. For
+    example, the line:
+    #+begin_src shell
+      CPU serial number disabled.
+    #+end_src
+    tells you that the Linux kernel has simply turned off the infamous serial
+    number feature of the Pentium III CPU.
+*** 
+    Linux then sets up networking, the mouse port, and the serial driver. A line such as:
+    #+begin_src shell
+      ttyS00 at 0x03f8 (irq = 4) is a 16550A
+    #+end_src
+    means that the first serial device (/dev/ttyS00, or COM1) was detected at
+    address 0x03f8, IRQ 4, using 16550A UART functions. Next comes some more
+    hardware detection like the real- time clock and the floppy drive:
+    #+begin_src shell
+      Real Time Clock Driver v1.10e
+      ...
+      Floppy drive(s): fd0 is 1.44M
+      FDC 0 is a post-1991 82077
+      loop: loaded (max 8 devices)
+      ide-floppy driver 0.97.sv
+      ...
+    #+end_src
+*** 
+    A bit later, the system is checking for a SCSI host adapter. The kernel
+    prints out information about all SCSI devices found; this is verbose and not
+    really worth reproducing here. The line:
+    #+begin_src shell
+      Adding Swap: 120480k swap-space (priority 42)
+    #+end_src
+    tells you how much swap space the kernel has found. Among the further tasks
+    performed during a typical boot are finding and configuring a parallel port
+    ( lp1 ), detecting and configuring the network card, and finally setting up
+    the USB subsystem.
+** 5.3.2 init, inittab, and rc Files
+***    
+    Once the device drivers are initialized, the kernel executes the *program
+    init*, which is found in /etc, /bin, or /sbin (it's /sbin/init on most
+    systems). init is a general-purpose program that spawns new processes and
+    restarts certain programs when they exit. For example, each virtual console
+    has a getty process running on it, started by init. Upon login, the getty
+    process is replaced with another. After logging out, init starts a new getty
+    process, allowing you to log in again.
+
+    init is also responsible for running a number of programs and scripts when
+    the system boots. *Everything init does is controlled by the file
+    /etc/inittab*. In order to understand this file, you need to understand the
+    concept of runlevels first.
+*** 
+    A *runlevel* is a number or letter that specifies the current system state,
+    as far as init is concerned. For example, when the system runlevel is
+    changed to 3, all entries in /etc/inittab containing 3 in the column
+    specifying the runlevels will be executed. Runlevels are a useful way to
+    group entries in /etc/inittab together. For example, you might want to say
+    that runlevel 1 executes only the bare minimum of configuration scripts,
+    runlevel 2 executes everything in runlevel 1 plus networking configuration,
+    runlevel 3 executes everything in levels 1 and 2 plus dial-in login access,
+    and so on. Today, the Red Hat distribution is set up so that runlevel 5
+    automatically starts the X Window System graphical interface. The SuSE
+    distribution does it at runlevel 3, and the Debian distribution does so at
+    runlevel 2 — provided you have installed X.
+*** 
+    For the most part, you don't need to concern yourself with runlevels. When
+    the system boots, it enters the default runlevel (set in /etc/inittab, as we
+    will soon show). On most systems, this default is runlevel 2 or 3. After we
+    discuss normal booting, we'll show you how to enter another runlevel that
+    you will sometimes need to use — runlevel 1, or single-user mode. Let's take
+    a look at a sample /etc/inittab file:
+*** 
+    #+begin_src shell
+    # Set the default runlevel to three
+    id:3:initdefault:
+    # Execute /etc/rc.d/rc.sysinit when the system boots
+    si:S:sysinit:/etc/rc.d/rc.sysinit
+    # Run /etc/rc.d/rc with the runlevel as an argument
+    l0:0:wait:/etc/rc.d/rc 0
+    l1:1:wait:/etc/rc.d/rc 1
+    l2:2:wait:/etc/rc.d/rc 2
+    l3:3:wait:/etc/rc.d/rc 3
+*** 
+    l4:4:wait:/etc/rc.d/rc 4
+    l5:5:wait:/etc/rc.d/rc 5
+    l6:6:wait:/etc/rc.d/rc 6
+    # Executed when we press ctrl-alt-delete
+    ca::ctrlaltdel:/sbin/shutdown -t3 -rf now
+    # Start agetty for virtual consoles 1 through 6
+    c1:12345:respawn:/sbin/agetty 38400 tty1
+    c2:12345:respawn:/sbin/agetty 38400 tty2
+    c3:45:respawn:/sbin/agetty 38400 tty3
+    c4:45:respawn:/sbin/agetty 38400 tty4
+    c5:45:respawn:/sbin/agetty 38400 tty5
+    c6:45:respawn:/sbin/agetty 38400 tty6
+    #+end_src
+***     
+    Fields are separated by colons. The last field is the most recognizable: it
+    is the command that init executes for this entry. The first field is an
+    arbitrary identifier (it doesn't matter what it is so long as it's unique in
+    the file) while the second indicates what runlevels cause the command to be
+    invoked. The third field tells init how to handle this entry; for example,
+    whether to execute the given command once or to respawn the command whenever
+    it exits.
+
+    The exact contents of /etc/inittab depend on your system and the
+    distribution of Linux you have installed.
+*** 
+    In our sample file, we see first that the default runlevel is set to 3. The action field for this
+    entry is initdefault , which causes the given runlevel to be set to the default. That's the
+    runlevel normally used whenever the system boots. You can override the default with any
+    level you want by running init manually (which you might do when debugging your
+    configuration) and passing in the desired runlevel as an argument. For instance, the following
+    command shuts down all current processes and starts runlevel 5 (warn all your users to log off
+    before doing this!):
+    #+begin_src shell
+      tigger# init 5
+    #+end_src
+*** 
+    LILO can also boot in single-user mode (usually runlevel 1) — see Section
+    5.2.2.3 earlier in this chapter.
+
+    The next entry tells init to execute the script /etc/rc.d/rc.sysinit when
+    the system boots. (The action field is sysinit , which specifies that this
+    entry should be executed when init is first started at system boot.) This
+    file is simply a shell script containing commands to handle basic system
+    initialization; for example, swapping is enabled, filesystems are checked
+    and mounted, and the system clock is synchronized with the CMOS clock. You
+    can take a look at this file on your system; we'll be talking more about the
+    commands contained therein in Chapter 6; sees Section 6.1 and Section 6.2.
+    On other distributions, this file might be elsewhere. For example, on SuSE
+    it is /etc/init.d/boot, which is also where it should be according to the
+    Linux Filesystem Hierarchy Standard (FHS).
+*** 
+    Next, we see that the system executes the script /etc/rc.d/rc when it enters
+    any of the runlevels through 6, with the appropriate runlevel as an
+    argument. rc is a generic startup script that executes other scripts as
+    appropriate for that runlevel. The action field here is wait , which tells
+    init to execute the given command , and to wait for it to complete execution
+    before doing anything else.
+** 5.3.3 rc Files
+*** 
+    Linux stores startup commands in files with rc in the name, using an old
+    Unix convention. The commands do all the things necessary to have a fully
+    functioning system, like starting the servers or daemons mentioned in
+    Chapter 4. Thanks to these commands, the system comes up ready with logging
+    facilities, mail, a web server, or whatever you installed and asked it to
+    run. As explained in the previous section, the files are invoked from
+    /etc/inittab. The commands are standard shell commands, and you can simply
+    read the various rc files to see what they do.
+*** 
+    In this section, we describe the structure of the rc files so that you can
+    understand where everything starts, and so that you can start or stop
+    servers manually in the rare case that they don't do what you want them to
+    do. We'll use Red Hat as our model, but once you get the idea of what to
+    look for, you can find the corresponding files on any Linux distribution.
+    Red Hat is both a good and a bad example because it violates the FHS. The
+    Linux FHS is a distribution- neutral initiative to define standard directory
+    names and filenames for important system files. Any Linux distribution that
+    wants to be a good Linux citizen should follow this standard. Red Hat has
+    decided — not for the first time — not to be a good citizen, so the path-
+    and file- names given here for Red Hat give you an example of the variety
+    that you may encounter when looking for system files. Examples for
+    distributions following the FHS are SuSE and Debian.
+*** 
+    On Red Hat, the top-level rc script is */etc/rc.d/rc*. The path is slightly
+    different in other distributions (*/etc/init.d/rc* on SuSE, for instance),
+    but the contents are similar. In the previous section, you saw how the
+    /etc/inittab invokes the script under a variety of circumstances with
+    different numbers from 0 to 6 as arguments. The numbers correspond to
+    runlevels, and each one causes the rc files to invoke a different set of
+    scripts. So our next step is to find the scripts corresponding to each
+    runlevel.
+
+    On Red Hat, scripts for each runlevel are stored in the directory
+    */etc/rc.d/rc N .d* where N is the runlevel being started. Thus, for
+    runlevel 3, scripts in /etc/rc.d/rc3.d would be used. Again,
+*** 
+    slightly different conventions are the rule in other distributions. On
+    Debian, for instance, the directory for each runlevel is */etc/rc N .d/*.
+
+    Take a look in one of those directories; you will see a number of filenames
+    of the form *S nnxxxx* or *K nnxxxx* where nn is a number from 00 to 99, and
+    xxxx is the name of some system service. The scripts whose names begin with
+    K are executed by /etc/rc.d/rc first to kill any existing services, and then
+    the scripts whose names begin with S are executed to start new services.
+
+    The numbers nn in the names are used to enforce an ordering on the scripts
+    as they are executed: scripts with lower numbers are executed before those
+    with higher numbers. The name xxxx is simply used to help you identify to
+    which system service the script corresponds. This naming convention might
+    seem odd, but it makes it easy to add or remove scripts from these
+    directories and have them automatically executed at the appropriate time by
+    /etc/rc.d/rc. For customizing startup scripts, you'll find it convenient to
+    use a graphical runlevel editor, such as ksysv in KDE.
+*** 
+    For example, the script to initialize networking might be called S10network,
+    while the script to stop the system logging daemon might be called
+    K70syslog. If these files are placed in the appropriate /etc/rc.d/rc N .d
+    directories, /etc/rc.d/rc will run them, in numerical order, at system
+    startup or shutdown time. If the default runlevel of your system is 3, look
+    in /etc/rc.d/rc3.d to see which scripts are executed when the system boots
+    normally.
+
+    Because the same services are started or stopped at different runlevels, the
+    Red Hat distribution uses symbolic links instead of repeating the same
+    script in multiple places. Thus, each S or K file is a symbolic link that
+    points to a central directory that stores startup or shutdown scripts for
+    all services. On Red Hat, this central directory is */etc/rc.d/init.d*,
+    while on SuSE and Debian, it is */etc/init.d*. On Debian and SuSE, the
+    directory contains a script called skeleton that you can adapt to start and
+    stop any new daemons you might write.
+*** 
+    Knowing the location of a startup or shutdown script is useful in case you
+    don't want to completely reboot or enter a different runlevel, but need to
+    start or stop a particular service. Look in the init.d directory for a
+    script of the appropriate name and execute it, passing the parameter start
+    or stop . For example, on SuSE, if you want the Apache web server to be
+    running but your system is in a runlevel that does not include Apache, just
+    enter the following:
+    #+begin_src shell
+      tigger# /sbin/init.d/apache start
+    #+end_src
+*** 
+    Another important system configuration script is */etc/rc.d/rc.local*, which
+    is executed after the other system initialization scripts are run. (How is
+    this accomplished? Generally, a symbolic link to rc.local is made in each
+    */etc/rc.d/rc N .d* directory with the name S99local. Because 99 is the
+    largest numerical order any of the S scripts can have, it is executed last.
+    Voilà!) You can edit rc.local to accomplish any peculiar or otherwise
+    out-of-place system commands at boot time, or if you're not sure where else
+    they should be executed. Debian doesn't have an equivalent of the rc.local
+    script, but nothing stops you from adding it and invoking it from rc if
+    you're used to having it.
+*** 
+    The next entry, labeled *ca* , is executed when the key combination
+    Ctrl-Alt-Delete is pressed on the console. This key combination produces an
+    interrupt that usually reboots the system.
+
+    Under Linux, this interrupt is caught and sent to init, which executes the
+    entry with the action field of ctrlaltdel . The command shown here,
+    /sbin/shutdown -t3 -rf now, will do a "safe" reboot of the system. (See
+    Section 5.5 later in this chapter.) This way we protect the system from
+    sudden reboot when Ctrl-Alt-Delete is pressed.
+***     
+    Finally, the inittab file includes entries that execute /sbin/agetty for the
+    first six virtual consoles. agetty is one of the several getty variants
+    available for Linux. These programs permit logins on terminals; without them
+    the terminal would be effectively dead and would not respond when a user
+    walked up and pressed a key or mouse button. The various getty commands open
+    a terminal device (such as a virtual console or a serial line), set various
+    parameters for the terminal driver, and execute */bin/login* to initiate a
+    login session on that terminal. Therefore, to allow logins on a given
+    virtual console, you must be running getty or agetty on it. agetty is the
+    version used on a number of Linux systems, but others use getty, which has a
+    slightly different syntax. See the manual pages for getty and agetty on your
+    system.
+*** 
+    agetty takes two arguments: a baud rate and a device name. The port names
+    for Linux virtual consoles are /dev/tty1, /dev/tty2, and so forth. agetty
+    assumes the given device name is relative to /dev. The baud rate for virtual
+    consoles should generally be 38400.
+
+    Note that the action field for each agetty entry is respawn . This means
+    that init should restart the command given in the entry when the agetty
+    process dies, which is every time a user logs out.
+
+    Now you should be familiar with init, but the various files and commands in
+    /etc/rc.d, which do all the work, remain a mystery. We can't delve into
+    these files without more background on other system administration tasks,
+    such as managing filesystems. We'll lead you through these tasks in the next
+    few chapters, and eventually all should be clear.
+* 5.4 Single-User Mode
+** 
+   Most of the time, you operate the system in multiuser mode so that users can
+   log in. But there is a special state called single-user mode in which Unix is
+   running but there is no login prompt. When you're in single-user mode, you're
+   basically the superuser ( root ). You may have to enter this mode during
+   installation if something goes wrong. Single-user mode is important for
+   certain routine system administration tasks, such as checking corrupted
+   filesystems. (This is not fun; try not to corrupt your filesystem. For
+   instance, always shut down the system through a shutdown command before you
+   turn off the power. This is described in the next section.)
+** 
+   Under single-user mode, the system is nearly useless; very little
+   configuration is done, filesystems are unmounted, and so on. This is necessary
+   for recovering from certain kinds of system problems; see Section 8.6 in
+   Chapter 8 for details.
+
+   Note that Unix is still a multiprocessing system, even in single-user mode.
+   You can run multiple programs at once. Servers can run in the background so
+   that special functions, such as the network, can operate. But if your system
+   supports more than one terminal, only the console can be used. And the X
+   Window System cannot run.
+* 5.5 Shutting Down the System
+**  
+   Fortunately, shutting down the Linux system is much simpler than booting and
+   startup. However, it's not just a matter of hitting the reset switch. Linux,
+   like all Unix systems, buffers disk reads and writes in memory. This means
+   disk writes are delayed until absolutely necessary, and multiple reads on the
+   same disk block are served directly from RAM. This greatly increases
+   performance as disks are extremely slow relative to the CPU.
+
+   The problem is that if the system were to be suddenly powered down or
+   rebooted, the buffers in memory would not be written to disk, and data could
+   be lost or corrupted. */sbin/update* is a program started from /etc/rc.d/boot
+   on most systems; it flushes dirty buffers (ones that have been changed since
+   they were read from the disk) back to disk every five seconds to prevent
+   serious damage from occurring should the system crash. However, to be
+   completely safe, the system needs to undergo a "safe" shutdown before
+   rebooting. This will not only ensure that disk buffers are properly
+   synchronized, but also allow all running processes to exit cleanly.
+** 
+   shutdown is the general, all-purpose command used to halt or reboot the
+   system. As root , you can issue the command:
+   #+begin_src shell
+     /sbin/shutdown -r +10
+   #+end_src
+   to cause the system to reboot in 10 minutes. The -r switch indicates the
+   system should be rebooted after shutdown, and +10 is the amount of time to
+   wait (in minutes) until shutting down. The system will print a warning
+   message to all active terminals, counting down until the shutdown time. You
+   can add your own warning message by including it on the command line, as in:
+   #+begin_src shell
+     /sbin/shutdown -r +10 "Rebooting to try new kernel"
+   #+end_src
+** 
+   You can also specify an absolute time to shutdown, as in:
+   #+begin_src shell
+     /sbin/shutdown -r 13:00
+   #+end_src
+   to reboot at 1:00 pm. Likewise, you can say:
+   #+begin_src shell
+     /sbin/shutdown -r now
+   #+end_src
+   to reboot immediately (after the safe shutdown process).
+
+   Using the -h switch instead of -r will cause the system to simply be halted
+   after shutdown; you can then turn off the system power without fear of losing
+   data. If you specify neither -h nor -r, the system will go into *single-user
+   mode*.
+** 
+   As we saw in Section 5.3.2, you can have init catch the Ctrl-Alt-Delete key
+   sequence and execute a shutdown command in response to it. If you're used to
+   rebooting your system in this way it might be a good idea to check that your
+   /etc/inittab contains a ctrlaltdel entry. Note that you should never reboot
+   your Linux system by pressing the system power switch or the reboot switch on
+   the front panel of your machine. Unless the system is flat-out hung (a rare
+   occurrence), you should always use shutdown. The great thing about a
+   multiprocessing system is that one program may hang, but you can almost
+   always switch to another window or virtual console to recover.
+
+   shutdown provides a number of other options. The -c switch will cancel a
+   currently running shutdown. (Of course, you can kill the process by hand
+   using kill, but shutdown -c might be easier.) The -k switch will print the
+   warning messages but not actually shut down the system. See the manual page
+   for shutdown(8) if you're interested in the gory details.
+* 5.6 The /proc Filesystem
+** 
+   Unix systems have come a long way with respect to providing uniform
+   interfaces to different parts of the system; as you will learn in the next
+   chapter, hardware is represented in Linux in the form of a special type of
+   file. There is, however, a special filesystem called the /proc filesystem
+   that goes even one step further: it *unifies files and processes*.
+
+   From the user's or the system administrator's point of view, the /proc
+   filesystem looks just like any other filesystem; you can navigate around it
+   with the cd command, list directory contents with the ls command, and view
+   file contents with the cat command. However, none of these files and
+   directories occupies any space on your hard disk. *The kernel traps accesses
+   to the /proc filesystem and generates directory and file contents on the fly*
+   . In other words, whenever you list a directory or view file contents in the
+   /proc filesystem, the kernel dynamically generates the contents you want to
+   see.
+** 
+   To make this less abstract, let's see some examples. The following example
+   displays the list of files in the top-level directory of the /proc
+   filesystem:
+   #+begin_src shell
+     ls /proc
+   #+end_src
+   The numbers will be different on your system, but the general organization
+   will be the same. All those numbers are directories that represent each of
+   the processes running on your system. For example, let's look at the
+   information about the process with the ID 1534:
+   #+begin_src shell
+     ls /proc/1534
+   #+end_src
+** 
+   You see a number of files that each contain information about this process.
+   For example, the cmdline file shows the command line with which this process
+   was started. status gives information about the internal state of the process
+   and cwd links to the current working directory of this process.
+
+   Probably you'll find the hardware information even more interesting than the
+   process information. All the information that the kernel has gathered about
+   your hardware is collected in the /proc filesystem, even though it can be
+   difficult to find the information you are looking for.
+
+   Let's start by checking your machine's memory. This is represented by the
+   file /proc/meminfo:
+   #+begin_src shell
+     # cat /proc/meminfo
+   #+end_src
+** 
+   If you then try the command free, you can see that you get exactly the same
+   information, only the numbers are reformatted a bit. free does nothing more
+   than read /proc/meminfo and rearrange the output a bit.
+
+   Most tools on your system that report information about your hardware do it
+   this way. The /proc filesystem is a portable and easy way to get at this
+   information. The information is especially useful if you want to add new
+   hardware to your system. For example, most hardware boards need a few I/O
+   addresses to communicate with the CPU and the operating system. If you
+   configured two boards to use the same I/O addresses, disaster is about to
+   happen. You can avoid this by checking which I/O addresses the kernel has
+   already detected as being in use:
+   #+begin_src shell
+     # more /proc/ioports
+   #+end_src
+** 
+   Now you can look for I/O addresses that are free. Of course, the kernel can
+   show I/O addresses only for boards that it has detected and recognized, but
+   in a correctly configured system, this should be the case for all boards.
+
+   You can use the /proc filesystem for the other information you might need
+   when configuring new hardware as well: /proc/interrupts lists the occupied
+   interrupt lines (IRQs) and /proc/dma lists the DMA channels in use.
+* 5.7 Managing User Accounts
+** 
+*** 
+    Even if you're the only actual human being who uses your Linux system,
+    understanding how to manage user accounts is important — even more so if
+    your system hosts multiple users. User accounts serve a number of purposes
+    on Unix systems. Most prominently, they give the system a way to distinguish
+    between different people who use the system for reasons of identification
+    and security. Each user has a personal account with a separate username and
+    password. As discussed in Section 4.13 in Chapter 4, users may set
+    permissions on their files, allowing or restricting access to them by other
+    users. Each file on the system is "owned" by a particular user, who may set
+    the permissions for that file. User accounts are used to authenticate access
+    to the system; only those people with accounts may access the machine. Also,
+    accounts are used to identify users, keep system logs, tag electronic mail
+    messages with the name of the sender, and so forth.
+*** 
+    Apart from personal accounts, there are users on the system who provide
+    administrative functions. As we've seen, the system administrator uses the
+    *root account* to perform maintenance — but usually not for personal system
+    use. Such accounts are accessed using the *su* command, allowing another
+    account to be accessed after logging in through a personal account.
+
+    Other accounts on the system may not involve human interaction at all. These
+    accounts are generally used by system daemons, which must access files on
+    the system through a specific user ID other than root or one of the personal
+    user accounts. For example, if you configure your system to receive a
+    newsfeed from another site, the news daemon must store news articles in a
+    spool directory that anyone can access but only one user (the news daemon)
+    can write to. No human being is associated with the news account; it is an
+    "imaginary" user set aside for the news daemon only.
+*** 
+    One of the permission bits that can be set on executables is the setuid bit,
+    which causes the program to be executed with the permissions of the owner of
+    that file. For example, if the news daemon were owned by the user news , and
+    the setuid bit were set on the executable, it would run as if by the user
+    news . news would have write access to the news spool directory, and all
+    other users would have read access to the articles stored there. This is a
+    security feature. News programs can give users just the right amount of
+    access to the news spool directory, but no one can just play around there.
+
+    As the system administrator, it is your job to create and manage accounts
+    for all users (real and virtual) on your machine. This is actually a
+    painless, hands-off task in most cases, but it's important to understand how
+    it works.
+** 5.7.1 The passwd File
+*** 
+    Every account on the system has an entry in the file */etc/passwd*. This
+    file contains entries, one line per user, that specify several attributes
+    for each account, such as the username, real name, and so forth.
+
+    Each entry in this file is of the format:
+    #+begin_src 
+        username : password : uid : gid : gecos : homedir : shell
+    #+end_src
+    The following list explains each field:
+*** username
+    A unique character string, identifying the account. For personal accounts,
+    this is the name the user logs in with. On most systems it is limited to
+    eight alphanumeric characters — for example, larry or kirsten .
+*** password
+    An encrypted representation of the user's password. This field is set using
+    the *passwd* program to set the account's password; it uses a one-way
+    encryption scheme that is difficult (but not impossible) to break. You don't
+    set this by hand; the passwd program does it for you. Note, however, that if
+    the first character of the passwd field is * (an asterisk), the *account is
+    "disabled"*; the system will not allow logins as this user. See Section
+    5.7.5 later in this chapter.
+*** uid
+    The user ID, a unique integer the system uses to identify the account. The
+    system uses the uid field internally when dealing with process and file
+    permissions; it's easier and more compact to deal with integers than byte
+    strings. Therefore, both the uid and the username identify a particular
+    account: the uid is more important to the system, while username is more
+    convenient for humans.
+*** gid
+    The group ID, an integer referring to the user's default group, found in the
+    file */etc/group*. See Section 5.7.4, later in this chapter.
+*** gecos
+    Miscellaneous information about the user, such as the user's real name, and
+    optional "location information" such as the user's office address or phone
+    number. Such programs as mail and finger use this information to identify
+    users on the system; we'll talk more about it later. By the way, gecos is a
+    historical name dating back to the 1970s; it stands for *General Electric
+    Comprehensive Operating System.* GECOS has nothing to do with Unix, except
+    that this field was originally added to /etc/passwd to provide compatibility
+    with some of its services.
+*** homedir
+    The user's home directory, for his personal use; more on this later. When
+    the user first logs in, her shell finds its current working directory in the
+    named homedir .
+*** shell
+    The name of the program to run when the user logs in; in most cases, this is
+    the full pathname of a shell, such as /bin/bash or /bin/tcsh.
+*** 
+    Many of these fields are optional; the only required fields are username ,
+    uid , gid , and homedir . Most user accounts have all fields filled in, but
+    "imaginary" or administrative accounts may use only a few.
+
+    Here are two sample entries you might find in /etc/passwd:
+    #+begin_src 
+    root:ZxPsI9ZjiVd9Y:0:0:The root of all evil:/root:/bin/bash
+    aclark:BjDf5hBysDsii:104:50:Anna Clark:/home/aclark:/bin/bash
+    #+end_src
+    The first entry is for the root account. First of all, notice that *the uid
+    of root is 0.* This is what makes root root : the system knows that uid 0 is
+    "special" and that it does not have the usual security restrictions. *The
+    gid of root is also 0, which is mostly a convention.* Many of the files on
+    the system are owned by root and the root group, which have a uid and gid of
+    0, respectively. More on groups in a minute.
+*** 
+    On many systems, root uses the home directory /root, or just /. This is not
+    usually relevant because you most often use su to access root from your own
+    account. Also, it is tradition to use a Bourne-shell variant (in this case
+    /bin/bash) for the root account, although you can use the C shell if you
+    like. (Shells are discussed in Section 4.5 in Chapter 4.) Be careful,
+    though: Bourne shells and C shells have differing syntax, and switching
+    between them when using root can be confusing and lead to mistakes.
+
+    The second entry is for an actual human being, username aclark . In this case, the uid is
+    104. The uid field can technically be any unique integer; on many systems, it's customary to
+    have user accounts numbered 100 and above and administrative accounts in the
+    sub-100 range. The gid is 50, which just means that aclark is in whatever
+    group is numbered 50 in the /etc/group file. Hang on to your horses; groups
+    are covered Section 5.7.4 later in this chapter.
+*** 
+    Home directories are often found in /home, and named for the username of
+    their owner. This is, for the most part, a useful convention that avoids
+    confusion when finding a particular user's home directory, but you can
+    technically place a home directory anywhere. You should, however, observe
+    the directory layout used on your system.
+
+    Note that as the system administrator, it's not usually necessary to modify
+    the /etc/passwd file directly. Several programs are available that can help
+    you create and maintain user accounts; see Section 5.7.5, which follows.
+** 5.7.2 Shadow Passwords
+***   
+    To some extent, it is a security risk to let everybody with access to the
+    system view the encrypted passwords in /etc/passwd. Special crack programs
+    are available that try a huge number of possible passwords and check whether
+    the encrypted version of those passwords is equal to a specified one.
+
+    To overcome this potential security risk, shadow passwords have been
+    invented. When shadow passwords are used, the password field in /etc/passwd
+    contains only an x or a * , which can never occur in the encrypted version
+    of a password. Instead, a second file called */etc/shadow* is used. This
+    file contains entries that look very similar to those in /etc/passwd, but
+    contain the real encrypted password in the password field. /etc/shadow is
+    readable only by root , so normal users do not have access to the encrypted
+    passwords. The other fields in /etc/shadow, except the username and the
+    password, are present as well, but normally contain bogus values or are
+    empty.
+*** 
+    Note that in order to use shadow passwords, you need special versions of the
+    programs that access or modify user information, such as passwd or login.
+    Nowadays, most distributions come with shadow passwords already set up so
+    that this should not be a problem for you. Debian users should use
+    "*shadowconfig on*" instead to ensure that shadow passwords are enabled on
+    their systems.
+
+    There are two tools for converting "normal" user entries to shadow entries
+    and back. *pwconv* takes the /etc/passwd file, looks for entries that are
+    not yet present in /etc/shadow, generates shadow entries for those, and
+    merges them with the entries already present in /etc/shadow. *pwunconv* is
+    rarely used because it gives you less security instead of more. It works
+    like pwconv, but generates traditional /etc/passwd entries that work without
+    /etc/shadow counterparts.
+** 5.7.3 PAM and Other Authentication Methods
+*** 
+    You might think that having two means of user authentication, /etc/passwd and
+    /etc/shadow, is already enough choice, but you are wrong in this case. There
+    are a number of other authentication methods with strange names, such as
+    *Kerberos authentication* (so named after the dog from Greek mythology that
+    guards the entrance to Hell). While we think that shadow passwords provide
+    enough security for almost all cases, it all depends on how much security you
+    really need and how paranoid you want to be.
+*** 
+    The problem with all those authentication methods is that you cannot simply
+    switch from one to another because you always need a set of programs, such as
+    login and passwd, that go with those tools. To overcome this problem, the
+    *Pluggable Authentication Methods (PAM)* system has been invented. Once you
+    have a PAM-enabled set of tools, you can change the authentication method of
+    your system by reconfiguring PAM. The tools will automatically get the code
+    necessary to perform the required authentication procedures from dynamically
+    loaded shared libraries.
+
+    Setting up and using PAM is beyond the scope of this book, but you can get
+    all the information you need from http://www.kernel.org/pub/linux/libs/pam/.
+    Most modern distributions will set up PAM for you as well.
+** 5.7.4 The Group File
+*** 
+    User groups are a convenient way to logically organize sets of user accounts
+    and allow users to share files within their group or groups. Each file on
+    the system has both a user and a group owner associated with it. Using ls
+    -l, you can see the owner and group for a particular file, as in:
+    #+begin_src shell
+      ls -l boiler.tex
+
+      -rwxrw-r-- 1 mdw megabozo rutabaga% 10316 Oct 6 20:19 boiler.tex
+    #+end_src
+    This file is owned by the user mdw and belongs to the megabozo group. We can
+    see from the file permissions that mdw has read, write, and execute access
+    to the file; that anyone in the megabozo group has read and write access;
+    and that all other users have read access only. This doesn't mean that mdw
+    is in the megabozo group; it simply means the file may be accessed, as shown
+    by the permission bits, by anyone in the megabozo group (which may or may
+    not include mdw ).
+*** 
+    This way files can be shared among groups of users, and permissions can be
+    specified separately for the owner of the file, the group to which the file
+    belongs, and everyone else. An introduction to permissions appears in
+    Section 4.13 in Chapter 4.
+
+    Every user is assigned to at least one group, which you specify in the gid
+    field of the /etc/passwd file. However, *a user can be a member of multiple
+    groups.* The file /etc/group contains a one-line entry for each group on the
+    system, very similar in nature to /etc/passwd. The format of this file is:
+    #+begin_src 
+        groupname : password : gid : members
+    #+end_src
+    Here, groupname is a character string identifying the group; it is the group
+    name printed when using commands such as ls -l.
+*** 
+    password is an optional encrypted password associated with the group, which
+    allows users not in this group to access the group with the *newgrp*
+    command. Read on for information on this.
+
+    gid is the group ID used by the system to refer to the group; it is the
+    number used in the gid field of /etc/passwd to specify a user's default
+    group.
+
+    members is a comma-separated list of usernames (with no whitespace in
+    between), identifying those users who are members of this group, but who
+    have a different gid in /etc/passwd. That is, this list need not contain
+    those users who have this group set as their "default" group in /etc/passwd;
+    it's only for users who are additional members of the group. For example,
+    /etc/group might contain the following entries:
+*** 
+    #+begin_src 
+    root:*:0:
+    bin:*:1:root,daemon
+    users:*:50:
+    bozo:*:51:linus,mdw
+    megabozo:*:52:kibo
+    #+end_src
+    The first entries, for the groups root and bin , are administrative groups,
+    similar in nature to the "imaginary" accounts used on the system. Many files
+    are owned by groups, such as root and bin . The other groups are for user
+    accounts. Like user IDs, the group ID values for user groups are often
+    placed in ranges above 50 or 100.
+*** 
+    The password field of the group file is something of a curiosity. It isn't used much, but in
+    conjunction with the newgrp program it allows users who aren't members of a particular
+    group to assume that group ID if they have the password. For example, using the command:
+    #+begin_src 
+    rutabaga% newgrp bozo
+    Password: password for group bozo
+    rutabaga%
+    #+end_src
+    starts a new shell with the group ID of bozo . If the password field is
+    blank, or the first character is an asterisk, you receive a permission
+    denied error if you attempt to newgrp to that group.
+*** 
+    However, the password field of the group file is seldom used and is really not necessary. (In
+    fact, most systems don't provide tools to set the password for a group; you could use passwd
+    to set the password for a dummy user with the same name as the group in /etc/passwd and
+    copy the encrypted password field to /etc/group.) Instead, you can make a user a member of
+    multiple groups simply by including the username in the members field for each additional
+    group. In the previous example, the users linus and mdw are members of the bozo group, as
+    well as whatever group they are assigned to in the /etc/passwd file. If we wanted to add
+    linus to the megabozo group as well, we'd change the last line of the previous example to:
+    #+begin_src 
+    megabozo:*:52:kibo,linus
+    #+end_src
+    The command groups tells you which groups you belong to, as in:
+    #+begin_src shell
+    groups
+    users bozo
+    #+end_src
+*** 
+    Giving a list of usernames to groups lists the groups to which each user in
+    the list belongs. When you log in, you are automatically assigned to the
+    group ID given in /etc/passwd, as well as any additional groups for which
+    you're listed in /etc/group. This means you have "group access" to any files
+    on the system with a group ID contained in your list of groups. In this
+    case, the group permission bits (set with chmod g+...) for those files apply
+    to you (unless you're the owner, in which case the owner permission bits
+    apply instead).
+
+    Now that you know the ins and outs of groups, how should you assign groups
+    on your system? This is really a matter of style and depends on how your
+    system will be used. For systems with just one or a handful of users, it's
+    easiest to have a single group (called, say, users ) to which all personal
+    user accounts belong. Note that all the system groups — those groups
+    contained within /etc/group when the system is first installed — should
+    probably be left alone. Various daemons and programs may depend upon them.
+*** 
+    If you have a number of users on your machine, there are several ways to
+    organize groups. For example, an educational institution may have separate
+    groups for students, faculty, and staff. A software company might have
+    different groups for each design team. On other systems, each user is placed
+    into a separate group, named identically to the username. This keeps each
+    pigeon in its own hole, so to speak. Files can also be assigned to special
+    groups; many users create new groups and place files into them for sharing
+    the files between users. However, this requires adding users to the
+    additional groups, a task that usually requires the system administrator to
+    intervene (by editing /etc/group or using utilities, such as gpasswd on
+    Debian systems). It's really up to you.
+*** 
+    Another situation in which groups are often used is special hardware groups.
+    Let's say that you have a scanner that is accessed via /dev/scanner. If you
+    do not want to give everybody access to the scanner, you could create a
+    special group called scanner , assign /dev/scanner to this group, make this
+    special file readable for the group and nonreadable for everybody else, and
+    add everybody who is allowed to use the scanner to the scanner group in the
+    /etc/groups file.
+** 5.7.5 Creating Accounts
+***   
+    Creating a user account requires several steps: adding an entry to
+    /etc/passwd, creating the user's home directory, and setting up the user's
+    default configuration files (such as .bashrc) in her home directory.
+    Luckily, you don't have to perform these steps manually; nearly all Linux
+    systems include a program called *adduser* to do this for you.(Note that
+    some Linux systems, such as Red Hat or SuSE, use a different set of tools
+    for account creation and deletion. If the sequence of inputs in this section
+    does not work for you, check the documentation for your distribution. (Red
+    Hat allows accounts to be managed through the control-panel tool, and SuSE
+    does it via YaST; Debian includes a noninteractive "adduser" script that
+    automatically sets up users based on the configuration file
+    */etc/adduser.conf* ). In addition, there are graphical user management
+    programs like *kuser from KDE* (see Chapter 11).)
+*** 
+    Running adduser as root should work as follows. Just enter the requested
+    information at the prompts; many of the prompts have reasonable defaults you
+    can select by pressing Enter:
+    #+begin_src shell
+    Adding a new user. The username should not exceed 8 characters
+    in length, or you many run into problems later.
+    Enter login name for new account (^C to quit): norbert
+    Editing information for new user [norbert]
+    Full Name: Norbert Ebersol
+    GID [100]: 117
+    Checking for an available UID after 500
+    First unused uid is 501
+    UID [501]: (enter)
+*** 
+    Home Directory [/home/norbert]: (enter)
+    Shell [/bin/bash]: (enter)
+    Password [norbert]: (norbert's password)
+    Information for new user [norbert]:
+    Home directory: [/home/norbert] Shell: [/bin/bash]
+    Password: [(norbert's password)] uid: [501] gid: [117]
+    Is this correct? [y/N]: y
+    Adding login [norbert] and making directory [/home/norbert]
+    Adding the files from the /etc/skel directory:
+    ./.emacs -> /home/norbert/./.emacs
+    ./.kermrc -> /home/norbert/./.kermrc
+    ./.bashrc -> /home/norbert/./.bashrc
+    ... more files ...
+    #+end_src
+*** 
+    There should be no surprises here; just enter the information as requested
+    or choose the defaults. Note that adduser uses 100 as the default group ID,
+    and looks for the first unused user ID after 500 (500 is used as the minimum
+    on SuSE and Red Hat, Debian uses 1000). It should be safe to go along with
+    these defaults; in the previous example we used a group ID of 117 because we
+    designated that to be the group for the user, as well as the default user ID
+    of 501.
+
+    After the account is created, the files from /etc/skel are copied to the
+    user's home directory. /etc/skel contains the "skeleton" files for a new
+    account; they are the default configuration files (such as .emacs and
+    .bashrc) for the new user. Feel free to place other files here if your new
+    user accounts should have them.
+*** 
+    After this is done, the new account is ready to roll; norbert can log in,
+    using the password set using adduser. To guarantee security, new users
+    should always change their own passwords, using passwd, immediately after
+    logging in for the first time. root can set the password for any user on the
+    system. For example, the command:
+    #+begin_src shell
+      passwd norbert
+    #+end_src
+    prompts for a new password for norbert , without asking for the original
+    password. Note, however, that you must know the root password in order to
+    change it. If you forget the root password entirely, you can boot Linux from
+    an "emergency floppy," and clear the password field of the /etc/passwd entry
+    for root . See Section 8.6 in Chapter 8.
+
+    Some Linux systems provide the command-line-driven *useradd instead of
+    adduser*. This program requires you to provide all relevant information as
+    command-line arguments. If you can't locate adduser and are stuck with
+    useradd, see the manual pages, which should help you out.    
+** 5.7.6 Deleting and Disabling Accounts
+***   
+    Deleting a user account is much easier than creating one; this is the
+    well-known concept of entropy at work. To delete an account, you must remove
+    the user's entry in /etc/passwd, remove any references to the user in
+    /etc/group, and delete the user's home directory, as well as any additional
+    files created or owned by the user. For example, if the user has an incoming
+    mailbox in /var/spool/mail, it must be deleted as well.
+
+    The command *userdel* (the yin to useradd's yang) deletes an account and the
+    account's home directory. For example:
+    #+begin_src shell
+      userdel -r norbert
+    #+end_src
+*** 
+    will remove the recently created account for norbert . The -r option forces
+    the home directory to be removed as well. Other files associated with the
+    user — for example, the incoming mailbox, crontab files, and so forth — must
+    be removed by hand. Usually these are quite insignificant and can be left
+    around. By the end of this chapter, you should know where these files are,
+    if they exist. A simple way to find the files associated with a particular
+    user is through the command:
+    #+begin_src shell
+    find / -user    username    -ls
+    #+end_src
+    This will give an ls -l listing of each file owned by username . Of course,
+    to use this, the account associated with username must still have an entry
+    in /etc/passwd. If you deleted the account, use the -uid num argument
+    instead, where num is the numeric user ID of the dearly departed user.
+*** 
+    Temporarily (or not-so-temporarily) disabling a user account, for whatever
+    reason, is even simpler. You can either remove the user's entry in
+    /etc/passwd (leaving the home directory and other files intact), or add an
+    asterisk to the first character of the password field of the /etc/passwd
+    entry, as so:
+    #+begin_src shell
+    aclark:*BjDf5hBysDsii:104:50:Anna Clark:/home/aclark:/bin/bash
+    #+end_src
+    This will disallow logins to the account in question. Note that if you use
+    shadow password, you need to do the same thing in /etc/shadow.
+** 5.7.7 Modifying User Accounts
+   Modifying attributes of user accounts and groups is usually a simple matter
+   of editing /etc/passwd and /etc/group. Many systems provide commands such as
+   *usermod* and *groupmod* to do just this; it's often easier to edit the files
+   by hand.
+
+   To change a user's password, use the *passwd* command, which will prompt for
+   a password, encrypt it, and store the encrypted password in the /etc/passwd
+   file.
+
+   If you need to change the user ID of an existing account, you can do this by
+   editing the uid field of /etc/passwd directly. However, you should also chown
+   the files owned by the user to that of the new uid. For example:
+   #+begin_src shell
+     chown -R aclark /home/aclark
+   #+end_src
+   will set the ownership for all files in the home directory used by aclark
+   back to aclark , if you changed the uid for this account. If ls -l prints a
+   numeric user ID, instead of a username, this means there is no username
+   associated with the uid owning the files. Use chown to fix this.

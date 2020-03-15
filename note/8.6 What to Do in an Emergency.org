@@ -1,0 +1,84 @@
+* 
+  It's not difficult to make a simple mistake as root that can cause real
+  problems on your system, such as not being able to log in or losing important
+  files. This is especially true for novice system administrators who are
+  beginning to explore the system. Nearly all new system admins learn their
+  lessons the hard way, by being forced to recover from a real emergency. In
+  this section, we'll give you some hints about what to do when the inevitable
+  happens.
+
+  You should always be aware of preventive measures that reduce the impact of
+  such emergencies. For example, take backups of all important system files, if
+  not the entire system. If you happen to have a Linux distribution on CD-ROM,
+  the CD-ROM itself acts as a wonderful backup for most files (as long as you
+  have a way to access the CD-ROM in a tight situation — more on this later).
+  Backups are vital to recovering from many problems; don't let the many weeks
+  of hard work configuring your Linux system go to waste.
+* 
+  Also, be sure to keep notes on your system configuration, such as your
+  partition table entries, partition sizes and types, and filesystems. If you
+  were to trash your partition table somehow, fixing the problem might be a
+  simple matter of rerunning fdisk, but this helps only as long as you can
+  remember what your partition table used to look like. (True story: one of the
+  authors once created this problem by booting a blank floppy, and had no record
+  of the partition table contents. Needless to say, some guesswork was necessary
+  to restore the partition table to its previous state!)
+
+  Of course, for any of these measures to work, you'll need a way to boot the
+  system and access your files, or recover from backups, in an emergency. This
+  is best accomplished with an "emergency disk," or "root disk." Such a disk
+  contains a small root filesystem with the basics required to run a Linux
+  system from floppy — just the essential commands and system files, as well as
+  tools to repair problems. You use such a disk by booting a kernel from another
+  floppy (see Section 5.2.1 in Chapter 5) and telling the kernel to use the
+  emergency disk as the root filesystem.
+* 
+  Most distributions of Linux include such a boot/root floppy combination as the
+  original installation floppies. The installation disks usually contain a small
+  Linux system that can be used to install the software as well as perform basic
+  system maintenance. Some systems include both the kernel and root filesystem
+  on one floppy, but this severely limits the number of files that can be stored
+  on the emergency disk. How useful these disks are as a maintenance tool
+  depends on whether they contain the tools (such as fsck, fdisk, a small editor
+  such as vi, and so on) necessary for problem recovery. Some distributions have
+  such an elaborate installation process that the installation floppies don't
+  have room for much else.
+
+  At any rate, you can create such a root floppy yourself. Being able to do this
+  from scratch requires an intimate knowledge of what's required to boot and use
+  a Linux system, and exactly what can be trimmed down and cut out. For example,
+  you could dispose of the startup programs init, getty, and login, as long as
+  you know how to rig things so that the kernel starts a shell on the console
+  instead of using a real boot procedure. (One way to do this is to have
+  /etc/init be a symbolic link to /sbin/bash, all on the floppy filesystem.)
+* 
+  While we can't cover all the details here, the first step in creating an
+  emergency floppy is to use mkfs to create a filesystem on a floppy (see the
+  section Section 6.1.4 in Chapter 6). You then mount the floppy and place on it
+  whatever files you'll need, including appropriate entries in /dev (most of
+  which you can copy from /dev on your hard-drive root filesystem). You'll also
+  need a boot floppy, which merely contains a kernel. The kernel should have its
+  root device set to /dev/fd0, using rdev. This is covered in Section 5.2.1 in
+  Chapter 5. You'll also have to decide whether you want the root floppy
+  filesystem loaded into a ramdisk (which you can set using rdev as well). If
+  you have more than 4 MB of RAM, this is a good idea because it can free up the
+  floppy drive to be used for, say, mounting another floppy containing
+  additional tools. If you have two floppy drives, you can do this without using
+  a ramdisk.
+
+  If you feel that setting up an emergency floppy is too hard for you now after
+  reading all this, you might also want to try some of the scripts available
+  that do it for you (e.g., tomsrtbt at http://www.toms.net/rb/). But whatever
+  you do, be sure to try the emergency floppy before disaster happens!
+* 
+  At any rate, the best place to start is your installation floppies. If those
+  floppies don't contain all the tools you need, create a filesystem on a
+  separate floppy and place the missing programs on it. If you load the root
+  filesystem from floppy into a ramdisk, or have a second floppy drive, you can
+  mount the other floppy to access your maintenance tools.
+
+  What tools do you need? In the following sections, we'll talk about common
+  emergencies and how to recover from them; this should guide you as to what
+  programs are required for various situations. It is best if the tools you put
+  on that floppy are statically linked in order to avoid problems with shared
+  libraries not being available at emergency time.

@@ -1,0 +1,252 @@
+* 
+  *In order to access any filesystem under Linux, you must mount it on a certain
+  directory.* This makes the files on the filesystem appear as though they
+  reside in the given directory, allowing you to access them.
+
+  Before we tell you how to mount filesystems, we should also mention that some
+  distributions come with automounting setups that require you to simply load a
+  diskette or CD into the respective drive and access it like you would on other
+  platforms. For everybody, there are times, however, when you need to know how
+  to mount and unmount media directly. We'll cover how to set up automounting
+  yourself later.
+
+  The mount command is used to do this and usually must be executed as root .
+  (As we'll see later, ordinary users can use mount if the device is listed in
+  the /etc/fstab file.) The format of this command is:
+  #+begin_src shell
+  mount -t  type device mount-point
+  #+end_src
+* 
+  where type is the type name of the filesystem as given in Table 6-1, device is
+  the physical device where the filesystem resides (the device file in /dev),
+  and mount-point is the directory on which to mount the filesystem. You have to
+  create the directory before issuing mount.
+
+  For example, if you have a Second Extended filesystem on the partition
+  /dev/hda2 and wish to mount it on the directory /mnt, use the command:
+  #+begin_src shell
+    mount -t ext2 /dev/hda2 /mnt
+  #+end_src
+  If all goes well you should be able to access the filesystem under /mnt. Likewise, to mount a
+  floppy that was created on a Windows system and therefore is in DOS format, you use the
+  command:
+  #+begin_src shell
+    mount -t msdos /dev/fd0 /mnt
+  #+end_src
+* 
+  This makes the files available on an MS-DOS-format floppy under /mnt. Note
+  that using msdos means that you use the old DOS format that is limited to
+  filenames of 8 plus 3 characters. If you use vfat instead, you get the newer
+  format that was introduced with Windows 95. Of course, the floppy or hard disk
+  needs to be written with that format as well.
+
+  There are many options to the mount command, which can be specified with the
+  -o switch. For example, the MS-DOS and ISO 9660 filesystems support
+  "autoconversion" of text files from MS-DOS format (which contain CR-LF at the
+  end of each line), to Unix format (which contain merely a newline at the end
+  of each line). Using a command, such as:
+  #+begin_src shell
+    mount -o conv=auto -t msdos /dev/fd0 /mnt
+  #+end_src
+  turns on this conversion for files that don't have a filename extension that
+  could be associated with a binary file (such as .exe, .bin, and so forth).
+* 
+  One common option to mount is -o ro (or, equivalently, -r), which mounts the
+  filesystem as read-only. All write access to such a filesystem is met with a
+  "permission denied" error. Mounting a filesystem as read-only is necessary for
+  media like CD-ROMs that are nonwritable. You can successfully mount a CD-ROM
+  without the -r option, but you'll get the annoying warning message:
+  #+begin_src shell
+    mount: block device /dev/cdrom is write-protected, mounting read-only
+  #+end_src
+  Use a command, such as:
+  #+begin_src shell
+    mount -t iso9660 -r /dev/cdrom /mnt
+  #+end_src
+  instead. This is also necessary if you are trying to mount a floppy that has
+  the write-protect tab in place.
+* 
+  The mount manual page lists all available mounting options. Not all are of
+  immediate interest, but you might have a need for some of them, someday. A
+  useful variant of using mount is *mount -a*, which mounts all filesystems
+  listed in /etc/fstab except those marked with the noauto option.
+
+  The inverse of mounting a filesystem is, naturally, unmounting it. *Unmounting
+  a filesystem has two effects*: it synchronizes the system's buffers with the
+  actual contents of the filesystem on disk, and it makes the filesystem no
+  longer available from its mount point. You are then free to mount another
+  filesystem on that mount point.
+
+  Unmounting is done with the *umount* command (note that the first "n" is missing from the
+  word "unmount"), as in:
+  #+begin_src shell
+    umount /dev/fd0
+  #+end_src
+* 
+  to unmount the filesystem on /dev/fd0. Similarly, to unmount whatever filesystem is currently
+  mounted on a particular directory, use a command, such as:
+  #+begin_src shell
+    umount /mnt
+  #+end_src
+  It is important to note that removable media, including floppies and CD-ROMs,
+  should not be removed from the drive or swapped for another disk while
+  mounted. This causes the system's information on the device to be out of sync
+  with what's actually there and could lead to no end of trouble. Whenever you
+  want to switch a floppy or CD-ROM, unmount it first, using the umount command,
+  insert the new disk, and then remount the device. Of course, with a CD- ROM or
+  a write-protected floppy, there is no way the device itself can get out of
+  sync, but you could run into other problems. For example, some CD-ROM drives
+  won't let you eject the disk until it is unmounted.
+* 
+  Reads and writes to filesystems on floppies are buffered in memory as they are
+  for hard drives. This means that when you read or write data to a floppy,
+  there may not be any immediate drive activity. The system handles I/O on the
+  floppy asynchronously and reads or writes data only when absolutely necessary.
+  So if you copy a small file to a floppy, but the drive light doesn't come on,
+  don't panic; the data will be written eventually. You can use the sync command
+  to force the system to write all filesystem buffers to disk, causing a
+  physical write of any buffered data. Unmounting a filesystem makes this happen
+  as well.
+* 
+  *If you wish to allow mortal users to mount and unmount certain devices, you
+  have two options.* The first option is to include the user option for the
+  device in /etc/fstab (described later in this section). This allows any user
+  to use the mount and umount command for a given device. Another option is to
+  use one of the mount frontends available for Linux. These programs run setuid
+  root and allow ordinary users to mount certain devices. In general, you
+  wouldn't want normal users mounting and unmounting a hard-drive partition, but
+  you could be more lenient about the use of CD-ROM and floppy drives on your
+  system.
+* 
+  Quite a few things can go wrong when attempting to mount a filesystem. Unfortunately, the
+  mount command will give you the same error message in response to a number of problems:
+  #+begin_src 
+  mount: wrong fs type, /dev/cdrom already mounted, /mnt busy, or other error
+  #+end_src
+  wrong fs type is simple enough: this means that you may have specified the
+  wrong type to mount. If you don't specify a type, mount tries to guess the
+  filesystem type from the superblock (this works only for minix, ext2, and
+  iso9660). If mount still cannot determine the type of the filesystem, it tries
+  all the types for which drivers are included in the kernel (as listed in
+  /proc/filesystems). If this still does not lead to success, mount fails.
+  device already mounted means just that: the device is already mounted on
+  another directory. You can find out what devices are mounted, and where, using
+  the mount command with no arguments:
+* 
+  #+begin_src shell
+    rutabaga# mount
+    /dev/hda2 on / type ext2 (rw)
+    /dev/hda3 on /windows type vfat (rw)
+    /dev/cdrom on /cdrom type iso9660 (ro)
+    /proc on /proc type proc (rw,none)
+  #+end_src
+  Here, we see two hard-drive partitions, one of type ext2 and the other of type
+  vfat, a CD-ROM mounted on /cdrom, and the /proc filesystem. The last field of
+  each line (for example, (rw) ) lists the options under which the filesystem is
+  mounted. More on these soon. Note that the CD-ROM device is mounted in /cdrom.
+  If you use your CD-ROM often, it's convenient to create a special directory
+  such as /cdrom and mount the device there. /mnt is generally used to
+  temporarily mount filesystems such as floppies.
+* 
+  The error mount-point busy is rather odd. Essentially, it means some activity
+  is taking place under mount-point that prevents you from mounting a filesystem
+  there. Usually, this means that an open file is under this directory, or some
+  process has its current working directory beneath mount-point . When using
+  mount, be sure your root shell is not within mount-point ; do a cd / to get to
+  the top-level directory. Or, another filesystem could be mounted with the same
+  mount-point . Use mount with no arguments to find out.
+
+  Of course, other error isn't very helpful. There are several other cases in which mount
+  could fail. If the filesystem in question has data or media errors of some kind, mount may
+  report it is unable to read the filesystem's superblock, which is (under Unix-like filesystems)
+  the portion of the filesystem that stores information on the files and attributes for the
+  filesystem as a whole. If you attempt to mount a CD-ROM or floppy drive, and there's no CD-
+  ROM or floppy in the drive, you will receive an error message, such as:
+  #+begin_src 
+  mount: /dev/cdrom is not a valid block device
+  #+end_src
+* 
+  Floppies are especially prone to physical defects (more so than you might
+  initially think), and CD-ROMs suffer from dust, scratches, and fingerprints,
+  as well as being inserted upside- down. (If you attempt to mount your Stan
+  Rogers CD as ISO 9660 format, you will likely run into similar problems.)
+
+  Also, be sure the mount point you're trying to use (such as /mnt) exists. If
+  not, you can simply create it with the mkdir command.
+
+  If you have problems mounting or accessing a filesystem, data on the
+  filesystem may be corrupt. Several tools help repair certain filesystem types
+  under Linux; see Section 6.1.5 later in this chapter.
+* 
+  The system automatically mounts several filesystems when the system boots.
+  This is handled by the file */etc/fstab*, which includes an entry for each
+  filesystem that should be mounted at boot time. Each line in this file is of
+  the format:
+  #+begin_src 
+  device mount-point type options
+  #+end_src
+  Here, device , mount-point , and type are equivalent to their meanings in the mount
+  command, and options is a comma-separated list of options to use with the -o switch to
+  mount.
+
+  A sample /etc/fstab is shown here:
+
+  [[file:../img/6.1.2.png]]
+  
+  The last line of this file specifies a swap partition. This is described in
+  Section 6.2 later in this chapter.
+* 
+  The mount(8) manual page lists the possible values for options ; if you wish to specify more
+  than one option, you can list them with separating commas and no whitespace, as in:
+  #+begin_src 
+  /dev/cdrom  /cdrom  iso9660  ro,user
+  #+end_src
+  The user option allows users other than root to mount the filesystem. If this option is
+  present, a user can execute a command, such as:
+  #+begin_src shell
+    mount /cdrom
+  #+end_src
+  to mount the device. Note that if you specify only a device or mount point
+  (not both) to mount, it looks up the device or mount point in /etc/fstab and
+  mounts the device with the parameters given there. This allows you to mount
+  devices listed in /etc/fstab with ease.
+* 
+  The option defaults should be used for most filesystems; it enables a number
+  of other options, such as rw (read-write access), async (buffer I/O to the
+  filesystem in memory asynchronously), and so forth. Unless you have a specific
+  need to modify one of these parameters, use defaults for most filesystems and
+  ro for read-only devices such as CD- ROMs. Another potentially useful option
+  is umask , which lets you set the default mask for the permission bits,
+  something that is especially useful with some foreign filesystems.
+
+  *The command mount -a will mount all filesystems listed in /etc/fstab.* This command is
+  executed at boot time by one of the scripts found in /etc/rc.d, such as rc.sysinit (or wherever
+  your distribution stores its configuration files). This way, all filesystems listed in /etc/fstab
+  will be available when the system starts up; your hard-drive partitions, CD-ROM drive, and
+  so on will all be mounted.
+* 
+  There is an exception to this: the root filesystem. The root filesystem, mounted on /, usually
+  contains the file /etc/fstab as well as the scripts in /etc/rc.d. In order for these to be available,
+  the kernel itself must mount the root filesystem directly at boot time. The device containing
+  the root filesystem is coded into the kernel image and can be altered using the rdev command
+  (see Section 5.2.1 in Chapter 5). While the system boots, the kernel attempts to mount this
+  device as the root filesystem, trying several filesystem types in succession. If at boot time
+  the kernel prints an error message, such as:
+  #+begin_src 
+  VFS: Unable to mount root fs
+  #+end_src
+  one of the following has happened:
+  - The root device coded into the kernel is incorrect.
+  - The kernel does not have support compiled in for the filesystem type of the
+    root device. (See Section 7.4.2 in Chapter 7 for more details. This is
+    usually relevant only if you build your own kernel.)
+  - The root device is corrupt in some way.
+* 
+  In any of these cases, the kernel can't proceed and panics. See Section 8.6 in
+  Chapter 8 for clues on what to do in this situation. If filesystem corruption
+  is the problem, this can usually be repaired; see Section 6.1.5 later in this
+  chapter.
+
+  A filesystem does not need to be listed in /etc/fstab in order to be mounted,
+  but it does need to be listed there in order to be mounted "automatically" by
+  mount -a, or to use the user mount option.

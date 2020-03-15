@@ -1,0 +1,14 @@
+The -g switch to gcc turns on debugging code in your compiled object files. That
+is, extra information is added to the object file, as well as the resulting
+executable, allowing the program to be traced with a debugger such as *gdb*. The
+downside to using debugging code is that it greatly increases the size of the
+resulting object files. It's usually best to use -g only while developing and
+testing your programs and to leave it out for the "final" compilation. Happily,
+debug-enabled code is not incompatible with code optimization. This means that
+you can safely use the command:
+#+begin_src shell
+  gcc -O -g -o mumble mumble.c
+#+end_src
+However, certain optimizations enabled by -O or -O2 may cause the program to
+appear to behave erratically while under the guise of a debugger. It is usually
+best to use either -O or -g, not both.

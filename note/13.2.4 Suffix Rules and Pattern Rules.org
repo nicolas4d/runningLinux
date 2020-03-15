@@ -1,0 +1,85 @@
+* 
+  For something as routine as building an object file from a source file, you
+  don't want to specify every single dependency in your makefile. And you don't
+  have to. Unix compilers enforce a simple standard (compile a file ending in
+  the suffix .c to create a file ending in the suffix .o), and make provides a
+  feature called suffix rules to cover all such files.
+
+  Here's a simple suffix rule to compile a C source file, which you could put in your makefile:
+  #+begin_src makefile
+    .c.o:
+      gcc -c $(CFLAGS) $<
+  #+end_src
+  The .c.o: line means "use a .c dependency to build a .o file." CFLAGS is a
+  macro into which you can plug any compiler options you want: -g for debugging,
+  for instance, or -O for optimization. The string $< is a cryptic way of saying
+  "the dependency." So the name of your .c file is plugged in when make executes
+  this command.
+* 
+  Here's a sample run using this suffix rule. The command line passes both the
+  -g option and the -O option:
+  #+begin_src shell
+    papaya$ make CFLAGS="-O -g" edit.o
+    gcc -c -O -g edit.c
+  #+end_src
+  You actually don't have to specify this suffix rule in your makefile because
+  something very similar is already built into make. It even uses CFLAGS , so
+  you can determine the options used for compiling just by setting that
+  variable. The makefile used to build the Linux kernel currently contains the
+  following definition, a whole slew of gcc options:
+  #+begin_src 
+  CFLAGS = -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer -pipe
+  #+end_src
+* 
+  While we're discussing compiler flags, one set is seen so often that it's
+  worth a special mention. This is the -D option, which is used to define
+  symbols in the source code. Since all kinds of commonly used symbols appear in
+  #ifdefs , you may need to pass lots of such options to your makefile, such as
+  -DDEBUG or -DBSD. If you do this on the make command line, be sure to put
+  quotation marks or apostrophes around the whole set. This is because you want
+  the shell to pass the set to your makefile as one argument:
+  #+begin_src shell
+    make CFLAGS="-DDEBUG -DBSD" ...
+  #+end_src
+  GNU make offers something called pattern rules, which are even better than suffix rules. A
+  pattern rule uses a percent sign to mean "any string." So C source files would be compiled
+  using a rule, as in the following:
+  #+begin_src makefile 
+    %.o: %.c
+      gcc -c -o $@ $(CFLAGS) $<
+  #+end_src
+* 
+  Here the output file %.o comes first, and the dependency %.c comes after a
+  colon. In short, a pattern rule is just like a regular dependency line, but it
+  contains percent signs instead of exact filenames.
+
+  We see the $< string to refer to the dependency, but we also see $@ , which
+  refers to the output file. So the name of the .o file is plugged in there.
+  Both of these are built-in macros; make defines them every time it executes an
+  entry.
+
+  Another common built-in macro is $* , which refers to the name of the
+  dependency stripped of the suffix. So if the dependency is edit.c, the string
+  $*.s would evaluate to edit.s (an assembly-language source file).
+* 
+  Here's something useful you can do with a pattern rule that you can't do with
+  a suffix rule: you add the string _dbg to the name of the output file so that
+  later you can tell that you compiled it with debugging information:
+  #+begin_src makefile
+    %_dbg.o: %.c
+      gcc -c -g -o $@ $(CFLAGS) $<
+
+    DEBUG_OBJECTS = main_dbg.o edit_dbg.o
+
+    edimh_dbg: $(DEBUG_OBJECTS)
+      gcc -o $@ $(DEBUG_OBJECTS)
+  #+end_src
+  Now you can build all your objects in two different ways: one with debugging
+  information and one without. They'll have different filenames, so you can keep
+  them in one directory:
+  #+begin_src shell
+    papaya$ make edimh_dbg
+    gcc -c -g -o main_dbg.o main.c
+    gcc -c -g -o edit_dbg.o edit.c
+    gcc -o edimh_dbg main_dbg.o edit_dbg.o
+  #+end_src

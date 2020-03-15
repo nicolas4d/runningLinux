@@ -1,0 +1,37 @@
+* 
+  To Unix systems, *a filesystem is some device* (such as a hard drive, floppy,
+  or CD-ROM) that is formatted to store files. Filesystems can be found on hard
+  drives, floppies, CD-ROMs, and other storage media that permit random access.
+  (A tape allows only sequential access, and therefore can't contain a
+  filesystem per se.)
+
+  The exact format and means by which files are stored is not important; the
+  system provides a common interface for all filesystem types it recognizes.
+  Under Linux, filesystem types include the Second Extended filesystem, or
+  ext2fs, which you probably use to store Linux files (also ext3 is slowly
+  taking over); the VFAT filesystem, which allows files on Windows 95/98/ME
+  partitions and floppies to be accessed under Linux; and several others,
+  including the ISO 9660 filesystem used by CD-ROM.
+* 
+  Each filesystem type has a very different underlying format for storing data.
+  However, when you access any filesystem under Linux, the system presents the
+  data as files arranged into a hierarchy of directories, along with owner and
+  group IDs, permission bits, and the other characteristics with which you're
+  familiar.
+
+  In fact, information on file ownership, permissions, and so forth is provided
+  only by filesystem types that are meant to be used for storing Linux files.
+  For filesystem types that don't store this information, the kernel drivers
+  used to access these filesystems "fake" the information. For example, the
+  MS-DOS filesystem has no concept of file ownership; therefore, all files are
+  presented as if they were owned by root . This way, above a certain level, all
+  filesystem types look alike, and each file has certain attributes associated
+  with it. Whether this data is actually used in the underlying filesystem is
+  another matter altogether.
+* 
+  As the system administrator, you need to know how to create filesystems should
+  you want to store Linux files on a floppy or add additional filesystems to
+  your hard drives. You also need to know how to use the various tools to check
+  and maintain filesystems should data corruption occur. Also, you must know the
+  commands and files used to access filesystems — for example, those on floppy
+  or CD-ROM.

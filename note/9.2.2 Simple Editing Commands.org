@@ -1,0 +1,73 @@
+* 
+  Emacs is more straightforward than vi when it comes to basic text editing. The
+  arrow keys should move the cursor around the buffer; if they don't (in case
+  Emacs is not configured for your terminal), use the keys C-p (previous line),
+  C-n (next line), C-f (forward character), and C-b (backward character).
+
+  If you find using the Alt key uncomfortable, press Escape and then p .
+  Pressing and releasing Escape is equivalent to holding down Alt.
+
+  Already we must take the first aside on our tour of Emacs. Literally every
+  command and key within Emacs is customizable. That is, with a "default" Emacs
+  configuration, C-p maps to the internal function previous-line, which moves
+  the cursor (also called "point") to the previous line. However, you can easily
+  rebind different keys to these functions, or write new functions and bind keys
+  to them, and so forth. Unless otherwise stated, the keys we introduce here
+  work for the default Emacs configuration. Later we'll show you how to
+  customize the keys for your own use.
+* 
+  Back to editing: using the arrow keys or one of the equivalents moves the
+  cursor around the current buffer. Just start typing text, and it is inserted
+  at the current cursor location. Pressing the Backspace or Delete key should
+  delete text at the cursor. If it doesn't, we'll show how to fix it in Section
+  9.2.8 later in this chapter. Now begin to type:
+
+  The keys C-a and C-e move the cursor to the beginning and end of the current
+  line, respectively. C-v moves forward a page; M-v moves back a page. There are
+  many more basic editing commands, but we'll allow the Emacs online
+  documentation (discussed shortly) to fill those in.
+
+  In order to get out of Emacs, use the command C-x C-c . This is the first of
+  the extended commands we've seen; many Emacs commands require several keys.
+  C-x alone is a "prefix" to other keys. In this case, pressing C-x followed by
+  C-c quits Emacs, first asking for confirmation if you want to quit without
+  saving changes to the buffer.
+* 
+  You can use C-x C-s to save the current file, and C-x C-f to "find" another
+  file to edit. For example, typing C-x C-f presents you with a prompt, such as:
+  #+begin_src 
+  Find file: /home/loomer/mdw/
+  #+end_src
+  where the current directory is displayed. After this, type the name of the
+  file to find. Pressing the Tab key will do filename completion similar to that
+  used in bash and tcsh. For example, entering:
+  #+begin_src 
+  Find file: /home/loomer/mdw/.bash
+  #+end_src
+  and pressing Tab opens another buffer, showing all possible completions, as
+  so:
+* 
+  After you complete the filename, the *Completions* buffer goes away and the
+  new file is displayed for editing. This is one example of how Emacs uses
+  temporary buffers to present information.
+
+  Emacs allows you to use multiple buffers when editing text; each buffer may
+  contain a different file you're editing. When you load a file with C-x C-f , a
+  new buffer is created to edit the file, but the original buffer isn't deleted.
+
+  You can switch to another buffer using the C-x b command, which asks you for
+  the name of the buffer (usually the name of the file within the buffer). For
+  example, pressing C-x b presents the prompt:
+  #+begin_src 
+  Switch to buffer: (default wibble.txt)
+  #+end_src
+  The default buffer is the previous one visited. Press Enter to switch to the
+  default buffer, or type another buffer name. Using C-x C-b will present a
+  buffer list (in a buffer of its own), as so:
+* 
+  Popping up the buffer menu splits the Emacs screen into two "windows," which
+  you can switch between using C-x o . More than two concurrent windows are
+  possible as well. In order to view just one window at a time, switch to the
+  appropriate one and press C-x 1 . This hides all the other windows, but you
+  can switch to them later using the C-x b command just described. Using C-x k
+  actually deletes a buffer from Emacs's memory.

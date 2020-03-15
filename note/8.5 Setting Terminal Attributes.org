@@ -1,0 +1,28 @@
+* 
+  *setterm* is a program that sets various characteristics of your terminal (say,
+  each virtual console), such as the keyboard repeat rate, tab stops, and text
+  colors.
+
+  Most people use this command to change the colors for each virtual console. In
+  this way, you can tell which virtual console you're currently looking at based
+  on the text color.
+
+  For example, to change the color of the current terminal to white text on a
+  blue background, use the command:
+  #+begin_src shell
+  setterm -foreground white -background blue
+  #+end_src
+* 
+  Some programs and actions cause the terminal attributes to be reset to their
+  default values. In order to store the current set of attributes as the
+  default, use:
+  #+begin_src shell
+    $ setterm -store
+  #+end_src
+  setterm provides many options (most of which you will probably never use). See
+  the setterm(1) manual page or use setterm -help for more information.
+
+  If your terminal settings get really messed up (as happens, for example, if
+  you try to look at the contents of a binary file with cat), you can try typing
+  *setterm-reset* blindly, which should reset your terminal to reasonable
+  settings.

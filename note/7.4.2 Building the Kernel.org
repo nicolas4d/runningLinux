@@ -1,0 +1,325 @@
+* 
+  There are six steps to building the kernel, and they should be quite painless.
+  All these steps are described in more detail in the following pages.
+** 
+   1. Make sure that all the required tools and utilities are installed and at
+      the appropriate versions. See the file Documentation/Changes in the
+      kernel source for the list of requirements.
+   2. Run *make config*, which asks you various questions about which drivers you
+      wish to include. You could also use the more comfortable variants *make
+      menuconfig* or (only when you are running the X Window System) *make
+      xconfig*.
+
+      If you have previously built a kernel and then applied patches to a new
+      version, you can run *make oldconfig* to use your old config but be
+      prompted for any new options that may not have been in the old kernel.
+** 
+   3. Run *make dep* to gather dependencies for each source file and include them
+      in the various makefiles.
+   4. If you have built a kernel from this source tree before, run *make clean*
+      to clear out old object files and force a complete rebuild.
+   5. Run *make bzImage* to build the kernel itself.
+   6. Go have a coffee (or two, depending on the speed of your machine and
+      amount of available memory).
+   7. *Install the new kernel image*, either on a boot floppy or via LILO. You
+      can use make bzDisk to put the kernel on a boot floppy.
+
+   All these commands are executed from /usr/src/linux, except for Step 5,
+   which you can do anywhere.
+* 
+  A README is included in the kernel sources, which should be located at
+  /usr/src/linux/README on your system. Read it. It contains up-to-date notes on
+  kernel compilation, which may be more current than the information presented
+  here. Be sure to follow the steps described there, using the descriptions
+  given later in this section as a guide.
+* 
+  The first step is to run make config. This executes a script that asks you a
+  set of yes/no questions about which drivers to include in the kernel. There
+  are defaults for each question, but be careful: the defaults probably don't
+  correspond to what you want. (When several options are available, the
+  default will be shown as a capital letter, as in [Y/n] .) Your answers to
+  each question will become the default the next time you build the kernel
+  from this source tree.
+* 
+  Simply answer each question, either by pressing Enter for the default, or
+  pressing y or n (followed by Enter). Some questions don't have a yes/no
+  answer; you may be asked to enter a number or some other value. A number of
+  the configuration questions allow an answer of m in addition to y or n .
+  This option allows the corresponding kernel feature to be compiled as a
+  loadable kernel module, as opposed to building it into the kernel image
+  itself. Loadable modules, covered in the following section, Section 7.5,
+  allow portions of the kernel (such as device drivers) to be loaded and
+  unloaded as needed on a running system. If you are unsure about an option,
+  type ? at the prompt; for most options, a message will be shown that tells
+  you more about the option.
+
+  Some people say that make config has so many options now that it is hardly
+  feasible to run it by hand any longer, as you have to concentrate for a long
+  time to press the right keys in response to the right questions. Therefore,
+  people are moving to the alternatives described next.
+* 
+  An alternative to running make config is make xconfig, which compiles and
+  runs an X- Window-based kernel configuration program. In order for this to
+  work, you must have the X Window System running, have the appropriate X11
+  and Tcl/Tk libraries installed, and so forth. Instead of asking a series of
+  questions, the X-based configuration utility allows you to use checkboxes to
+  select which kernel options you want to enable. The system remembers your
+  configuration options each time you run make config, so if you're adding or
+  removing only a few features from your kernel, you need not reenter all the
+  options.
+
+  Also available is make menuconfig , which uses the text-based curses
+  library, providing a similar menu-based kernel configuration if you don't
+  have X installed. make menuconfig and make xconfig are much more comfortable
+  than make config, especially because you can go back to an option and change
+  your mind up to the point where you save your configuration.
+* 
+  The following is part of a session with make config. When using make
+  menuconfig or make xconfig, you will encounter the same options, only
+  presented in a more user-friendly fashion (and we actually recommend the use
+  of these tools if at all possible, as it is very easy to get confused by the
+  myriad of configuration options):
+
+  [[file:../img/7.4.2.png]]
+* 
+  If you have gathered the information about your hardware when installing
+  Linux, that information is probably sufficient to answer the configuration
+  questions, most of which should be straightforward. If you don't recognize
+  some feature, it's a specialized feature that you don't need. The following
+  questions are found in the kernel configuration for Version 2.4.4. If you
+  have applied other patches, additional questions might appear. The same is
+  true for later versions of the kernel. Note that in the following list we
+  don't show all the kernel configuration options; there are simply too many
+  of them, and most are self-explanatory. We have highlighted only those that
+  may require further explanation. Remember that if you're not sure how to
+  answer a particular question, the default answer is often the best choice.
+  When in doubt, it is also a good idea to type ? and check the help message.
+* 
+  It should be noted here that not all Linux device drivers are actually built
+  into the kernel. Instead, some drivers are available only as loadable
+  modules, distributed separately from the kernel sources. (As mentioned
+  earlier, some drivers can be either built into the kernel or compiled as
+  modules.) One notable kernel driver available only as a module is the
+  "floppy tape" driver for QIC-117 tape drives that connect to the floppy
+  controller.
+
+  If you can't find support for your favorite hardware device in the list
+  presented by make config, it's quite possible that the driver is available
+  as a module or a separate kernel patch. Scour the FTP sites and archive
+  CD-ROMs if you can't find what you're looking for. In the next section,
+  Section 7.5, kernel modules are covered in detail.
+** Prompt for development and/or incomplete code/drivers
+   Answer yes for this item if you want to try new features that aren't
+   considered stable enough by the developers. You do not want this option unless
+   you want to help test new features.
+** Processor family (386,486,586/K5/5x86/6x86/6x86MX,
+   Pentium-Classic, Pentium-MMX, Pentium-Pro/Celeron/Pentium-II,
+   Pentium-III/Celeron/Coppermine, Pentium-4, K6/K6-II/K6-III, Athlon/Duron/K7,
+   Crusoe, Winchip-C6, Winchip-2, Winchip- 2A/Winchip-3, CyrixIII/C3)
+   [Pentium-III/Celeron/Coppermine]
+
+   Here, you have to specify the CPU type that you have. The kernel will then
+   be compiled with optimizations especially geared toward your machine. Note
+   that if you specify a higher processor here than you actually have, the
+   kernel might not work. Also, the Pentium II MMX is a 686, not a 586 chip.
+** Math emulation
+  Answer no if you have a Pentium or better. Answer yes to this item if you do
+  not have a floating-point coprocessor in your machine. This is necessary for
+  the kernel to emulate the presence of a math coprocessor.
+** Symmetric multi-processing support
+  This enables kernel support for more than one CPU. If your machine has more
+  than one CPU, say yes here; if not, say no.
+** Enable loadable module support
+  This enables the support for dynamically loading additional modules. You
+  definitely want to enable this.
+** Set version information on all symbols for modules
+  This is a special option that makes it possible to use a module compiled for
+  one kernel version with another kernel version. A number of problems are
+  attached to this; say no here unless you know exactly what you are doing.
+** Kernel module loader
+  If you enable this option, the kernel can automatically load and unload
+  dynamically loadable modules as needed.
+** Networking support
+  Answer yes to this option if you want any sort of networking support in your
+  kernel (including TCP/IP, SLIP, PPP, NFS, and so on).
+** PCI support
+  Enable this option if your motherboard includes the PCI bus and you have
+  PCI-bus devices installed in your system. The PCI BIOS is used to detect and
+  enable PCI devices; kernel support for it is necessary for use of any PCI
+  devices in your system.
+** System V IPC
+  Answering yes to this option includes kernel support for System V interprocess
+  communication (IPC) functions, such as msgrcv and msgsnd. Some programs ported
+  from System V require this; you should answer yes unless you have a strong
+  aversion to these features.
+** Sysctl support
+  This option instructs the kernel to provide a way to change kernel parameters
+  on-the- fly, without rebooting. It is a good idea to enable this unless you
+  have very limited memory and cannot tolerate the extra 8 KB that this option
+  adds to the kernel.
+** Parallel port support
+  Enable this option if you have a parallel port in your system and want to
+  access it from Linux. Linux can use the parallel port not only for printers,
+  but also for PLIP (a networking protocol for parallel lines), ZIP drives,
+  scanners, and other things. In most cases, you will need an additional driver
+  to attach a device to the parallel port.
+** Normal floppy disk support
+  Answer yes to this option unless you don't want support for floppy drives
+  (this can save some memory on systems where floppy support isn't required).
+** Enhanced IDE/MFM/RLL disk/cdrom/tape/floppy support
+  Answer yes to this option unless you don't need IDE/MFM/RLL drive support.
+  After answering yes, you will be prompted for types of devices (hard disks,
+  CD-ROM drives, tape drives, and floppy drives) you want to access over the IDE
+  driver. If you have no IDE hardware (only SCSI), it may be safe to disable
+  this option.
+** XT harddisk support
+  Answer yes to this only if you have an older XT disk controller and plan to
+  use it with your Linux system.
+** Parallel port IDE device support
+  This option enables support for IDE devices that are attached to the parallel
+  port, such as portable CD-ROM drives.
+** Networking options
+  If you previously selected networking support, you will be asked a series of
+  questions about which networking options you want enabled in your kernel.
+  Unless you have special networking needs (in which case you'll know how to
+  answer the questions appropriately), answering the defaults for these
+  questions should suffice. A number of the questions are esoteric in nature
+  (such as IP: Disable Path MTU Discovery ) and you should select the defaults
+  for these in almost all cases.
+** SCSI support
+  If you have a SCSI controller of any kind, answer yes to this option. You will
+  be asked a series of questions about the specific SCSI devices on your system;
+  be sure you know what type of hardware you have installed. All these questions
+  deal with specific SCSI controller chips and boards; if you aren't sure what
+  sort of SCSI controller you have, check the hardware documentation or consult
+  the Linux HOWTO documents.
+
+  You will also be asked if you want support for SCSI disks, tapes, CD-ROMs, and
+  other devices; be sure to enable the options appropriate for your hardware. If
+  you don't have any SCSI hardware, you should answer no to this option; it
+  greatly reduces the size of your kernel.
+** Network device support
+  This is a series of questions about the specific networking controllers Linux
+  supports. If you plan to use an Ethernet card (or some other networking
+  controller), be sure to enable the options for your hardware. As with SCSI
+  devices, you should consult your hardware documentation or the Linux HOWTO
+  documents (such as the Ethernet HOWTO) to determine which driver is
+  appropriate for your network controller.
+** Amateur Radio support
+  This option enables basic support for networking over public radio
+  frequencies. If you have the equipment to use the feature, enable this option
+  and read the AX25 and the HAM HOWTO.
+** ISDN subsystem
+  If you have ISDN hardware in your system, enable this option and select the
+  ISDN hardware driver suitable for your hardware. You will most probably also
+  want to select Support synchronous PPP (see Section 15.3 in Chapter 15).
+** Old CD-ROM drivers
+  This is a series of questions dealing with the specific CD-ROM drivers
+  supported by the kernel, such as the Sony CDU31A/33A, Mitsumi, or SoundBlaster
+  Pro CD-ROM, and so on. If you have a SCSI or IDE CD-ROM controller (and have
+  selected support for it earlier), you need not enable any of these options.
+  Some CD-ROM drives have their own interface boards, and these options enable
+  drivers for them.
+** Character devices
+  Linux supports a number of special "character" devices, such as serial and
+  parallel port controllers, QIC-02 tape drives, and mice with their own
+  proprietary interfaces (not mice that connect to the serial port, such as the
+  Microsoft serial mouse). This section also includes the joystick support and
+  the "Video for Linux" drivers that support video and frame-grabbing hardware.
+  Be sure to enable the options corresponding to your hardware.
+** Filesystems
+  This is a series of questions for each filesystem type supported by the
+  kernel. As discussed in the section Section 6.1, a number of filesystem types
+  are supported by the system, and you can pick and choose which to include in
+  the kernel. Nearly all systems should include support for the Second Extended
+  and /proc filesystems. You should include support for the MS-DOS filesystem if
+  you want to access your MS- DOS files directly from Linux, and the ISO 9660
+  filesystem to access files on a CD- ROM (most of which are encoded in this
+  way).
+** Console drivers
+  Make sure you select at least VGA text console in this section, or you won't
+  be able to use your Linux system from the console.
+** Sound card support
+  Answering yes to this option presents you with several questions about your
+  sound card, which drivers you wish to have installed, and other details, such
+  as the IRQ and address of the sound hardware.
+** Kernel hacking
+  This section contains options that are useful only if you plan on hacking the
+  Linux kernel yourself. If you do not want to do this, answer no.
+* 
+  After running make config or its equivalent, you'll be asked to edit "the
+  top-level Makefile," which means /usr/src/linux/Makefile. In most cases, it's
+  not necessary to do this. If you wanted to alter some of the compilation
+  options for the kernel, or change the default root device or SVGA mode, you
+  could edit the makefile to accomplish this. Setting the root device and SVGA
+  mode can easily be done by running rdev on a compiled kernel image, as we saw
+  in Section 5.2.1 in Chapter 5.
+
+  If you wish to force a complete recompilation of the kernel, you should issue
+  make clean at this point. This removes from this source tree all object files
+  produced from a previous build. If you have never built the kernel from this
+  tree, you're probably safe skipping this step (although it can't hurt to
+  perform it). If you are tweaking minor parts of the kernel, you might want to
+  avoid this step so that only those files that have changed will be recompiled.
+  At any rate, running make clean simply ensures the entire kernel will be
+  recompiled "from scratch," and if you're in any doubt, use this command to be
+  on the safe side.
+* 
+  Now you're ready to compile the kernel. This is done with the command make
+  bzImage. It is best to build your kernel on a lightly loaded system, with most
+  of your memory free for the compilation. If other users are accessing the
+  system, or if you're trying to run any large applications yourself (such as
+  the X Window System, or another compilation), the build may slow to a crawl.
+  The key here is memory. If a system is low on memory and starts swapping, it
+  will be slow no matter how fast the processor is.
+
+  The kernel compilation can take anywhere from a few minutes to many hours,
+  depending on your hardware. There is a great deal of code — well over 10 MB —
+  in the entire kernel, so this should come as no surprise. Slower systems with
+  4 MB (or less) of RAM can expect to take several hours for a complete rebuild;
+  faster machines with more memory can complete it in less than half an hour.
+  Your mileage will most assuredly vary.
+* 
+  If any errors or warnings occur while compiling, you cannot expect the
+  resulting kernel to work correctly; in most cases, the build will halt if an
+  error occurs. Such errors can be the result of incorrectly applying patches,
+  problems with the make config step, or actual bugs in the code. In the "stock"
+  kernels, this latter case is rare, but is more common if you're working with
+  development code or new drivers under testing. If you have any doubt, remove
+  the kernel source tree altogether and start over.
+* 
+  When the compilation is complete, you will be left with the file bzImage in
+  the directory */usr/src/linux/arch/i386/boot.* (Of course, if you're
+  attempting to build Linux on a platform other than the Intel x86, the kernel
+  image will be found in the corresponding subdirectory under arch.) The kernel
+  is so named because it is the executable image of the kernel, and it has been
+  internally compressed using the bzip2 algorithm. When the kernel boots, it
+  uncompresses itself into memory: don't attempt to use bzip2 or bunzip2 on
+  bzImage yourself! The kernel requires much less disk space when compressed in
+  this way, allowing kernel images to fit on a floppy. Earlier kernels supported
+  both the gzip and the bzip2 compression algorithms, the former resulting in a
+  file called zImage. Because bzImage gives better compression results, however,
+  gzip should not be used, as the resulting kernels are usually too big to be
+  installed these days.
+* 
+  *If you pick too much kernel functionality, you can get a kernel too big error
+  at the end of the kernel compilation.* This happens rarely because you need
+  only a very limited amount of hardware support for one machine, but it can
+  happen. In this case, there is one way out: compile some kernel functionality
+  as modules (see Section 7.5).
+
+  You should now run rdev on the new kernel image to verify that the root
+  filesystem device, console SVGA mode, and other parameters have been set
+  correctly. This is described in Section 5.2.1 in Chapter 5.
+* 
+  With your new kernel in hand, you're ready to configure it for booting. This
+  involves either placing the kernel image on a boot floppy, or configuring LILO
+  to boot the kernel from the hard drive. These topics are discussed in Section
+  5.2 in Chapter 5. To use the new kernel, configure it for booting in one of
+  these ways, and reboot the system.
+
+  A warning: you should always keep a known good kernel available for booting.
+  Either keep a previous backup kernel selectable from LILO or test new kernels
+  using a floppy first. This will save you if you make a mistake such as
+  omitting a crucial driver in your new kernel, making your system not bootable.
+

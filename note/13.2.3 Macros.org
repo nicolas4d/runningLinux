@@ -1,0 +1,74 @@
+* 
+  When people use a filename or other string more than once in a makefile, they
+  tend to assign it to a macro. That's simply a string that make expands to
+  another string. For instance, you could change the beginning of our trivial
+  makefile to read:
+  #+begin_src makefile
+  OBJECTS = main.o edit.o
+  edimh: $(OBJECTS)
+  gcc -o edimh $(OBJECTS)
+  #+end_src
+  When make runs, it simply plugs in main.o edit.o wherever you specify
+  $(OBJECTS) . If you have to add another object file to the project, just
+  specify it on the first line of the file. The dependency line and command will
+  then be updated correspondingly.
+
+  Don't forget the parentheses when you refer to $(OBJECTS) . Macros may
+  resemble shell variables like $HOME and $PATH , but they're not the same.
+* 
+  One macro can be defined in terms of another macro, so you could say something
+  like:
+  #+begin_src makefile
+  ROOT = /usr/local
+  HEADERS = $(ROOT)/include
+  SOURCES = $(ROOT)/src
+  #+end_src
+  In this case, HEADERS evaluates to the directory /usr/local/include and
+  SOURCES to /usr/local/src. If you are installing this package on your system
+  and don't want it to be in /usr/local, just choose another name and change the
+  line that defines ROOT .
+
+  By the way, you don't have to use uppercase names for macros, but that's a
+  universal convention.
+* 
+  An extension in GNU make allows you to add to the definition of a macro. This uses a :=
+  string in place of an equals sign:
+  #+begin_src makefile
+  DRIVERS = drivers/block/block.a
+  ifdef CONFIG_SCSI
+  DRIVERS := $(DRIVERS) drivers/scsi/scsi.a
+  endif
+  #+end_src
+  The first line is a normal macro definition, setting the DRIVERS macro to the
+  filename The next definition adds the filename drivers/block/block.a .
+  drivers/scsi/scsi.a . But it takes effect only if the macro CONFIG_SCSI is
+  defined. The full definition in that case becomes:
+  #+begin_src 
+  drivers/block/block.a drivers/scsi/scsi.a
+  #+end_src
+* 
+  So how do you define CONFIG_SCSI ? You could put it in the makefile, assigning
+  any string you want:
+  #+begin_src 
+  CONFIG_SCSI = yes
+  #+end_src
+  But you'll probably find it easier to define it on the make command line.
+  Here's how to do it:
+  #+begin_src shell
+    make CONFIG_SCSI=yes target_name
+  #+end_src
+  One subtlety of using macros is that you can leave them undefined. If no one
+  defines them, a null string is substituted (that is, you end up with nothing
+  where the macro is supposed to be). But this also gives you the option of
+  defining the macro as an environment variable. For instance, if you don't
+  define CONFIG_SCSI in the makefile, you could put this in your .bashrc file,
+  for use with the bash shell:
+* 
+  #+begin_src 
+  export CONFIG_SCSI=yes
+  #+end_src
+  Or put this in .cshrc if you use csh or tcsh:
+  #+begin_src 
+  setenv CONFIG_SCSI yes
+  #+end_src
+  All your builds will then have CONFIG_SCSI defined.

@@ -1,0 +1,26 @@
+* 
+  The name Emacs comes partly from the word "macros." A macro is a simple but
+  powerful feature that makes Emacs a pleasure to use. If you plan on doing
+  anything frequently and repetitively, just press C-x ( , perform the operation
+  once, and then press C-x ) . The two C-x commands with the opening and closing
+  parentheses remember all the keys you pressed. Then you can execute the
+  commands over and over again by pressing C-x e .
+
+  Here's a example you can try on any text file; it capitalizes the first word
+  of each line.
+* 
+  1. Press C-x ( to begin the macro.
+  2. Press C-a to put point at the beginning of the current line. It's important
+     to know where you are each time a macro executes. By pressing C-a you are
+     making macro will always go to the beginning of the line, which is where
+     you want to be.
+  3. Press M-c to make the first letter of the first word a capital letter.
+  4. Press C-a again to return to the beginning of the line and C-n or the down
+     arrow to go to the beginning of the following line. This ensures that the
+     macro will start execution at the right place next time.
+  5. Press C-x ) to end the macro.
+  6. Press C-x e repeatedly to capitalize the following lines. Or press C-u
+     several times, followed by C-x e . The repeated uses of C-u are prefix
+     keys, causing the following command to execute many times. If you get to
+     the end of the document while the macro is still executing, no harm is
+     done; Emacs just beeps and stops executing the macro.

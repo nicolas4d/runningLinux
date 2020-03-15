@@ -1,0 +1,50 @@
+* 
+  One way to copy and move text is to delete it (using the d or dd commands) and
+  then replace it with the P command, as described earlier. For example, if you
+  want to delete 10 lines, starting with the line that contains your cursor, and
+  paste them somewhere else, just use the command 10dd (to delete 10 lines),
+  move the cursor to the new location for the text, and type p. You can copy
+  text in this way as well: typing 10dd followed by P (at the same cursor
+  location) deletes the text and immediately replaces it. You can then paste the
+  text elsewhere by moving the cursor and using p multiple times.
+
+  Similar to dd is the *yy* command, which "yanks" text without deleting it. You
+  use p to paste the yanked text as with dd. But note that each yank operation
+  will delete the previously yanked text from the "clipboard."
+
+  The deletion and yank commands can be used on more general regions than lines.
+  Recall that the d command deletes text through a move command; for example,
+  *d$* deletes text from the cursor to the end of the line. Similarly, *y$*
+  yanks text from the cursor to the end of the line.
+* 
+  Let's say you want to yank (or delete) a region of text. This can be done with
+  marks as well. Move the cursor to the beginning of the text to be yanked and
+  set a mark, as in ma. Move the cursor to the end of the text to be yanked and
+  use the command y'a . This yanks text from the cursor position to the mark a.
+  (Remember that the command 'a moves the cursor to the mark a.) Using d instead
+  of y deletes the text from the cursor to the mark.
+
+  The most convenient way to cut, copy, and paste portions of text within vi is
+  to use *registers*. A register is just a named temporary storage space for
+  text you wish to copy between locations, cut and paste within the document,
+  and so forth.
+
+  Registers are given single letter names; any of the characters a - z or A - Z
+  are valid. The *"command* (a quotation mark) specifies a register; it is
+  followed by the name of the register, as in "a for register a . The lowercase
+  letters and their uppercase counterparts refer to the same registers: using
+  the lowercase letter overwrites the previous contents of the register and
+  using the uppercase letter appends to it.
+* 
+  For instance, if we move the cursor to the first line in our example: and use
+  the command "ayy , the current line is yanked into the register a . We can
+  then move the cursor to the second line, and use the command "ap to paste the
+  text from register a after the current line:
+
+  Similarly, the command "ay'a yanks text from the cursor to mark a into
+  register a . Note that there is no correspondence between mark and register
+  names!
+
+  Using registers allows you to copy text between files. Just copy the text to a
+  register, use the :e command to edit a new file, and paste the text from the
+  register.

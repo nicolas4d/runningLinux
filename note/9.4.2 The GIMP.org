@@ -1,0 +1,30 @@
+* 
+  The GIMP (which expands to either GNU Image Manipulation Program or General
+  Image Manipulation Program and is often written with the definite article)
+  specializes in image manipulation like the ImageMagick package described in
+  the last section. But while ImageMagick's strength is batch processing, GIMP
+  does everything via its GUI. The GIMP is often cited as one of the most
+  impressive and successful products for Linux (and other Unix versions). People
+  who use image manipulation programs professionally have said that while GIMP
+  can feel a little bit awkward to use, it is functionally comparable to its
+  commercial competitor from the Windows and Macintosh world, Adobe Photoshop.
+  Some people even have called it "the free alternative to Photoshop."
+
+  GIMP draws its power from an amazing number of plug-ins that are available for
+  it. Thus, in order to be able to use a newly written image manipulation filter
+  or file format import filter, you only need to install the plug-in and restart
+  GIMP, and you are ready to go.
+* 
+  In addition, GIMP uses a clever tiling mechanism that allows you to load
+  arbitrarily large images into it; GIMP will keep in memory only the part that
+  is currently being used or visible. And if these features are not enough, GIMP
+  also has its own scripting language called script- fu, and can be scripted
+  with Perl as well.
+
+  GIMP comes with most Linux distributions on the market today and can be run
+  simply by entering the command gimp in a shell after starting X. If your
+  distribution does not have GIMP, you can get the source code from
+  www.gimp.org. If you plan to do more work with GIMP, you should check this web
+  site anyway because it also contains the documentation and sample images that
+  show off what you can do with it. A screenshot showing the toolbar, dialog
+  boxes, and a work area is shown in Figure 9-5.

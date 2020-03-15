@@ -1,0 +1,103 @@
+* 
+  Rebuilding the kernel sounds like a pastime for hackers, but it is an
+  important skill for any system administrator. First, you should rebuild the
+  kernel on your system to eliminate the device drivers you don't need. This
+  reduces the amount of memory used by the kernel itself, as described in
+  Section 6.2. The kernel is always present in memory, and the memory it uses
+  cannot be reclaimed for use by programs if necessary.
+
+  You also need to occasionally upgrade your kernel to a newer version. As with
+  any piece of your system, if you know of important bug fixes or new features
+  in a kernel release, you may want to upgrade to pick them up. Those people who
+  are actively developing kernel code will also need to keep their kernel
+  up-to-date in case changes are made to the code they are working on.
+  Sometimes, it is necessary to upgrade your kernel to use a new version of the
+  compiler or libraries. Some applications (such as the X Window System) require
+  a certain kernel version to run.
+* 
+  You can find out what kernel version you are running through the command
+  *uname -a*. This should produce something like:
+  #+begin_src shell
+    uname -a
+    Linux owl 2.4.19-64GB-SMP #2 SMP Fri Aug 9 21:46:03 CEST 2002 i686 unknown
+  #+end_src
+  Here, we see a machine running Version 2.4.19 of the kernel (configured for a
+  machine with more than one processor [SMP] and a maximum of 64 GB RAM), which
+  was last compiled on August 9. We see other information as well, such as the
+  hostname of the machine, the number of times this kernel has been compiled
+  (two), and the fact that the machine is a Pentium Pro or better (as denoted by
+  i686 ). The manual page for uname(1) can tell you more.
+* 
+  The Linux kernel is a many-tentacled beast. Many groups of people work on
+  different pieces of it, and some parts of the code are a patchwork of ideas
+  meeting different design goals. Overall, however, the kernel code is clean and
+  uniform, and those interested in exploring its innards should have little
+  trouble doing so. However, because of the great amount of development going on
+  with the kernel, new releases are made very rapidly — sometimes daily! The
+  chief reason for this is that nearly all device drivers are contained within
+  the kernel code, and every time someone updates a driver, a new release is
+  necessary. As the Linux community moves toward loadable device drivers, the
+  maintainers of those drivers can release them independently of the main
+  kernel, alleviating the necessity of such rapid updates.
+* 
+  Currently, Linus Torvalds maintains the "official" kernel release. Although
+  the GPL allows anyone to modify and rerelease the kernel under the same
+  copyright, Linus's maintenance of an "official" kernel is a helpful convention
+  that keeps version numbers uniform and allows everyone to be on equal footing
+  when talking about kernel revisions. In order for a bug fix or new feature to
+  be included in the kernel, all one must do is send it to Linus (or whoever is
+  in charge for the kernel series in question, Linus himself always maintains
+  the most current kernel), who will usually incorporate the change as long as
+  it doesn't break anything.
+* 
+  Kernel version numbers follow the convention:
+  #+begin_src 
+  major.minor.patchlevel
+  #+end_src
+  major is the major version number, which rarely changes, minor is the minor
+  version number, which indicates the current "strain" of the kernel release,
+  and patchlevel is the number of the patch to the current kernel version. Some
+  examples of kernel versions are 2.4.4, (patch level 4 of kernel Version 2.4),
+  and 2.5.1 (patch level 1 of kernel Version 2.5).
+
+  By convention, even-numbered kernel versions (2.2, 2.4, and so on) are
+  *"stable" releases*, patches that contain only bug fixes and no new features.
+  Odd-numbered kernel versions (2.3, 2.5, and so on) are *"development"
+  releases*, patches that contain whatever new code developers wish to add and
+  bug fixes for that code. When a development kernel matures to the point where
+  it is stable enough for wide use, it is renamed with the next highest (even)
+  minor version number, and the development cycle begins again.
+* 
+  For example, kernel Versions 2.2 and 2.3 were worked on concurrently. Patches
+  made to 2.2 were bug fixes — meant only to correct problems in the existing
+  code. Patches to 2.3 included bug fixes as well as a great deal of new code —
+  new device drivers, new features, and so on. When kernel Version 2.3 was
+  stable enough, it was renamed to 2.4; a copy was made and named Version 2.5.
+  Development continued with Versions 2.4 and 2.5. 2.4 is the new "stable"
+  kernel, while 2.5 is a development kernel for new features.(Actually, the
+  first versions of the 2.4 kernel series were not as stable as the number
+  implies, which is why many users stayed with the 2.2 series for a while. By
+  now, the current 2.4 kernel can be considered very stable, though, if you
+  don't use any 2.4 kernels before 2.4.16.)
+* 
+  Note that this version-numbering convention applies only to Linus's official
+  kernel release and only to kernel versions after 1.0. Prior to 1.0 (this is
+  now ancient history), there was only one "current" kernel version and patches
+  were consistently made to it. The kernel development community has found that
+  having two concurrent kernel versions allows those who want to experiment to
+  use the development kernel, and those who need a reliable platform to stick
+  with the stable kernel. In this way, if the development kernel is seriously
+  broken by new code, it shouldn't affect those who are running the newest
+  stable kernel. The general rule is that you should use development kernels if
+  you want to be on the leading edge of new features and are willing to risk
+  problems with your system. Use the development kernels at your own risk.
+
+  If you are interested in how the existing kernel versions have evolved, check out
+  http://www.kernel.org.
+* 
+  On your system, the kernel sources most probably live in */usr/src/linux*
+  (unless you use the Debian distribution, where you can find the kernel sources
+  in */usr/src/kernel-source-versionsnumber*). If you are going to rebuild your
+  kernel only from the current sources, you don't need to obtain any files or
+  apply any patches. If you wish to upgrade your kernel to a new version, you
+  need to follow the instructions in the following section.

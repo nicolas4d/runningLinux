@@ -1,0 +1,22 @@
+* 
+  From command mode, the *x* command deletes the character under the cursor. If
+  you press x five times, you end up with the following:
+
+  Now press a and insert some text, followed by Escape:
+
+  You can delete entire lines using the command *dd* (that is, press d twice in
+  a row). If your cursor is on the second line, dd will produce the following:
+
+  Text that is deleted may be reinserted using the *p* command (for "put").
+  Pressing p now will return the deleted line to the buffer after the current
+  line. Using *P* (uppercase) instead will insert the text before the current
+  line. By default, p and P insert text from the "undo buffer"; you can also
+  yank and replace text from other buffers, as we'll see later.
+* 
+  The *u* command undoes the latest change (in this case, pressing u after dd is
+  equivalent to p). If you inserted a large amount of text using the i command,
+  pressing u immediately after returning to command mode would undo it.
+
+  To delete the word beneath the cursor, use the dw command. Place the cursor on
+  the word Diet and type dw:
+  

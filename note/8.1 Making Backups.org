@@ -1,0 +1,81 @@
+* 
+  Making backups of your system is an important way to protect yourself from
+  data corruption or loss in case you have problems with your hardware, or you
+  make a mistake such as deleting important files inadvertently. During your
+  experiences with Linux, you're likely to make quite a few customizations to
+  the system that can't be restored by simply reinstalling from your original
+  installation media. However, if you happen to have your original Linux
+  floppies or CD-ROM handy, it may not be necessary to back up your entire
+  system. Your original installation media already serve as an excellent backup.
+
+  Under Linux, as with any Unix-like system, you can make mistakes while logged
+  in as root that would make it impossible to boot the system or log in later.
+  Many newcomers approach such a problem by reinstalling the system entirely
+  from backup, or worse, from scratch. This is seldom, if ever, necessary. In
+  Section 8.6, later in this chapter, we'll talk about what to do in these
+  cases.
+* 
+  If you do experience data loss, it is sometimes possible to recover that data
+  using the filesystem maintenance tools described in Section 6.1.5 in
+  Chapter 6. Unlike some other operating systems, however, it's generally not
+  possible to "undelete" a file that has been removed by rm or overwritten by a
+  careless cp or mv command (for example, copying one file over another destroys
+  the file to which you're copying). In these extreme cases, backups are key to
+  recovering from problems.
+
+  Backups are usually made to tape, floppy or CD-R(W). None of these media is
+  100% reliable, although tape and CD-R(W) are more dependable than floppy in
+  the long term. Many tools are available that help you make backups. In the
+  simplest case, you can use a combination of gzip (or bzip2) and tar to back up
+  files from your hard drive to floppy or tape. This is the best method to use
+  when you make only occasional backups, no more often than, say, once a month.
+* 
+  If you have numerous users on your system or you make frequent changes to the
+  system configuration, it makes more sense to employ an incremental backup
+  scheme. Under such a scheme, you would take a "full backup" of the system only
+  about once a month. Then, every week, you would back up only those files that
+  changed in the last week. Likewise, each night, you could back up just those
+  files that changed over the previous 24 hours. There are several tools to aid
+  you in this type of backup.
+
+  The idea behind an incremental backup is that it is more efficient to take
+  backups in small steps; you use fewer floppies, tapes, or CDs, and the weekly
+  and nightly backups are shorter and easier to run. With this method, you have
+  a backup that is at most a day old. If you were to, say, accidentally delete
+  your entire system, you would restore it from backup in the following manner:
+* 
+  1. Restore from the most recent monthly backup. For instance, if you wiped the
+     system on July 17, you would restore the July 1 full backup. Your system
+     now reflects the state of files when the July 1 backup was made.
+  2. Restore from each weekly backup made so far this month. In our case, we
+     could restore from the two weekly backups from July 7 and 14. Restoring
+     each weekly backup updates all the files that changed during that week.
+  3. Restore from each daily backup during the last week — that is, since the
+     last weekly backup. In this case, we would restore the daily backups from
+     July 15 and 16. The system now looks as it did when the daily backup was
+     taken on July 16; no more than a day's worth of files have been lost.
+* 
+  Depending on the size of your system, the full monthly backup might require 4
+  GB or more of backup storage — often not more than one tape using today's tape
+  media, but quite a few ZIP disks. However, the weekly and daily backups would
+  generally require much less storage space. Depending on how your system is
+  used, you might decide to take the weekly backup on Sunday night and not
+  bother with daily backups for the weekend.
+
+  One important characteristic that backups should (usually) have is the ability
+  to select individual files from the backup for restoration. This way, if you
+  accidentally delete a single file or group of files, you can simply restore
+  those files without having to do a full system restoration. Depending on how
+  you take backups, however, this task will be either very easy or painfully
+  difficult.
+* 
+  In this section, we're going to talk about the use of tar, gzip, and a few
+  related tools for making backups to floppy and tape. We'll even cover the use
+  of floppy and tape drives in the bargain. These tools allow you to take
+  backups more or less "by hand"; you can automate the process by writing shell
+  scripts and even schedule your backups to run automatically during the night
+  using cron. All you have to do is flip tapes. Other software packages provide
+  a nice menu-driven interface for creating backups, restoring specific files
+  from backup, and so forth. Many of these packages are, in fact, nice frontends
+  to tar and gzip. You can decide for yourself what kind of backup system suits
+  you best.

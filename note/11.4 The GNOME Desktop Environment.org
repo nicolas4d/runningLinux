@@ -1,0 +1,26 @@
+* 
+  The GNOME desktop environment was conceived in 1999 as an alternative to KDE,
+  with its roots in the GPL and LGPL. Like KDE, GNOME had the goal of providing
+  modern, easy-to-use applications that work with each other and with existing X
+  applications.
+
+  We're going to give you a tour of GNOME the way it commonly looks, but you
+  should be aware that it's a general-purpose framework with really unlimited
+  flexibility. For example, we show the current window manager, Sawfish, but you
+  can install a different window manager with a completely different behavior
+  and appearance. The GNOME libraries, as well as the X libraries, underlie all
+  the components, and have appeared in command-line and even server-based
+  applications as well as the graphical desktop. In addition, the GNOME project
+  has developed some powerful applications in typical areas of office work, such
+  as spreadsheets and address books. Any X application can run under GNOME
+  (although it has to be written with the GNOME framework to use the most
+  powerful desktop features, such as the virtual filesystem and themes). In
+  particular, a lot of KDE applications work very nicely on GNOME, and vice
+  versa.
+* 
+  Of course, for our purposes, the interesting parts are the core desktop and
+  its associated applications. In the next sections, we'll go over the GNOME
+  look and feel, talk a little bit about the customization options it offers to
+  you, and then give a quick tour of major applications, such as Evolution and
+  Gnumeric. But first, you'll want to make sure you have the software and that
+  it's up to date.

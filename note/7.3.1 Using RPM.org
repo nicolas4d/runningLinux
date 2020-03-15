@@ -1,0 +1,174 @@
+* 
+  *RPM, the Red Hat Package Manager,* is a tool that automates the installation
+  of software binaries and remembers what files are needed so that you can be
+  assured the software will run properly. Despite the name, RPM is not Red
+  Hat-specific, but is used in many other distributions nowadays, including SuSE
+  and Caldera. Using RPM makes installing and uninstalling software a lot
+  easier.
+
+  The basic idea of RPM is that you have a database of packages and the files
+  that belong to a package. When you install a new package, the information
+  about this package is recorded in the database. Then, when you want to
+  uninstall the package for every file of the package, RPM checks whether other
+  installed packages are using this file too. If this is the case, the file in
+  question is not deleted.
+
+  In addition, RPM tracks dependencies. Each package can be dependent on one or
+  more other packages. When you install a package, RPM checks whether the
+  packages the new package is dependent on are already installed. If not, it
+  informs you about the dependency and refuses to install the package.
+* 
+  The dependencies are also used for removing packages: when you want to
+  uninstall a package that other packages are still dependent upon, RPM tells
+  you about this, too, and refuses to execute the task.
+
+  The increased convenience of using RPM packages comes at a price, however:
+  first, as a developer, it is significantly more difficult to make an RPM
+  package than to simply pack everything in a tar archive. And second, it is not
+  possible to retrieve just one file from an RPM package; you have to install
+  everything or nothing.
+
+  If you already have an RPM system, installing RPM packages is very easy. Let's
+  say that you have an RPM package called SuperFrob-4.i386.rpm (RPM packages
+  always have the extension.rpm; the i386 indicates that this is a binary
+  package compiled for Intel x86 machines). You could then install it with:
+  #+begin_src shell
+     rpm -i SuperFrob-4.i386.rpm
+  #+end_src
+* 
+  Instead of -i, you can also use the long-named version of this option; choose
+  whatever you like better:
+  #+begin_src shell
+    rpm - -install SuperFrob-4.i386.rpm
+  #+end_src
+  If everything goes well, there will be no output. If you want RPM to be more
+  verbose, you can try:
+  #+begin_src shell
+    rpm -ivh SuperFrob-4.i386.rpm
+  #+end_src
+  This prints the name of the package plus a number of hash marks so that you
+  can see how the installation progresses.
+
+  If the package you want to install needs another package that is not yet
+  installed, you will get something like the following:
+  #+begin_src shell
+    rpm -i SuperFrob-4.i386.rpm
+    failed dependencies:
+    frobnik-2 is needed by SuperFrob-4
+  #+end_src
+* 
+  If you see this, you have to hunt for the package frobnik-2 and install this
+  first. Of course, this package can itself be dependent on other packages.
+
+  If you want to update a package that is already installed, use the -U or -
+  -update option (which is just the -i option combined with a few more implied
+  options):
+  #+begin_src shell
+    rpm -U SuperFrob-5.i386.rpm
+  #+end_src
+  Uninstalling a package is done with the -e or - -erase option. In this case,
+  you do not specify the package file (you might not have that around any
+  longer), but rather, the package name and version number:
+  #+begin_src shell
+    rpm -e SuperFrob-5
+  #+end_src
+  Besides the options described so far that alter the state of your system, the
+  -q option provides various kinds of information about everything that is
+  recorded in the RPM database as well as package files. Here are some useful
+  things you can do with -q:
+* 
+  Find out the version number of an installed package:
+  #+begin_src shell
+    rpm -q SuperFrob
+    SuperFrob-5
+  #+end_src
+  Get a list of all installed packages:
+  #+begin_src shell
+  rpm -qa
+  SuperFrob-5
+  OmniFrob-3
+  ...
+  glibc-2.2.2-38
+  #+end_src
+  Find out to which package a file belongs:
+  #+begin_src shell
+  tigger# rpm -qf /usr/bin/dothefrob
+  SuperFrob-5
+  tigger# rpm -qf /home/kalle/.xinitrc
+  file /home/kalle/.xinitrc is not owned by any package
+  #+end_src
+* 
+  Display information about the specified package:
+  #+begin_src shell
+    tigger# rpm -qi rpm
+  #+end_src
+  Show the files that will be installed for the specified package file:
+  #+begin_src shell
+    tigger# rpm -qpl SuperFrob-5.i386.rpm
+    /usr/bin/dothefrob
+    /usr/bin/frobhelper
+    /usr/doc/SuperFrob/Installation
+    /usr/doc/SuperFrob/README
+    /usr/man/man1/dothefrob.1
+  #+end_src
+* 
+  What we've just finished showing are the basic modes of operation, which are
+  supplemented by a large number of additional options. You can check those in
+  the manual page for the rpm(8) command.
+
+  If you are faced with an RPM package that you want to install, but have a
+  system like Slackware or Debian that is not based on RPM, things get a little
+  bit more difficult. You can either use the fairly self-explanatory command
+  alien that can convert between various package formats and comes with most
+  distributions, or you can build the RPM database from scratch.
+
+  The first thing you have to do in this latter case is to get the rpm program
+  itself. You can download it from http://www.rpm.org. Follow the installation
+  instructions to build and install it; if you have the C compiler gcc installed
+  on your system, there should be no problems with this.
+
+  The next task is to *initialize the RPM database*. Distributions that come with
+  RPM do the initialization automatically, but on other systems you will have to
+  issue the command:
+  #+begin_src shell
+    rpm - -initdb
+  #+end_src
+* 
+  This command creates several files in the directory */var/lib/rpm*. The
+  directory /var/lib should already exist; if it doesn't, create it with the
+  mkdir command first.
+
+  Now you can install RPM packages the normal way, but because you have not
+  installed the basic parts of the system, such as the C library with RPM, you
+  will get errors like the following:
+  #+begin_src shell
+    tigger # rpm -i SuperFrob-4.i386.rpm
+    failed dependencies:
+    libm.so.5 is needed by SuperFrob-4
+    libdl.so.1 is needed by SuperFrob-4
+    libc.so.5 is needed by SuperFrob-4
+  #+end_src
+  because those files are not recorded in the RPM database. Of course, you
+  really do have those files on your system; otherwise most programs wouldn't
+  run. *For RPM to work*, you must tell it not to care about any dependencies.
+  You do this by specifying the command-line option - - nodeps:
+  #+begin_src shell
+    rpm -i - -nodeps SuperFrob-4.i386.rpm
+  #+end_src
+* 
+  Now, RPM will install the package without complaining. Of course, it will run
+  only if the libraries it needs are installed. The mere fact that you use -
+  -nodeps doesn't save you when the "dependent" library or software is not
+  installed on your system.
+
+  With this information, you should be able to administer your RPM-based system.
+  If you want to know more, read the manual page for the rpm command, or check
+  out http://www.rpm.org.
+
+  Some commercial companies sell automated upgrade services based on RPM. As a
+  subscriber to these services, you can have your system upgraded automatically;
+  the service finds out which new packages are available and installs them for
+  you. If you use the SuSE distribution, SuSE provides such a service for free.
+  Even the Debian distribution (whose package system is described in the next
+  section) has an automated upgrade system (described there). However, some
+  security experts consider these automated upgrades a security risk.

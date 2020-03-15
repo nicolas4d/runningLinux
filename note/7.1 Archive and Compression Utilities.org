@@ -1,0 +1,16 @@
+When installing or upgrading software on Unix systems, the first things you need
+to be familiar with are the tools used for compressing and archiving files.
+Dozens of such utilities are available. Some of these (such as *tar* and
+*compress*) date back to the earliest days of Unix; others (such as *gzip* and
+*bzip2*) are relative newcomers. The main goal of these utilities is to archive
+files (that is, to pack many files together into a single file for easy
+transportation or backup) and to compress files (to reduce the amount of disk
+space required to store a particular file or set of files).
+
+In this section, we're going to discuss the most common file formats and
+utilities you're likely to run into. For instance, a near-universal convention
+in the Unix world is to transport files or software as a tar archive, compressed
+using compress or gzip. In order to create or unpack these files yourself,
+you'll need to know the tools of the trade. The tools are most often used when
+installing new software or creating backups — the subject of the following two
+sections in this chapter.

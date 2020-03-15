@@ -1,0 +1,82 @@
+* 
+  Before imparting all the gritty details of gcc, we're going to present a
+  simple example and walk through the steps of compiling a C program on a Unix
+  system.
+
+  Let's say you have the following bit of code, an encore of the much-overused
+  "Hello, World!" program (not that it bears repeating):
+  #+begin_src c
+    #include <stdio.h>
+    int main( ) {
+      (void)printf("Hello, World!\n");
+      return 0; /* Just to be nice */
+    }
+  #+end_src 
+  Several steps are required to compile this program into a living, breathing
+  executable. You can accomplish most of these steps through a single gcc
+  command, but we've left the specifics for later in the chapter.
+* 
+  First, the gcc compiler must generate an object file from this source code.
+  The object file is essentially the machine-code equivalent of the C source. It
+  contains code to set up the main( ) calling stack, a call to the printf( )
+  function, and code to return the value of 0.
+
+  The next step is to link the object file to produce an executable. As you
+  might guess, this is done by the linker. The job of the linker is to take
+  object files, merge them with code from libraries, and spit out an executable.
+  The object code from the previous source does not make a complete executable.
+  First and foremost, the code for printf( ) must be linked in. Also, various
+  initialization routines, invisible to the mortal programmer, must be appended
+  to the executable.
+* 
+  Where does the code for printf( ) come from? Answer: the libraries. It is
+  impossible to talk for long about gcc without mentioning them. A library is
+  essentially a collection of many object files, including an index. When
+  searching for the code for printf( ), the linker looks at the index for each
+  library it's been told to link against. It finds the object file containing
+  the printf( ) function and extracts that object file (the entire object file,
+  which may contain much more than just the printf( ) function) and links it to
+  the executable.
+
+  In reality, things are more complicated than this. Linux supports two kinds of
+  libraries: static and shared. What we have described in this example are
+  static libraries: libraries where the actual code for called subroutines is
+  appended to the executable. However, the code for subroutines such as printf(
+  ) can be quite lengthy. Because many programs use common subroutines from the
+  libraries, it doesn't make sense for each executable to contain its own copy
+  of the library code. That's where shared libraries come in.(It should be noted
+  that some very knowledgeable programmers consider shared libraries harmful,
+  for reasons too involved to be explained here. They say that we shouldn't need
+  to bother in a time when most computers ship with 20GB hard disks and at least
+  128 MB of memory preinstalled.)
+* 
+  With shared libraries, all the common subroutine code is contained in a single
+  library "image file" on disk. When a program is linked with a shared library,
+  stub code is appended to the executable, instead of actual subroutine code.
+  This stub code tells the program loader where to find the library code on
+  disk, in the image file, at runtime. Therefore, when our friendly "Hello,
+  World!" program is executed, the program loader notices that the program has
+  been linked against a shared library. It then finds the shared library image
+  and loads code for library routines, such as printf( ), along with the code
+  for the program itself. The stub code tells the loader where to find the code
+  for printf( ) in the image file.
+
+  Even this is an oversimplification of what's really going on. Linux shared
+  libraries use jump tables that allow the libraries to be upgraded and their
+  contents to be jumbled around, without requiring the executables using these
+  libraries to be relinked. The stub code in the executable actually looks up
+  another reference in the library itself — in the jump table. In this way, the
+  library contents and the corresponding jump tables can be changed, but the
+  executable stub code can remain the same.
+* 
+  Shared libraries also have another advantage: their upgradability. When
+  someone fixes a bug in printf() (or worse, a security hole), you only need to
+  upgrade the one library. You don't have to relink every single program on your
+  system.
+
+  But don't allow yourself to be befuddled by all this abstract information. In
+  time, we'll approach a real-life example and show you how to compile, link,
+  and debug your programs.
+
+  It's actually very simple; the gcc compiler takes are of most of the details
+  for you. However, it helps to understand what's going on behind the scenes.

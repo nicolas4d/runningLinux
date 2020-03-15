@@ -1,0 +1,37 @@
+* 
+  You already know how to use the arrow keys to move around the document. In
+  addition, the *w* command moves the cursor to the beginning of the next word,
+  and *b* moves it to the beginning of the current word. The *0* (that's a zero)
+  command moves the cursor to the beginning of the current line, and the *$*
+  command moves it to the end of the line.
+
+  When editing large files, you'll want to move forward or backward through the
+  file one screen at a time. Pressing *Ctrl-F* moves the cursor one screen
+  forward, and *Ctrl-B* moves it one screen backward.
+
+  In order to move the cursor to the end of the file, type *G*. You can also move
+  to an arbitrary line: the command *10G* would move the cursor to line 10 in the
+  file. To move to the beginning of the file, use 1G .
+
+  Typing */* followed by a pattern and the Enter key causes you to jump to the
+  first occurrence of that pattern in the text following the cursor. For example,
+  placing the cursor on the first line of text in our example and typing /burg
+  moves the cursor to the beginning of the word "burgers." Using *?* instead of /
+  searches backward through the file.
+* 
+  The pattern following a / or ? command is actually a *regular expression*.
+  Regular expressions are a powerful way to specify patterns for search and
+  replace operations and are used by many Unix utilities. You can find more
+  information about regular expressions in the upcoming section, Section 9.2.9.
+  Using regular expressions, you could, for example, search for the next
+  uppercase letter, using the command:
+  #+begin_src 
+  /[A-Z]
+  #+end_src
+  Therefore, if the pattern you're searching for is not a static string, regular
+  expressions can be used to specify just what you want.
+
+  You can couple moving commands with other commands, such as deletion. For
+  example, the command *d$* will delete everything from the cursor to the end of
+  the line; dG will delete everything from the cursor to the end of the file.
+* 

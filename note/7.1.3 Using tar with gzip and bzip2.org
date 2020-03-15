@@ -1,0 +1,100 @@
+* 
+  tar does not compress the data stored in its archives in any way. If you are creating a tar file
+  from three 200K files, you'll end up with an archive of about 600K. It is common practice to
+  compress tar archives with gzip (or the older compress program). You could create a gzipped
+  tar file using the commands:
+  #+begin_src shell
+    tar cvf tarfile files...
+    gzip -9 tarfile
+  #+end_src
+  But that's so cumbersome, and requires you to have enough space to store the
+  uncompressed tar file before you gzip it.
+
+  A much trickier way to accomplish the same task is to use an interesting
+  feature of tar that allows you to write an archive to standard output. If you
+  specify - as the tar file to read or write, the data will be read from or
+  written to standard input or output. For example, we can create a gzipped tar
+  file using the command:
+* 
+  #+begin_src shell
+    tar cvf - files... | gzip -9 > tarfile.tar.gz
+  #+end_src
+  Here, tar creates an archive from the named files and writes it to standard
+  output; next, gzip reads the data from standard input, compresses it, and
+  writes the result to its own standard output; finally, we redirect the gzipped
+  tar file to tarfile.tar.gz.
+
+  We could extract such a tar file using the command:
+  #+begin_src shell
+    gunzip -c tarfile.tar.gz | tar xvf -
+  #+end_src
+  gunzip uncompresses the named archive file and writes the result to standard
+  output, which is read by tar on standard input and extracted. Isn't Unix fun?
+* 
+  Of course, both commands are rather cumbersome to type. Luckily, the GNU
+  version of tar provides the z option which automatically creates or extracts
+  gzipped archives. (We saved the discussion of this option until now, so you'd
+  truly appreciate its convenience.) For example, we could use the commands:
+  #+begin_src shell
+    tar cvzf tarfile.tar.gz files...
+  #+end_src
+  and:
+  #+begin_src shell
+    tar xvzf tarfile.tar.gz
+  #+end_src
+  to create and extract gzipped tar files. Note that you should name the files
+  created in this way with the *.tar.gz* filename extensions (or the equally
+  often used .tgz, which also works on systems with limited filename
+  capabilities) to make their format obvious. The z option works just as well
+  with other tar functions such as t .
+* 
+  Only the GNU version of tar supports the z option; if you are using tar on
+  another Unix system, you may have to use one of the longer commands to
+  accomplish the same tasks. Nearly all Linux systems use GNU tar.
+
+  When you want to use tar in conjunction with bzip2, you need to tell tar about your
+  compression program preferences, like this:
+  #+begin_src shell
+    tar cvf tarfile.tar.bz2 - -use-compress-program=bzip2 files...
+  #+end_src
+  or, shorter:
+  #+begin_src shell
+    tar cvf tarfile.tar.bz2 - -use-compress-program=bzip2 files...
+  #+end_src
+  or, shorter still:
+  #+begin_src shell
+    tar cvjf tarfile.tar.bz2 files
+  #+end_src
+* 
+  The last version works only with newer versions of GNU tar that support the j
+  option.
+
+  Keeping this in mind, you could write short shell scripts or aliases to handle
+  cookbook tar file creation and extraction for you. Under bash, you could
+  include the following functions in your .bashrc:
+  #+begin_src shell
+    tarc ( ) { tar czvf $1.tar.gz $1 }
+    tarx ( ) { tar xzvf $1 }
+    tart ( ) { tar tzvf $1 }
+  #+end_src
+  With these functions, to create a gzipped tar file from a single directory,
+  you could use the command:
+  #+begin_src shell
+    tarc directory
+  #+end_src
+* 
+  The resulting archive file would be named directory .tar.gz. (Be sure that there's no trailing
+  slash on the directory name; otherwise the archive will be created as .tar.gz within the given
+  directory.) To list the table of contents of a gzipped tar file, just use:
+  #+begin_src shell
+    tart file.tar.gz
+  #+end_src
+  Or, to extract such an archive, use:
+  #+begin_src shell
+    tarx file.tar.gz
+  #+end_src
+  As a final note, we would like to mention that files created with gzip and/or
+  tar can be unpacked with the well-known WinZip utility on Windows systems.
+  WinZip doesn't have support for bzip2 yet, though. If you, on the other hand,
+  get a file in .zip format, you can unpack it on your Linux system using the
+  unzip command.

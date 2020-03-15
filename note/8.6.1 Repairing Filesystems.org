@@ -1,0 +1,62 @@
+* 
+  As discussed in Section 6.1.5 in Chapter 6, you can use *fsck* to recover from
+  several kinds of filesystem corruption. Most of these filesystem problems are
+  relatively minor, however, and can be repaired by booting your system in the
+  usual way and running fsck from the hard drive. However, it is usually better
+  to check and repair your root filesystem while it is unmounted. In this case,
+  it's easier to run fsck from an emergency floppy.
+
+  There are no differences between running fsck from floppy and from the hard
+  drive; the syntax is exactly the same as described earlier in the chapter.
+  However, remember that fsck is usually a frontend to tools such as fsck.ext2.
+  On other systems, you'll need to use e2fsck (for Second Extended filesystems).
+
+  It is possible to corrupt a filesystem so that it cannot be mounted. This is
+  usually the result of damage to the filesystem's superblock, which stores
+  information about the filesystem as a whole. If the superblock is corrupted,
+  the system won't be able to access the filesystem at all, and any attempt to
+  mount it will fail (probably with an error to the effect of "can't read
+  superblock").
+* 
+  Because of the importance of the superblock, the filesystem keeps backup
+  copies of it at intervals on the filesystem. *Second Extended filesystems* are
+  divided into "block groups," where each group has, by default, 8192 blocks.
+  Therefore, there are backup copies of the superblock at block offsets 8193,
+  16385 (that's 8192 x 2 + 1), 24577, and so on. If you use the ext2 filesystem,
+  check that the filesystem has 8192-block groups with the following command:
+  #+begin_src 
+  dumpe2fs  device  | more
+  #+end_src
+  (Of course, this works only when the master superblock is intact.) This
+  command will print a great deal of information about the filesystem, and you
+  should see something like:
+  #+begin_src 
+  Blocks per group:  8192
+  #+end_src
+  If another offset is given, use it for computing offsets to the superblock
+  copies, as mentioned earlier.
+* 
+  If you can't mount a filesystem because of superblock problems, chances are
+  that fsck (or e2fsck) will fail as well. You can tell e2fsck to use one of the
+  superblock copies, instead, to repair the filesystem. The command is:
+  #+begin_src 
+  e2fsck -f -b  offset device
+  #+end_src
+  where offset is the block offset to a superblock copy; usually, this is 8193.
+  The -f switch is used to force a check of the filesystem; when using
+  superblock backups, the filesystem may appear "clean," in which case no check
+  is needed. -f overrides this. For example, to repair the filesystem on
+  /dev/hda2 with a bad superblock, we can say:
+  #+begin_src 
+  e2fsck -f -b 8193 /dev/hda2
+  #+end_src
+  Superblock copies save the day. The previous commands can be executed from an
+  emergency floppy system and will hopefully allow you to mount your filesystems
+  again.
+* 
+  Recently, so-called journalling filesystems have been introduced in most Linux
+  distributions. Examples of these are the ext3 filesystem, the Reiser
+  filesystem, and the jfs filesystem. These are less prone to filesystem
+  corruption because they keep a log (the "journal") of all changes made.
+  Chances are that with these filesystems, you will never need to use any of the
+  techniques described here.

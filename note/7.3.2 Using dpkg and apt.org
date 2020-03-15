@@ -1,0 +1,238 @@
+* 
+  After rpm, the most popular package manager for Linux distributions is *dpkg*,
+  which is used to manage .deb archives; as the name implies, the .deb format
+  originated with the Debian distribution, but it is also used by Libranet and
+  Xandros, among other vendors. Like the RPM format, the .deb format keeps track
+  of dependencies and files to help ensure your system is consistent.
+
+  The technical differences between the two formats are actually fairly small;
+  although the RPM and .deb formats are incompatible (for example, you can't
+  install a Debian package directly on Red Hat), you can use alien to translate
+  .deb packages for other distributions (and vice versa). The main difference
+  between the formats is that .deb packages are built using tools that help make
+  sure they have a consistent layout and generally conform to policies (most
+  notably, the Debian Policy Manual, provided in the debian-policy package) that
+  help developers create high-quality packages.
+
+  While dpkg is the low-level interface to the Debian package manager, most
+  functions are usually handled through either the *apt* suite of programs or
+  frontends like dselect, aptitude, gnome-apt, synaptic, or kpackage.
+* 
+  Installing .deb packages on a Debian system is quite easy. For example, if you
+  have a package named superfrob_4-1_i386.deb, you can install it with:
+  #+begin_src shell
+    dpkg -i superfrob_4-1_i386.deb
+    Selecting previously deselected package superfrob.
+    (Reading database ... 159540 files and directories currently installed.)
+    Unpacking superfrob (from superfrob_4-1_i386.deb) ...
+    Setting up superfrob (4-1) ...
+  #+end_src
+* 
+  If the superfrob package is missing a dependency, dpkg will issue a warning message:
+  #+begin_src shell
+    tigger # dpkg -i superfrob_4-1_i386.deb
+    Selecting previously deselected package superfrob.
+    (Reading database ... 159540 files and directories currently installed.)
+    Unpacking superfrob (from superfrob_4-1_i386.deb) ...
+    dpkg: dependency problems prevent configuration of superfrob:
+    superfrob depends on frobnik (>> 2); however:
+    Package frobnik is not installed.
+    dpkg: error processing superfrob (- -install):
+    dependency problems - leaving unconfigured
+    Errors were encountered while processing:
+    superfrob
+  #+end_src
+  
+  The output indicates that you would need frobnik Version 2 or later for the
+  package to install completely. (The files in the package are installed, but
+  they may not work until frobnik is installed too.)
+* 
+  Unlike RPM, dpkg doesn't make a distinction between installing a new package
+  and upgrading an existing one; the -i (or - -install) option is used in both
+  cases. For example, if we want to upgrade superfrob using a newly downloaded
+  package superfrob_5-1_i386.deb, we'd simply type:
+  #+begin_src shell
+    tigger # dpkg -i superfrob_5-1_i386.deb
+    (Reading database ... 159546 files and directories currently installed.)
+    Preparing to replace superfrob 4-1 (using superfrob_5-1_i386.deb) ...
+    Unpacking replacement superfrob ...
+    Setting up superfrob (5-1) ...
+  #+end_src
+  To uninstall a package, you can use either the -r (- -remove) or -P (- -purge) options. The - -
+  remove option will remove most of the package, but will retain any configuration files, while -
+  -purge will remove the systemwide configuration files as well. For example, to completely
+  remove superfrob:
+* 
+  #+begin_src shell
+    tigger # dpkg -P superfrob
+    (Reading database ... 159547 files and directories currently installed.)
+    Removing superfrob ...
+  #+end_src
+  dpkg can also be used to find out what packages are installed on a system, using the -l (- -list)
+  option:
+  #+begin_src shell
+    tigger $ dpkg -l
+  #+end_src
+  The first three lines of the output are designed to tell you what the first
+  three columns before each package's name mean. Most of the time, they should
+  read ii, which means the package is correctly installed. If they don't, you
+  should type dpkg - -audit for an explanation of what is wrong with your system
+  and how to fix it.
+* 
+  You can also use the -l option with a package name or glob-style pattern; for
+  example, you could find out what version of superfrob is installed using:
+  #+begin_src shell
+    tigger $ dpkg -l superfrob
+    Desired=Unknown/Install/Remove/Purge/Hold
+    | Status=Not/Installed/Config-files/Unpacked/Failed-config/Half-installed
+    |/ Err?=(none)/Hold/Reinst-required/X=both-problems (Status,Err: uppercase=bad)
+    ||/ Name  Version  Description
+  #+end_src
+  dpkg can also be used to find out what package to which a particular file belongs:
+  #+begin_src shell
+    tigger $ dpkg - -search /bin/false
+    shellutils: /bin/false
+    tigger $ dpkg - -search /home/kalle/.xinitrc
+    dpkg: /home/kalle/.xinitrc not found.
+  #+end_src
+* 
+  You can also display information about an installed package or .deb archive:
+  #+begin_src shell
+    dpkg --status dpkg
+    dpkg --info reportbug_1.43_all.deb
+  #+end_src
+  dpkg can also list the files and directories included in a .deb archive:
+  #+begin_src shell
+    dpkg --contents superfrob_4-1_i386.deb
+  #+end_src
+  dpkg, like rpm, has numerous other options; for more details, refer to the
+  manual pages for *dpkg* and *dpkg-deb*.
+* 
+  In addition to dpkg, Debian and other Debian-based distributions provide the
+  apt suite of programs.(Some RPM-based distributions now include APT as well
+  because APT was designed to work with any packaging format.) *APT is the
+  "Advanced Package Tool,"* and is designed as an archive-independent system
+  that can handle multiple package formats. Perhaps the most important feature
+  of APT is its ability to resolve dependencies automatically; if, for example,
+  superfrob requires Version 2 or later of frobnik, APT will try to find frobnik
+  from the sources that are available to it (including CD-ROMs, local mirrors,
+  and the Internet).
+
+  The most useful interface to APT is the apt-get command. apt-get manages the
+  list of available packages (the "package cache") and can be used to resolve
+  dependencies and install packages. A typical session would start with an
+  update of the APT cache:
+* 
+  #+begin_src shell
+    apt-get update
+    Get:1 http://http.us.debian.org stable/main Packages [808kB]
+    Get:2 http://http.us.debian.org stable/main Release [88B]
+    Hit http://non-us.debian.org stable/non-US/main Packages
+    Hit http://non-us.debian.org stable/non-US/main Release
+    Get:3 http://security.debian.org stable/updates/main Packages [62.1kB]
+    Get:4 http://security.debian.org stable/updates/main Release [93B]
+    Fetched 870kB in 23s (37kB/s)
+    Reading Package Lists... Done
+    Building Dependency Tree... Done
+  #+end_src
+* 
+  The output indicates that there have been updates to the stable distribution,
+  so we may want to upgrade the packages already installed on the system. To do
+  this automatically, we can use apt-get's upgrade option:
+  #+begin_src shell
+    apt-get upgrade
+    The following packages have been kept back:
+    gnumeric
+    17 packages upgraded, 0 newly installed, 0 to remove and 1 not upgraded.
+    Need to get 16.3MB of archives. After unpacking 5kB will be freed.
+    Do you want to continue? [Y/n] y
+    Get:1 http://http.us.debian.org stable/main base-passwd 3.4.6 [17.2kB]
+    Get:2 http://security.debian.org stable/updates/main ssh 1:3.1.6p4-1 [600kB]
+    ...
+    (Reading database ... 159546 files and directories currently installed.)
+    Preparing to replace ssh 1:3.0.3p2-6 (using .../ssh_1%3a3.1.6p4-1_i386.deb) ...
+    Unpacking replacement ssh ...
+    ...
+  #+end_src
+* 
+  One thing you will notice is that unlike most Linux commands, the actions
+  taken by APT commands are specified without dashes. apt-get does allow some
+  options, but they are used only to change the behavior of the main action
+  specified.(Some other Linux commands, like cvs, also act this way.)
+
+  Note that gnumeric was not automatically upgraded, probably because it would
+  have required additional packages to be installed. To upgrade it and resolve
+  dependencies, we can use apt- get's install option, with the names of one or
+  more packages:(Note that apt-get does not install packages directly from .deb
+  archives; dpkg's - -install option should be used instead for an archive that
+  you have in a .deb archive on disk or have downloaded directly from the
+  Internet. When using dpkg, you will need to resolve the dependencies
+  yourself.)
+* 
+  #+begin_src shell
+    apt-get install gnumeric
+    The following extra packages will be installed:
+    libgal36 libglade3
+    The following NEW packages will be installed:
+    libgal36
+    2 packages upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
+    Need to get 8.3MB of archives. After unpacking 503kB will be used.
+    Do you want to continue? [Y/n] y
+  #+end_src
+* 
+  Another useful feature of APT is its ability to find information about
+  packages in the repository. The *apt-cache* command is used to look up
+  information about packages that are available for installation. One common use
+  of apt-cache is to find packages based on keywords in the package's
+  description, by using words, complete phrases (in quotes), or regular
+  expressions. For example, if you want to find a package that allows you to
+  play Ogg Vorbis-encoded music files, you can use the search option to find
+  appropriate packages:
+* 
+  #+begin_src shell
+    apt-cache search "ogg vorbis"
+    audacity - A fast, cross-platform audio editor
+    bitcollider-plugins - bitcollider plugins
+    cplay - A front-end for various audio players
+    gqmpeg - a GTK+ front end to mpg321/mpg123 and ogg123
+    libapache-mod-mp3 - turns Apache into a streaming audio server
+    libvorbis0 - The Vorbis General Audio Compression Codec
+    mp3blaster - Full-screen console mp3 and ogg vorbis player
+    mp3burn - burn audio CDs directly from MP3s or Ogg Vorbis files
+    oggtst - Read comments in ogg vorbis files
+    python-pyvorbis - A Python interface to the Ogg Vorbis library
+    vorbis-tools - Several Ogg Vorbis Tools
+    xmms - Versatile X audio player that looks like Winamp
+    xmms-dev - XMMS development static library and header files
+    mq3 - a mp3/ogg audio player written in Qt.
+  #+end_src
+* 
+  Now, if we are interested in one of these packages, we can find out more about
+  it using the show option of apt-cache:
+  #+begin_src shell
+    apt-cache show xmms
+  #+end_src
+  While a full exploration of APT's features was beyond the scope of this
+  chapter, the apt manual page (and the manual pages it references) along with
+  the APT HOWTO (available in the apt-howto-en package) should answer any
+  questions you may have.
+
+  In addition to the command-line tools, a number of easy-to-use text-based and
+  graphical frontends have been developed. One of the most mature frontends is
+  *kpackage*, which is part of the KDE Desktop Environment, but can be used with
+  other desktops such as GNOME. kpackage can be run from the command line or
+  found in the System menu of KDE. Figure 7-1 shows a sample screen from
+  kpackage.
+* 
+  The main window of kpackage displays a list of all the packages available for
+  your system on the left, with a box to the right; when you choose a package in
+  the list, the box to the right includes information about the package you
+  selected. You can install or uninstall packages by selecting them and choosing
+  Install or Uninstall from the Packages menu, or by clicking the column labeled
+  Mark to place a checkmark next to them, and then clicking the Install marked
+  or Uninstall marked buttons. You can also install .deb packages directly by
+  clicking the Open button on the toolbar to the left of the screen and
+  selecting the file, or dragging .deb icons from KDE file manager windows into
+  kpackage's window. kpackage also has tools for finding packages with
+  particular names. Like all KDE applications, kpackage has help available by
+  pressing F1 or using the Help menu.

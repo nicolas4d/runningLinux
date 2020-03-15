@@ -1,0 +1,32 @@
+* 
+  OK, you have your printer hardware set up and connected. You should collect a
+  hardcopy of your resource documents (at least the manpages for the print
+  utilities and files described here, and the Printing HOWTO file). Also, it is
+  useful to have the technical specifications for your printer. Often these are
+  no longer provided when you buy your printer, but you can usually download the
+  information you need from an FTP site or a web site operated by the printer
+  manufacturer. While you are retrieving such information, look around and see
+  if there is documentation (such as a description of printer error messages and
+  their meanings) that can help you troubleshoot and manage your printer. Most
+  printer manufacturers also offer a technical manual for the printer that you
+  can buy. This may or may not be the same volume as the service manual.
+* 
+  For example, on the Hewlett-Packard web site,
+  http://www.hp.com/cposupport/software.html, you can retrieve printer technical
+  data sheets; product specs; port-configuration information; PostScript, PCL,
+  and HP-GL files for testing your printers (and filters); descriptions of
+  printer control sequences you can pass to the printer to control its behavior;
+  and documents telling how you can integrate lpd-based printing services with
+  HP's JetAdmin package (and thereby with Netware-networked printers as well).
+
+  Now, before starting, take a deep breath; be patient with yourself. Printer
+  services configuration is a skill that takes time to develop. If you have
+  sufficiently standard equipment and successfully use one of the new-fangled
+  printer management utilities to quickly and efficiently install and configure
+  printer services, celebrate! Then note that you can probably fine-tune the
+  installation for better performance by applying the procedures we describe
+  next, and perhaps by using filters and utilities written specifically to
+  support all the features of your printer model. If you decide to revise a
+  successful printer installation, make sure you take notes on the changes you
+  make so that you can find your way back if your changes don't do what you
+  expected.

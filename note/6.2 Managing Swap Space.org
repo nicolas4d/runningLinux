@@ -1,0 +1,91 @@
+* 
+  *Swap space is a generic term for disk storage used to increase the amount of
+  apparent memory available on the system.* Under Linux, swap space is used to
+  implement paging, a process whereby memory pages are written out to disk when
+  physical memory is low and read back into physical memory when needed (a page
+  is 4096 bytes on Intel x86 systems; this value can differ on other
+  architectures). The process by which paging works is rather involved, but it
+  is optimized for certain cases. The virtual memory subsystem under Linux
+  allows memory pages to be shared between running programs. For example, if you
+  have multiple copies of Emacs running simultaneously, only one copy of the
+  Emacs code is actually in memory. Also, text pages (those pages containing
+  program code, not data) are usually read-only, and therefore not written to
+  disk when swapped out. Those pages are instead freed directly from main memory
+  and read from the original executable file when they are accessed again.
+* 
+  Of course, swap space cannot completely make up for a lack of physical RAM.
+  Disk access is much slower than RAM access, by several orders of magnitude.
+  Therefore, swap is useful primarily as a means to run a number of programs
+  simultaneously that would not otherwise fit into physical RAM; if you are
+  switching between these programs rapidly you'll notice a lag as pages are
+  swapped to and from disk.
+
+  *At any rate, Linux supports swap space in two forms*: as a separate disk
+  partition or a file somewhere on your existing Linux filesystems. You can have
+  up to *eight swap areas*, with each swap area being a disk file or partition
+  up to *2GB in size* (again, these values can differ on non-Intel systems). You
+  math whizzes out there will realize that this allows up to 16 GB of swap
+  space. (If anyone has actually attempted to use this much swap, the authors
+  would love to hear about it, whether you're a math whiz or not.)
+* 
+  Note that using a swap partition can yield better performance because the disk
+  blocks are guaranteed to be contiguous. In the case of a swap file, however,
+  the disk blocks may be scattered around the filesystem, which can be a serious
+  performance hit in some cases. Many people use a swap file when they must add
+  additional swap space temporarily — for example, if the system is thrashing
+  because of lack of physical RAM and swap. Swap files are a good way to add
+  swap on demand.
+
+  Nearly all Linux systems utilize swap space of some kind — usually a single
+  swap partition. In Chapter 3, we explained how to create a swap partition on
+  your system during the Linux installation procedure. In this section we
+  describe how to add and remove swap files and partitions. If you already have
+  swap space and are happy with it, this section may not be of interest to you.
+* 
+  How much swap space do you have? The *free* command reports information on
+  system- memory usage:
+  
+  [[file:../img/6.2.png]]
+  
+  All the numbers here are reported in 1024-byte blocks. Here, we see a system
+  with 127,888 blocks (about 127 MB) of physical RAM, with 126,744 (about 126
+  MB) currently in use. Note that your system actually has more physical RAM
+  than that given in the "total" column; this number does not include the memory
+  used by the kernel for its own sundry needs.
+* 
+  The "shared" column lists the amount of physical memory shared between
+  multiple processes. Here, we see that about 27 MB of pages are being shared,
+  which means that memory is being utilized well. The "buffers" column shows the
+  amount of memory being used by the kernel buffer cache. The buffer cache
+  (described briefly in the previous section) is used to speed up disk
+  operations by allowing disk reads and writes to be serviced directly from
+  memory. The buffer cache size will increase or decrease as memory usage on the
+  system changes; this memory is reclaimed if applications need it. Therefore,
+  although we see that 126 MB of system memory is in use, not all (but most) of
+  it is being used by application programs. The "cache" column indicates how
+  many memory pages the kernel has cached for faster access later.
+* 
+  Because the memory used for buffers and cache can easily be reclaimed for use
+  by applications, the second line ( -/+ buffers/cache ) provides an indication
+  of the memory actually used by applications (the "used" column) or available
+  to applications (the "free" column). The sum of the memory used by buffers and
+  cache reported in the first line is subtracted from the total used memory and
+  added to the total free memory to give the two figures on the second line.
+
+  In the third line, we see the total amount of swap, 130,748 blocks (about 128
+  MB). In this case, only very little of the swap is being used; there is plenty
+  of physical RAM available. If additional applications were started, larger
+  parts of the buffer cache memory would be used to host them. Swap space is
+  generally used as a last resort when the system can't reclaim physical memory
+  in other ways.
+* 
+  Note that the amount of swap reported by free is somewhat less than the total
+  size of your swap partitions and files. This is because several blocks of each
+  swap area must be used to store a map of how each page in the swap area is
+  being utilized. This overhead should be rather small; only a few kilobytes per
+  swap area.
+
+  If you're considering creating a swap file, the *df* command gives you
+  information on the amount of space remaining on your various filesystems. This
+  command prints a list of filesystems, showing each one's size and what
+  percentage is currently occupied.

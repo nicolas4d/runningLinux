@@ -1,0 +1,6 @@
+If you use the *:r* command, you can include the contents of another file in the
+vi buffer. For example, the command:
+#+begin_src 
+:r foo.txt
+#+end_src
+inserts the contents of the file foo.txt after the current line.

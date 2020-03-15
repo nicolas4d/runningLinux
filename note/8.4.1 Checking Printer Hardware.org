@@ -1,0 +1,117 @@
+* 
+  Before you set up printer services, be sure the printing devices are online. If
+  you also use another operating system, such as Microsoft Windows, you can
+  exercise the hardware to ensure that it is connected properly and working before
+  loading Linux. Successfully printing a document from another operating system
+  immediately eliminates one major source of woe and head scratching. Similarly,
+  if you are going to use printer services on a network, your system should be on
+  the network and all protocols functioning before proceeding.
+
+  A word about the so-called GDI printers (or Windows printers) is in order
+  here. GDI printers are really brain-damaged printers in the true sense of the
+  meaning: their "brain," the internal processing unit that builds up a page
+  from the data sent to it, has been removed; this task is performed in the
+  printer driver on the computer itself. The printer itself only consists of the
+  actual printing hardware and a very small amount of software that controls the
+  hardware. Of course, drivers for these printers are typically available only
+  for Microsoft Windows systems (where the graphics subsystem is called GDI,
+  which is where the name comes from), so there is hardly any hope of getting
+  such a printer to work with Linux.
+* 
+  Install printer services as the root user, with superuser privileges. The
+  superuser is the only user besides the lpd print daemon able to write directly
+  to a printer by directing output to the corresponding output device. Other
+  users cannot send output directly to the printer and must instead use the
+  printer utilities to handle printing tasks.
+
+  Before you get started, you can abuse your root privileges to verify that your
+  system's assigned device files actually have a valid link to the physical
+  device. Just send a brief ASCII test file directly to the printer by
+  redirection. For instance, if you have a printer on your first parallel port,
+  its device name is probably either */dev/lp0 or /dev/lp1*, /depending on your
+  installation. The following command outputs some text suited for testing a
+  printer setup, which you can redirect to your printer. (If you have an early
+  PostScript printer, you may need instead to send it a small PostScript test
+  file to prevent it from getting confused. Newer PostScript printers can often
+  perform this conversion themselves.)
+* 
+  #+begin_src shell
+    lptest > /dev/lp1
+  #+end_src
+  The lptest utility (which may not be available on all distributions) is
+  designed to conveniently exercise an ASCII printer or terminal to make sure it
+  is working correctly. It sends a prepend file composed of the 96 ASCII
+  characters in a sequence that creates a "ripple" or "barber- pole" output
+  effect. The default output of lptest on Linux is 16,000 characters arrayed in
+  79- character lines, long enough to require more than one page to print. If
+  you run lptest with no arguments, it prints the standard output to your
+  screen, and you can see what should be sent to the printer. The lptest command
+  allows you to trim the width of the output column and to limit the number of
+  output lines. For example, to display an output 35 characters wide, limited to
+  six lines, you would enter:
+  #+begin_src shell
+    lptest 35 6
+  #+end_src
+* 
+  The output should look much like this:
+  #+begin_src shell
+  !"#$%&'( )*+,-./0123456789:;<=>?@ABC
+  "#$%&'( )*+,-./0123456789:;<=>?@ABCD
+  #$%&'( )*+,-./0123456789:;<=>?@ABCDE
+  $%&'( )*+,-./0123456789:;<=>?@ABCDEF
+  %&'( )*+,-./0123456789:;<=>?@ABCDEFG
+  &'( )*+,-./0123456789:;<=>?@ABCDEFGH
+  #+end_src
+  This output is short enough that you can see the result of redirecting it to
+  your printer without wasting a lot of paper, and it is long enough to identify
+  many obvious problems with printing. Of course, you can also use the cat
+  command to direct a file to the printer. To send a PostScript test file to a
+  PostScript printer, for example, type:
+  #+begin_src shell
+    cat testfile.ps > /dev/lp1
+  #+end_src
+* 
+  If you have a serial printer, try directing output to the serial port to which it is connected. For
+  the first serial port (COM1 in MS-DOS) try something like:
+  #+begin_src shell
+    lptest > /dev/ttys0
+  #+end_src
+  or:
+  #+begin_src shell
+    lptest > /dev/ttyS0
+  #+end_src
+  Make sure you send to the correct serial port; don't try to output the file to
+  a serial mouse, for example. If your serial printer is on, say, the second
+  serial port, it is addressed as /dev/ttyS1 or /dev/ttys1.
+
+  If you have a page printer that buffers a partial page, after it stops
+  printing you may need to take the printer offline and press the Form Feed
+  button to get it to print the last partial page. Don't forget to put the
+  printer back online afterward. (A permanent solution is to get Linux to send
+  the formfeed character to the printer, either by forcing it through the
+  /etc/printcap entry for the printer or by having the printer filter-append it
+  to the end of the file. We'll discuss these options later.)
+* 
+  If your little test resulted in "laddered" text (text that looks something
+  like the following example) and then continued off the page, the printer did
+  not insert a carriage return at the end of each line:
+  #+begin_src shell
+!"#$%&'( )*+,-./0123456789:;<=>?@ABC
+  "#$%&'( )*+,-./0123456789:;<=>?@ABCD
+  #$
+  #+end_src
+  You might be able to figure out what went wrong here. Text files in Unix use
+  just a newline (also known as a linefeed, ASCII code 10) to terminate each
+  line. MS-DOS uses both a newline and a carriage return. Your printer was
+  therefore set up to use MS-DOS-style line endings with both newline and
+  carriage-return characters at the end of each line. In order to print a text
+  file from Unix, you can install a printer filter to accommodate the Unix
+  newline, or you can reconfigure your printer to properly return to the start
+  of the line on receipt of a newline character. Often this is simply a matter
+  of setting a dip switch. Check your printer manual. (Be careful about changing
+  your printer characteristics if you use multiple operating systems.)
+* 
+  Laddering won't be an issue if you have a printer using a page-description
+  language, such as PostScript (the universally used page-layout language from
+  Adobe), and you always filter plain text into that output form before
+  printing. Filtering is described later in this chapter.

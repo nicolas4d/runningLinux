@@ -1,0 +1,59 @@
+* 
+  X is now running. But that's only half the story. In the last chapter, you
+  learned how to set up the X Window System so that it recognizes your graphics
+  board and your monitor. While this is clearly necessary, it is of course not
+  the whole story. In this chapter, we will explain the other half: customizing
+  your X environment. Why is customization important? When working in the X
+  Window System, you might want to change your work environment from time to
+  time because your work habits have changed, because new and better
+  environments are available, or simply because the old one has become boring to
+  you. Some of these environments are quite sophisticated. For example, they let
+  you start up a program with all the options you want at the press of a key or
+  the click of a mouse, they let you drag file icons onto a printer to have text
+  printed, and they can do lots of other things that make you more productive in
+  your daily work.
+* 
+  In this chapter, we'll first talk about some very basic aspects of X
+  customization and then introduce you to the two most prominent desktop
+  environments on Linux: KDE and GNOME. For readers who want to dig deeper or
+  need a type of application that is provided with neither KDE nor GNOME, we'll
+  then look at a general means of configuring (older) X applications, the X
+  resources, as well as some general X applications that run independent of any
+  desktop environment.
+
+  Until recently, the problem with using X on Unix systems in general and Linux
+  in particular was that nothing was integrated. You would use a window manager
+  and a number of X applications, but they would all look and behave
+  differently, and operate in a manner that was not integrated. For example,
+  drag-and-drop—ubiquitous on Windows or the Macintosh — was hardly heard of on
+  Linux, and if it was, it was difficult to find two applications that could
+  interact together with drag-and-drop.
+
+  A relatively new category of software, the so-called desktop environment, has
+  accepted the challenge to produce a state-of-the-art Unix GUI and tries to
+  provide an integrated, consistent desktop where all programs have the same
+  look-and-feel, behave the same, and even provide the same menus in all
+  applications (to the extent where this is possible).
+* 
+  Currently, two main desktop environments are available for Linux: the K
+  Desktop Environment (KDE) and GNOME. KDE is a little bit older and much more
+  advanced with respect to functionality and stability. It aims at making people
+  coming from other computing environments feel at home, as well as providing
+  long-term Unix users a more productive and friendly work environment. GNOME,
+  on the other hand, has put a lot of work into the visual aspects of a desktop
+  environment with colorful icons and the like, but it is less stable than KDE,
+  and the individual programs are less integrated. KDE is the default
+  environment with most distributions, but almost all of them ship both. If
+  yours doesn't, this could mean that the distribution vendor is trying to
+  decide over your head what to use. We will cover both KDE and GNOME here.
+* 
+  In Version 8.0 of Red Hat Linux, the appearance for both KDE and GNOME has
+  been set to a custom Red Hat theme that makes them much more similar to each
+  other. The goal is to provide a single, consistent look and feel for the
+  software, regardless of whether they choose KDE or GNOME. That similarity is
+  intended to make Red Hat Linux easier to support and to provide it with an
+  identifiable appearance, regardless of the destop framework used. In some
+  cases, it may even be difficult to tell whether you're running GNOME or KDE.
+  If you don't like the new appearance, it's easy enough to change the settings
+  back. Very little aside from the settings is different from the software as
+  shipped by the GNOME and KDE projects themselves.

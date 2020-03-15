@@ -1,0 +1,109 @@
+* 
+  Table 6-1 lists the filesystem types supported by the Linux kernel as of
+  Version 2.4.10. New filesystem types are always being added to the system, and
+  experimental drivers for several filesystems not listed here are available. To
+  find out what filesystem types your kernel supports, look at the file
+  */proc/filesystems*. You can select which filesystem types to support when
+  building your kernel; see Section 7.4.2 in Chapter 7.
+
+  [[file:../img/Table 6-1. Linux filesystem types.png][Table 6-1. Linux filesystem types]]
+* 
+  Each filesystem type has its own attributes and limitations; for example, the
+  MS-DOS filesystem restricts filenames to eight characters plus a
+  three-character extension and should be used only to access existing MS-DOS
+  floppies or partitions. For most of your work with Linux, you'll use the
+  Second Extended (ext2) filesystem, which was developed primarily for Linux and
+  supports 256-character filenames, a 32-terabyte maximum filesystem size, and a
+  slew of other goodies, or you will use the Reiser (reiserfs) or the Third
+  Extended (ext3) filesystem. Earlier Linux systems used the Extended filesystem
+  (no longer supported) and the Minix filesystem. (The Minix filesystem was
+  originally used for several reasons. First of all, Linux was originally
+  cross-compiled under Minix. Also, Linus was quite familiar with the Minix
+  filesystem, and it was straightforward to implement in the original kernels.)
+  The Xia and Xenix filesystems available in older Linux kernels are no longer
+  supported.
+* 
+  The main difference between the Second Extended filesystem and the Reiser
+  filesystem is the fact that the latter is journalled. Journalling is an
+  advanced technique that keeps track of the changes made to a filesystem,
+  making it much easier (and faster!) to restore a corrupted filesystem (e.g.,
+  after a system crash or a power failure). Another journalled filesystem is the
+  Third Extended filesystem, the successor to the Second Extended filesystem.
+  This has the advantage of being downward-compatible with the Second Extended
+  filesystem, but because it hasn't been around for long, it is not used as much
+  as the Second Extended and Reiser filesystems.
+
+  You will rarely need the ROM filesystem, which is very small, does not support
+  write operations, and is meant to be used in ramdisks at system configuration,
+  startup time, or even in EPROMS. Also in this group fits the Cram filesystem,
+  which is used for ROMs as well and compresses its contents. This is primarily
+  meant for embedded devices where space is at a premium.
+* 
+  The UMSDOS filesystem is used to install Linux under a private directory of an
+  existing MS-DOS partition. This is a good way for new users to try out Linux
+  without repartitioning, at the expense of poorer performance. The DOS-FAT
+  filesystem, on the other hand, is used to access MS-DOS files directly. Files
+  on partitions created with Windows 95 or 98 can be accessed via the VFAT
+  filesystem, while the NTFS filesystem lets you access Windows NT filesystems.
+  The HPFS filesystem is used to access the OS/2 filesystem.
+
+  With the CVF-FAT extension to the DOS-FAT filesystem, it is possible to access
+  partitions that have been compressed with DoubleSpace/DriveSpace from
+  Microsoft or Stacker from Stac. See the file
+  Documentation/filesystems/fat_cvf.txt in the Linux kernel sources for further
+  details.
+* 
+  /proc is a virtual filesystem; that is, no actual disk space is associated
+  with it. See Section 5.6.(Note that the /proc filesystem under Linux is not
+  the same format as the /proc filesystem under SVR4 (say, Solaris 2.x). Under
+  SVR4, each running process has a single "file" entry in /proc, which can be
+  opened and treated with certain ioctl() calls to obtain process information.
+  On the contrary, Linux provides most of its information in /proc through
+  read() and write() requests.)
+
+  Like /proc, devfs is a virtual filesystem. It is meant as a replacement for
+  the current /dev directory (see Section 6.3 later in this chapter) and has the
+  advantage that the special files there do not have to be created manually by
+  the system administrator, but are rather created automatically and on demand
+  by the kernel.
+* 
+  The ISO 9660 filesystem (previously known as the High Sierra Filesystem and
+  abbreviated hsfs on other Unix systems) is used by most CD-ROMs. Like MS-DOS,
+  this filesystem type restricts filename length and stores only limited
+  information about each file. However, most CD-ROMs provide the Rock Ridge
+  Extensions to ISO 9660, which allow the kernel filesystem driver to assign
+  long filenames, ownerships, and permissions to each file. The net result is
+  that accessing an ISO 9660 CD-ROM under MS-DOS gives you 8.3-format filenames,
+  but under Linux gives you the "true," complete filenames.
+
+  In addition, Linux now supports the Microsoft Joliet extensions to ISO 9660,
+  which can handle long filenames made up of Unicode characters. This is not
+  widely used now but may become valuable in the future because Unicode has been
+  accepted internationally as the standard for encoding characters of scripts
+  worldwide.
+
+  Recently, Linux also received support for UDF, a filesystem that is meant for use with CD-
+  RWs and DVDs.
+* 
+  Next, we have six filesystem types for other platforms. Linux supports the
+  formats that are popular on those platforms in order to allow dual-booting and
+  other interoperation. The systems in question are UFS, EFS, BFS, System V, and
+  Coherent. (The latter two are actually handled by the same kernel driver, with
+  slightly different parameters for each.) If you have filesystems created in
+  one of these formats under a foreign operating system, you'll be able to
+  access the files from Linux.
+
+  Finally, there is a slew of filesystems for accessing data on partitions;
+  these are created by operating systems other than the DOS and Unix families.
+  Those filesystems support the Acorn Disk Filing System (ADFS), the AmigaOS
+  filesystems (no floppy disk support except on Amigas), the Apple Mac HFS, and
+  the QNX4 filesystem. Most of the specialized filesystems are useful only on
+  certain hardware architectures; for instance, you won't have hard disks
+  formatted with the Amiga FFS filesystem in an Intel machine. If you need one
+  of those drivers, please read the information that comes with them; some are
+  only in an experimental state.
+* 
+  Besides these filesystems that are used to access local hard disks, there are
+  also network filesystems for accessing remote resources. Covering these is
+  beyond the scope of this book; we have to point you to the Linux Network
+  Administrator's Guide by Olaf Kirch and Terry Dawson (O'Reilly) instead.

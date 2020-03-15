@@ -1,0 +1,70 @@
+* 
+  Emacs provides interfaces for many programs, which you can run within an Emacs
+  buffer. For example, Emacs modes exist for reading and sending electronic
+  mail, reading Usenet news, compiling programs, and interacting with the shell.
+  In this section, we'll introduce some of these features.
+  
+  To send electronic mail from within Emacs, press C-x m . This opens up a
+  buffer that allows you to compose and send an email message:
+
+  Simply enter your message within this buffer and use C-c C-s to send it. You
+  can also insert text from other buffers, extend the interface with your own
+  Emacs LISP functions, and so on. Furthermore, an Emacs mode called RMAIL lets
+  you read your electronic mail right within Emacs, but we won't discuss it here
+  because most people prefer standalone mailers. (Usually, these mailers let you
+  choose Emacs as your editor for email messages.)
+
+  Similar to the RMAIL mail interface is GNUS, the Emacs-based newsreader, which
+  you can start with the M-x gnus command. After startup (and a bit of chewing
+  on your .newsrc file), a list of newsgroups will be presented, along with a
+  count of unread articles for each:
+* 
+  GNUS is an example of the power of using Emacs interfaces to other tools. You
+  get all the convenience of Emacs's navigation, search, and macro capabilities,
+  along with specific key sequences appropriate for the tool you're using.
+
+  Using the arrow keys, you can select a newsgroup to read. Press the spacebar
+  to begin reading articles from that group. Two buffers will be displayed, one
+  containing a list of articles and the other displaying the current article.
+
+  Using n and p move to the next and previous articles, respectively. Then use f
+  and F to post a follow-up to the current article (either including or
+  excluding the current article), and r and R to reply to the article via
+  electronic mail. There are many other GNUS commands; use C-h m to get a list
+  of them. If you're used to a newsreader, such as rn, GNUS will be somewhat
+  familiar.
+
+  Emacs provides a number of modes for editing various types of files. For
+  example, there is C mode for editing C source code, and T E X mode for editing
+  (surprise) T E X source. Each mode boasts features that make editing the
+  appropriate type of file easier.
+* 
+  For example, within C mode, you can use the command *M-x compile* , which, by
+  default, runs make -k in the current directory and redirects errors to another
+  buffer. For example, the compilation buffer may contain:
+  #+begin_src 
+  cd /home/loomer/mdw/pgmseq/
+  make -k
+  gcc -O -O2 -I. -I../include -c stream_load.c -o stream_load.o
+  stream_load.c:217: syntax error before `struct'
+  stream_load.c:217: parse error before `struct'
+  #+end_src
+  You can move the cursor to a line containing an error message and press *C-c
+  C-c* to make the cursor jump to that line in the corresponding source buffer.
+  Emacs opens a buffer for the appropriate source file if one does not already
+  exist. Now you can edit and compile programs entirely within Emacs.
+
+  Emacs also provides a complete interface to the gdb debugger, which is
+  described in Section 14.1.6.3 in Chapter 14.
+* 
+  Usually, Emacs selects the appropriate mode for the buffer based on the
+  filename extension. For example, editing a file with the extension .c in the
+  filename automatically selects C mode for that buffer.
+
+  Shell mode is one of the most popular Emacs extensions. Shell mode allows you
+  to interact with the shell in an Emacs buffer, using the command M-x shell .
+  You can edit, cut, and paste command lines with standard Emacs commands. You
+  can also run single shell commands from Emacs using *M-!*. If you use M-|
+  instead, the contents of the current region are piped to the given shell
+  command as standard input. This is a general interface for running subprograms
+  from within Emacs.

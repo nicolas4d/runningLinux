@@ -1,0 +1,37 @@
+* 
+  Now that most of the world uses WYSIWYG word processors, and several good ones
+  are available even for Linux, why use the anachronistic-looking text
+  processors described in this section? Actually, text processing (especially in
+  the form of XML) is the wave of the future. People will desire WYSIWYG
+  interfaces, but they will demand a simple, standard, text format underneath to
+  make their documents portable while allowing an unlimited range of automated
+  tools to manipulate the documents.
+
+  Because the tools described here are open source and widely available, you can
+  use one of their formats without guilt and reasonably expect your readers to
+  have access to formatters. You can also use an impressive range of tools
+  developed over the years to handle these formats and do sophisticated
+  processing for you, such as to develop a bibliography in T E X. Finally,
+  filters have been developed (although they don't always work perfectly) to
+  convert documents between each of these formats and other popular formats,
+  including the formats used by commercial word processors. So you're not
+  totally locked in, although you will probably have to exert some manual effort
+  to accomplish an accurate conversion.
+* 
+  In the first chapter, we briefly mentioned various text processing systems
+  available for Linux and how they differ from word processing systems that you
+  may be familiar with. While most word processors allow the user to enter text
+  in a WYSIWYG environment, text processing systems have the user enter source
+  text using a text-formatting language, which can be modified with any text
+  editor. (In fact, Emacs provides special modes for editing various types of
+  text-formatting languages.) Then, the source is processed into a printable (or
+  viewable) document using the text processor itself. Finally, you process the
+  output and send it to a file or to a viewer application for display, or you
+  hand it off to a printer daemon to queue for printing to a local or remote
+  device.
+
+  In this section, we'll talk first about WYSIMWYG
+  (what-you-see-is-maybe-what-you-get) word processors like those that
+  predominate on Windows and the Macintosh. After that, we'll discuss some of
+  the most popular text processing systems for Linux: T E X, SGML, groff, and
+  Texinfo.

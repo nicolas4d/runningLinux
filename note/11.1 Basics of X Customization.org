@@ -1,0 +1,7 @@
+Before running X applications, it's a good idea to learn the rudiments of X
+customization so that you're not forced to live with the (often unappealing)
+default configuration used on many systems. Note that the next few sections do
+not usually apply to the aforementioned desktop environments, which have more
+user-friendly, GUI-based ways to configure applications and the environment.
+It's still good to know the old-fashioned way of configuring things because you
+are likely to come across applications that still follow this scheme.

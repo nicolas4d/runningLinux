@@ -1,0 +1,66 @@
+* 
+  gcc has more features than we could possibly enumerate here. The gcc manual
+  page and Info document give an eyeful of interesting information about this
+  compiler. Later in this section, we'll give you a comprehensive overview of
+  the most useful gcc features to get you started. This in hand, you should be
+  able to figure out for yourself how to get the many other facilities to work
+  to your advantage.
+
+  For starters, gcc supports the "standard" C syntax currently in use, specified
+  for the most part by the ANSI C standard. The most important feature of this
+  standard is function prototyping. That is, when defining a function foo( ),
+  which returns an int and takes two arguments, a (of type char * ) and b (of
+  type double ), the function may be defined like this:
+  #+begin_src c
+    int foo(char *a, double b) {
+      /* your code here... */
+    }
+  #+end_src
+* 
+  This is in contrast to the older, nonprototype function definition syntax,
+  which looks like this:
+  #+begin_src c
+    int foo(a, b)
+         char *a;
+         double b;
+    {
+      /* your code here... */
+    }
+  #+end_src
+  and which is also supported by gcc. Of course, ANSI C defines many other
+  conventions, but this is the one most obvious to the new programmer. Anyone
+  familiar with C programming style in modern books, such as the second edition
+  of Kernighan and Ritchie's The C Programming Language (Prentice Hall), can
+  program using gcc with no problem.
+* 
+  The gcc compiler boasts quite an impressive optimizer. Whereas most C
+  compilers allow you to use the single switch *-O* to specify optimization, gcc
+  supports multiple levels of optimization. At the highest level, gcc pulls
+  tricks out of its sleeve, such as allowing code and static data to be shared.
+  That is, if you have a static string in your program such as Hello, World! ,
+  and the ASCII encoding of that string happens to coincide with a sequence of
+  instruction code in your program, gcc allows the string data and the
+  corresponding code to share the same storage. How clever is that!
+
+  Of course, gcc allows you to compile debugging information into object files,
+  which aids a debugger (and hence, the programmer) in tracing through the
+  program. The compiler inserts markers in the object file, allowing the
+  debugger to locate specific lines, variables, and functions in the compiled
+  program. Therefore, when using a debugger such as gdb (which we'll talk about
+  later in the chapter), you can step through the compiled program and view the
+  original source text simultaneously.
+* 
+  Among the other tricks gcc offers is the ability to generate assembly code
+  with the flick of a switch (literally). Instead of telling gcc to compile your
+  source to machine code, you can ask it to stop at the assembly-language level,
+  which is much easier for humans to comprehend.
+
+  This happens to be a nice way to learn the intricacies of protected-mode
+  assembly programming under Linux: write some C code, have gcc translate it
+  into assembly language for you, and study that.
+
+  gcc includes its own assembler (which can be used independently of gcc and is
+  called gas), just in case you're wondering how this assembly-language code
+  might get assembled. In fact, you can include inline assembly code in your C
+  source, in case you need to invoke some particularly nasty magic but don't
+  want to write exclusively in assembly.

@@ -1,0 +1,238 @@
+* 
+  The original purpose of the computer was to automate routine tasks. If you
+  must back up your disk at 1:00 A.M. every day, why should you have to enter
+  the commands manually each time — particularly if it means getting out of bed?
+  You should be able to tell the computer to do it and then forget about it. On
+  Unix systems, *cron* exists to perform this automating function. Briefly, you
+  use cron by running the crontab command and entering lines in a special format
+  recognized by cron. Each line specifies a command to run and when to run it.
+
+  Behind your back, crontab saves your commands in a file bearing your username
+  in the */var/spool/cron/crontabs* directory. (For instance, the crontab file
+  for user mdw would be called /var/spool/cron/crontabs/mdw.) A daemon called
+  crond reads this file regularly and executes the commands at the proper times.
+  One of the rc files on your system starts up crond when the system boots.
+  *There actually is no command named cron, only the crontab utility and the
+  crond daemon.*
+* 
+  On some systems, use of cron is limited to the root user. In any case, let's
+  look at a useful command you might want to run as root and show how you'd
+  specify it as a crontab entry. Suppose that every day you'd like to clean old
+  files out of the /tmp directory, which is supposed to serve as temporary
+  storage for files created by lots of utilities.
+
+  Notice that cron never writes anything to the console. All output and error
+  messages are sent as an email message to the user who owns the corresponding
+  crontab. You can override this setting by specifying *MAILTO=address* in the
+  crontab file before the jobs themselves.
+
+  Most systems remove the contents of /tmp when the system reboots, but if you keep it up for a
+  long time, you may find it useful to use cron to check for old files (say, files that haven't been
+  accessed in the past three days). The command you want to enter is:
+  #+begin_src shell
+    ls -l filename
+  #+end_src
+* 
+  But how do you know which filename to specify? You have to place the command
+  inside a find command, which lists all files beneath a directory and performs
+  the operation you specify on each one.
+
+  We've already seen the find command in Section 8.1.2. Here, we'll specify /tmp as the
+  directory to search, and use the -atime option to find files whose last access time is more than
+  three days in the past. The -exec option means "execute the following command on every file
+  we find":
+  #+begin_src shell
+    find /tmp \! -type d -atime +3 -exec ls -l {} \;
+  #+end_src
+  The command we are asking find to execute is ls -l, which simply shows details
+  about the files. (Many people use a similar crontab entry to remove files, but
+  this is hard to do without leaving a security hole.) The funny string {} is
+  just a way of saying "Do it to each file you find, according to the previous
+  selection material." The string \; tells find that the -exec option is
+  finished.
+* 
+  Now we have a command that looks for old files on /tmp. We still have to say
+  how often it runs. The format used by crontab consists of six fields:
+  #+begin_src shell
+    minute hour day month dayofweek command
+  #+end_src
+  Fill the fields as follows:
+  - Minute (specify from 0 to 59)
+  - Hour (specify from 0 to 23)
+  - Day of the month (specify from 1 to 31)
+  - Month (specify from 1 to 12, or a name such as jan , feb , and so on)
+  - Day of the week (specify from 0 to 6 where 0 is Sunday, or a name such as
+    mon , tue , and so on)
+  - Command (can be multiple words)
+* 
+  Figure 8-1 shows a cron entry with all the fields filled in. The command is a
+  shell script, run with the Bourne shell sh. But the entry is not too
+  realistic: the script runs only when all the conditions in the first five
+  fields are true. That is, it has to run on a Sunday that falls on the 15th day
+  of either January or July — not a common occurrence! So this is not a
+  particularly useful example.
+  
+  [[file:../img/Figure 8-1. Sample cron entry.png][Figure 8-1. Sample cron entry]]
+
+  If you want a command to run every day at 1:00 A.M., specify the minute as 0
+  and the hour as 1. The other three fields should be asterisks, which mean
+  "every day and month at the given time." The complete line in crontab is:
+  #+begin_src shell
+    0 1 * * * find /tmp -atime 3 -exec ls -l {} \;
+  #+end_src
+* 
+  Because you can do a lot of fancy things with the time fields, let's play with
+  this command a bit more. Suppose you want to run the command just on the first
+  day of each month. You would keep the first two fields, but add a 1 in the
+  third field:
+  #+begin_src shell
+    0 1 1 * * find /tmp -atime 3 -exec ls -l {} \;
+  #+end_src
+  To do it once a week on Monday, restore the third field to an asterisk but
+  specify either 1 or mon as the fifth field:
+  #+begin_src shell
+    0 1 * * mon find /tmp -atime 3 -exec ls -l {} \;
+  #+end_src
+  To get even more sophisticated, there are ways to specify multiple times in
+  each field. Here, a comma means "run on the 1st and 15th day" of each month:
+  #+begin_src shell
+    0 1 1,15 * * find /tmp -atime 3 -exec ls -l {} \;
+  #+end_src
+* 
+  while a hyphen means "run every day from the 1st through the 15th, inclusive":
+  #+begin_src shell
+    0 1 1-15 * * find /tmp -atime 3 -exec ls -l {} \;
+  #+end_src
+  and a slash followed by a 5 means "run every fifth day" which comes out to the
+  1st, 6th, 11th, and so on:
+  #+begin_src shell
+    0 1 */5 * * find /tmp -atime 3 -exec ls -l {} \;
+  #+end_src
+  Now we're ready to actually put the entry in our crontab file. Become root
+  (because this is the kind of thing root should do) and enter the crontab
+  command with the -e option for "edit":
+  #+begin_src shell
+    crontab -e
+  #+end_src
+* 
+  By default, this command starts a vi edit session. If you'd like to use Emacs
+  instead, you can specify this before you start crontab. For a Bourne-compliant
+  shell, enter the command:
+  #+begin_src shell
+    export VISUAL=emacs
+  #+end_src
+  For the C shell:
+  #+begin_src shell
+    setenv VISUAL emacs
+  #+end_src
+  The environment variable EDITOR also works in place of VISUAL for some
+  versions of crontab. Enter a line or two beginning with hash marks (#) to
+  serve as comments explaining what you're doing, then put in your crontab
+  entry:
+  #+begin_src
+    # List files on /tmp that are 3 or more days old. Runs at 1:00 AM
+    # each morning.
+    0 1 * * * find /tmp -atime 3 -exec ls -l {} \;
+  #+end_src
+* 
+  When you exit vi, the commands are saved. Look at your crontab entry by
+  entering:
+  #+begin_src shell
+    crontab -l
+  #+end_src
+  We have not yet talked about a critical aspect of our crontab entry: where
+  does the output go? By default, cron saves up the standard output and standard
+  error and sends them to the user as a mail message. In this example, the mail
+  goes to root , but that should automatically be directed to you as the system
+  administrator. Make sure the following line appears in */usr/lib/aliases*
+  (/etc/aliases on SuSE, Debian, and RedHat):
+  #+begin_src 
+    root:your-account-name
+  #+end_src
+  In a moment, we'll show what to do if you want output saved in a file instead
+  of being mailed to you.
+* 
+  Here's another example of a common type of command used in crontab files. It
+  performs a tape backup of a directory. We assume that someone has put a tape
+  in the drive before the command runs. First, an mt command makes sure the tape
+  in the /dev/qft0 device is rewound to the beginning. Then a tar command
+  transfers all the files from the directory /src to the tape. A semicolon is
+  used to separate the commands; that is standard shell syntax:
+  #+begin_src 
+  # back up the /src directory once every two months.
+  0 2 1 */2 * mt -f /dev/qft0 rewind; tar cf /dev/qft0 /src
+  #+end_src
+  The first two fields ensure that the command runs at 2:00 A.M., and the third field specifies
+  the first day of the month. The fourth field specifies every two months. We could achieve the
+  same effect, in a possibly more readable manner, by entering:
+  #+begin_src 
+  0 2 1 jan,mar,may,jul,sep,nov * mt -f /dev/qft0 rewind; \
+  tar cf /dev/qft0 /src
+  #+end_src
+* 
+  The aforementioned section Section 8.1 explains how to perform backups on a
+  regular basis. The following example uses mailq every two days to test whether
+  any mail is stuck in the mail queue, and sends the mail administrator the
+  results by mail. If mail is stuck in the mail queue, the report includes
+  details about addressing and delivery problems, but otherwise the message is
+  empty:
+  #+begin_src 
+    0 6 */2 * * mailq -v | \
+    mail -s "Tested Mail Queue for Stuck Email" postmaster
+  #+end_src
+* 
+  Probably you don't want to receive a mail message every day when everything is
+  going normally. In the examples we've used so far, the commands do not produce
+  any output unless they encounter errors. But you may want to get into the
+  habit of redirecting the standard output to /dev/null, or sending it to a log
+  file like this (note the use of two > signs so that we don't wipe out previous
+  output):
+  #+begin_src 
+  0 1 * * * find /tmp -atime 3 -exec ls -l {} \; >> /home/mdw/log
+  #+end_src
+* 
+  In this entry, we redirect the standard output, but allow the standard error
+  to be sent as a mail message. This can be a nice feature because we'll get a
+  mail message if anything goes wrong. If you want to make sure you don't
+  receive mail under any circumstances, redirect both the standard output and
+  the standard error to a file:
+  #+begin_src 
+  0 1 * * * find /tmp -atime 3 -exec ls -l {} \; >> /home/mdw/log 2>&1
+  #+end_src
+  When you save output in a log file, you get the problem of a file that grows
+  continuously. You may want another cron entry that runs once a week or so,
+  just to remove the file.
+* 
+  Only Bourne shell commands can be used in crontab entries. That means you
+  can't use any of the convenient extensions recognized by bash and other modern
+  shells, such as aliases or the use of ~ to mean "my home directory." You can
+  use $HOME , however; cron recognizes the $USER , $HOME , and $SHELL
+  environment variables. Each command runs with your home directory as its
+  current directory.
+
+  Some people like to specify absolute pathnames for commands, like
+  /usr/bin/find and /bin/rm, in crontab entries. This ensures that the right
+  command is always found, instead of relying on the path being set correctly.
+
+  If a command gets too long and complicated to put on a single line, write a
+  shell script and invoke it from cron. Make sure the script is executable (use
+  chmod +x) or execute it by using a shell, such as:
+  #+begin_src shell
+    0 1 * * * sh runcron
+  #+end_src
+* 
+  As a system administrator, you often have to create crontab files for dummy
+  users, such as news or UUCP . Running all utilities as root would be overkill
+  and possibly dangerous, so these special users exist instead.
+
+  The choice of a user also affects file ownership: a crontab file for news
+  should run files owned by news , and so on. In general, make sure utilities
+  are owned by the user in whose name you create the crontab file.
+
+  As root , you can edit other users' crontab files by using the -u option. For
+  example:
+  #+begin_src 
+  tigger # crontab -u news -e
+  #+end_src
+  This is useful because you can't log in as user news , but you still might
+  want to edit this user's crontab entry.

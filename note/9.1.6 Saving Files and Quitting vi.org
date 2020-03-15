@@ -1,0 +1,14 @@
+Most of the commands dealing with files within vi are invoked from ex mode. You
+enter ex mode when you press the *:* key from command mode. This places the
+cursor on the last line of the display, allowing you to enter various extended
+commands.
+
+For example, to write the file being edited, use the command *:w* . Typing :
+causes you to enter ex mode, and typing w followed by the Enter key completes
+the command. The command *:wq* writes the file and exits vi. (The command *ZZ* —
+from command mode, without the ":" — is similar to :wq , but checks first if the
+file has been changed, and writes it only in this case.)
+
+To quit vi without saving changes to the file, use the command *:q!* . Using :q
+alone will quit vi, but only if modifications to the file have been saved. The !
+in :q! means to quit vi — and that you really mean it.

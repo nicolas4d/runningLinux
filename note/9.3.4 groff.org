@@ -1,0 +1,174 @@
+* 
+  Parallel to and independent to T E X, another major text processing system
+  emerged in the form of troff and nroff. These were developed at Bell Labs for
+  the original implementation of Unix (in fact, the development of Unix was
+  spurred, in part, to support such a text processing system). The first version
+  of this text processor was called *roff (for "runoff")*; later came nroff and
+  troff, which generated output for a particular typesetter in use at the time
+  (nroff was written for fixed-pitch printers such as dot matrix printers, troff
+  for proportional space devices — initially typesetters). Later versions of
+  nroff and troff became the standard text processor on Unix systems everywhere.
+  groff is GNU's implementation of nroff and troff that is used on Linux
+  systems. It includes several extended features and drivers for a number of
+  printing devices.
+* 
+  groff is capable of producing documents, articles, and books, much in the same
+  vein as T E X. However, groff (as well as the original nroff ) has one
+  intrinsic feature that is absent from T E X and variants: the ability to
+  produce plain-ASCII output. While T E X is great for producing documents to be
+  printed, groff is able to produce plain ASCII to be viewed online (or printed
+  directly as plain text on even the simplest of printers). If you're going to
+  be producing documentation to be viewed online as well as in printed form,
+  groff may be the way to go (although there are other alternatives as well —
+  Texinfo, which is discussed later, is one).
+
+  groff also has the benefit of being much smaller than T E X; it requires fewer
+  support files and executables than even a minimal T E X distribution.
+
+  One special application of groff is to format Unix manual pages. If you're a
+  Unix programmer, you'll eventually need to write and produce manual pages of
+  some kind. In this section, we'll introduce the use of groff through the
+  writing of a short manual page.
+* 
+  As with T E X, groff uses a particular text-formatting language to describe
+  how to process the text. This language is slightly more cryptic than T E X but
+  is also less verbose. In addition, groff provides several macro packages that
+  are used on top of the basic groff formatter; these macro packages are
+  tailored to a particular type of document. For example, the mgs macros are an
+  ideal choice for writing articles and papers, while the man macros are used
+  for manual pages.
+* 9.3.4.1 Writing a manual page
+** 
+   Writing manual pages with groff is actually quite simple. In order for your
+   manual page to look like other manual pages, you need to follow several
+   conventions in the source, which are presented in the following example. In
+   this example, we'll write a manual page for a mythical command coffee, which
+   controls your networked coffee machine in various ways.
+
+   Enter the following source with your text editor, and save the result as
+   coffee.man:
+** 
+   #+begin_src 
+   .TH COFFEE 1 "23 March 94"
+   .SH NAME
+   coffee \- Control remote coffee machine
+   .SH SYNOPSIS
+   \fBcoffee\fP [ -h | -b ] [ -t \fItype\fP ] \fIamount\fP
+   .SH DESCRIPTION
+   \fIcoffee\fP queues a request to the remote coffee machine at the
+   device \fB/dev/cf0\fR. The required \fIamount\fP argument specifies
+   the number of cups, generally between 0 and 15 on ISO standard
+   coffee machines.
+   .SS Options
+   .TP
+   \fB-h\fP
+   Brew hot coffee. Cold is the default.
+** 
+   .TP
+   \fB-b\fP
+   Burn coffee. Especially useful when executing \fIcoffee\fP on behalf
+   of your boss.
+   .TP
+   \fB-t \fItype\fR
+   Specify the type of coffee to brew, where \fItype\fP is one of
+   \fBcolombian\fP, \fBregular\fP, or \fBdecaf\fP.
+   .SH FILES
+   .TP
+   \fI/dev/cf0\fR
+   The remote coffee machine device
+   .SH "SEE ALSO"
+   milk(5), sugar(5)
+   .SH BUGS
+   May require human intervention if coffee supply is exhausted.
+   #+end_src
+** 
+   Don't let the amount of obscurity in this source file frighten you. It helps
+   to know that the character sequences \fB , \fI , and \fR are used to change
+   the font to boldface, italics, and roman type, respectively. \fP resets the
+   font to the one previously selected.
+
+   Other groff requests appear on lines beginning with a dot (.). On line 1, we
+   see that the .TH request sets the title of the manual page to COFFEE and the
+   manual section to 1. (Manual section 1 is used for user commands, section 2
+   for system calls, and so forth.) The .TH request also sets the date of the
+   last manual page revision.
+
+   On line 2, the .SH request starts a section entitled NAME . Note that almost
+   all Unix manual pages use the section progression NAME , SYNOPSIS ,
+   DESCRIPTION , FILES , SEE ALSO , NOTES , AUTHOR , and BUGS , with extra
+   optional sections as needed. This is just a convention used when writing
+   manual pages and isn't enforced by the software at all.
+** 
+   Line 3 gives the name of the command and a short description, after a dash (
+   \- ). You should use this format for the NAME section so that your manual
+   page can be added to the whatis database used by the man -k and apropos
+   commands.
+
+   On lines 4-5, we give the synopsis of the command syntax for coffee. Note
+   that italic type \fI...\fP is used to denote parameters on the command line,
+   and that optional arguments are enclosed in square brackets.
+
+   Lines 6-10 give a brief description of the command. Italic type generally
+   denotes commands, filenames, and user options. On line 11, a subsection named
+   Options is started with the .SS request. Following this on lines 11-22 is a
+   list of options, presented using a tagged list. Each item in the tagged list
+   is marked with the .TP request; the line after .TP is the tag, after which
+   follows the item text itself. For example, the source on lines 12-14:
+** 
+   #+begin_src 
+   .TP
+   \fB-h\fP
+   Brew hot coffee. Cold is the default.
+   #+end_src
+   will appear as the following in the output:
+   #+begin_src 
+   -h   Brew hot coffee. Cold is the default.
+   #+end_src
+   You should document each command-line option for your program in this way.
+
+   Lines 23-26 make up the FILES section of the manual page, which describes any
+   files the command might use to do its work. A tagged list using the .TP
+   request is used for this as well.
+** 
+   On lines 27-28, the SEE ALSO section is given, which provides cross
+   references to other manual pages of note. Notice that the string "SEE ALSO"
+   following the .SH request on line 27 is in quotation marks; this is because
+   .SH uses the first whitespace-delimited argument as the section title.
+   Therefore, any section titles that are composed of more than one word need to
+   be enclosed in quotation marks to make up a single argument. Finally, on
+   lines 29-30, the BUGS section is presented.
+* 9.3.4.2 Formatting and installing the manual page
+** 
+  In order to format this manual page and view it on your screen, use the command:
+  #+begin_src shell
+    groff -Tascii -man coffee.man | more
+  #+end_src
+  The -Tascii option tells groff to produce plain-ASCII output; -man tells groff
+  to use the manual-page macro set. If all goes well, the manual page should be
+  displayed as:
+  
+  [[file:../img/9.3.5.png]]
+
+  As mentioned before, groff is capable of producing other types of output.
+  Using the -Tps option in place of -Tascii produces PostScript output that you
+  can save to a file, view with Ghostview, or print on a PostScript printer.
+  -Tdvi produces device-independent .dvi output similar to that produced by T E
+  X.
+** 
+  If you wish to make the manual page available for others to view on your
+  system, you need to install the groff source in a directory that is present on
+  the users' MANPATH . The location for standard manual pages is
+  */usr/share/man*, although some systems also use */usr/man* or
+  */usr/local/man*. The source for section 1 manual pages should therefore go in
+  */usr/man/man1*. The command:
+  #+begin_src shell
+    cp coffee.man /usr/man/man1/coffee.1
+  #+end_src
+  installs this manual page in /usr/man for all to use (note the use of the .1
+  filename extension, instead of .man). When man coffee is subsequently invoked,
+  the manual page will be automatically reformatted, and the viewable text saved
+  in /usr/man/cat1/coffee.1.gz.
+
+  If you can't copy manual page sources directly to /usr/man, you can create
+  your own manual page directory tree and add it to your MANPATH . See the
+  section Section 4.12 in Chapter 4.

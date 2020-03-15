@@ -1,0 +1,14 @@
+To edit another file, use the *:e* command. For example, to stop editing test,
+and edit the file foo instead, use the command shown at the bottom of the
+following box:
+
+If you use :e without writing the file first, you'll get the error message:
+#+begin_src 
+No write since last change (:edit! overrides)
+#+end_src
+
+At this point, you can use :w to save the original file, and then use :e , or
+you can use the command :e! foo , which tells vi to edit the new file without
+saving changes to the original. This can be useful if you edit a file and
+realize that you have screwed up. You can then use the :e! command; if you don't
+specify a filename, vi discards the changes and re-edits the current file.

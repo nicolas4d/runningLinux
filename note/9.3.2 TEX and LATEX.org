@@ -1,0 +1,229 @@
+* 
+  T E X is a professional text processing system for all kinds of documents,
+  articles, and books — especially those that contain a great deal of
+  mathematics. It is a somewhat "low-level" text processing language because it
+  describes to the system how to lay out text on the page, how it should be
+  spaced, and so on. T E X doesn't concern itself directly with higher-level
+  elements of text such as chapters, sections, footnotes, and so forth (those
+  things that you, the writer, care about the most). For this reason, T E X is
+  known as a functional text-formatting language (referring to the actual
+  physical layout of text on a page) rather than a logical one (referring to
+  logical elements, such as chapters and sections). T E X was designed by Donald
+  E. Knuth, one of the world's foremost experts in programming. One of Knuth's
+  motives for developing T E X was to produce a typesetting system powerful
+  enough to handle the mathematics formatting needed for his series of computer
+  science textbooks. Knuth ended up taking an eight-year detour to finish T E X;
+  most would agree the result was well worth the wait.
+* 
+  Of course, T E X is very extensible, and it is possible to write macros for T
+  E X that allow writers to concern themselves primarily with the logical,
+  rather than the physical, format of the document. In fact, a number of such
+  macro packages have been developed — the most popular of which is L A T E X, a
+  set of extensions for T E X designed by Leslie Lamport. L A T E X commands are
+  concerned mostly with logical structure, but because L A T E X is just a set
+  of macros on top of T E X, you can use plain commands as well. L A T E X
+  greatly simplifies the use of T E X, hiding most of the low-level functional
+  features from the writer.
+
+  In order to write well-structured documents using T E X, you would either have
+  to decide on a prebuilt macro package, such as L A T E X, or develop your own
+  (or use a combination of the two). In The T E X Book (Addison Wesley), Knuth
+  presents his own set of macros that he used for production of the book. As you
+  might expect, they include commands for beginning new chapters, sections, and
+  the like — somewhat similar to their L A T E X counterparts. In the rest of
+  this section, we'll concentrate on the use of L A T E X, which provides
+  support for many types of documents: technical articles, manuals, books,
+  letters, and so on. As with plain T E X, L A T E X is extensible as well.
+* 9.3.2.1 Learning the ropes
+** 
+   If you've never used a text-formatting system before, there are a number of
+   new concepts of which you should be aware. As we said, text processing systems
+   start with a source document, which you enter with a plain-text editor, such
+   as Emacs. The source is written in a text-formatting language, which includes
+   the text you wish to appear in your document, as well as commands that tell
+   the text processor how to format it. In the first chapter we gave a simple
+   example of what the L A T E X language looks like and what kind of output it
+   produces.
+
+   So, without further ado, let's dive in and see how to write a simple document
+   and format it, from start to finish. As a demonstration, we'll show how to use
+   L A T E X to write a short business letter. Sit down at your favorite text
+   editor, and enter the following text into a file (without the line numbers, of
+   course). Call it letter.tex:
+** 
+   #+begin_src latex
+     \documentclass{letter}
+     \address{755 Chmod Way \\ Apt 0x7F \\
+       Pipeline, N.M. 09915}
+     \signature{Boomer Petway}
+     \begin{document}
+     \begin{letter}{O'Reilly and Associates, Inc. \\
+         1005 Gravenstein Highway North \\
+         Sebastopol, C.A. 95472}
+       \opening{Dear Mr. O'Reilly,}
+       I would like to comment on the \LaTeX\ example as presented in
+       Chapter~9 of {\em Running Linux}. Although it was a valiant effort,
+       I find that the example falls somewhat short of what
+       one might expect in a discussion of text-formatting systems.
+       In a future edition of the book, I suggest that you replace
+       the example with one that is more instructive.
+       \closing{Thank you,}
+     \end{letter}
+     \end{document}
+   #+end_src
+** 
+   This is a complete L A T E X document for the business letter that we wish to
+   send. As you can see, it contains the actual text of the letter, with a
+   number of commands (using backslashes and braces) thrown in. Let's walk
+   through it.
+
+   Line 1 uses the documentclass command to specify the class of document that
+   we're producing (which is a letter ). Commands in L A T E X begin with a
+   backslash and are followed by the actual command name, which in this case is
+   documentclass. Following the command name are any arguments, enclosed in
+   braces. L A T E X supports several document classes, such as article , report
+   , and book , and you can define your own. Specifying the document class
+   defines global macros for use within the T E X document, such as the address
+   and signature commands used on lines 2-4. As you might guess, the address and
+   signature commands specify your own address and name in the letter. The
+   double- backslashes ( \\ ) that appear in the address generate line breaks in
+   the resulting output of the address.
+** 
+   A word about how L A T E X processes input: as with most text-formatting
+   systems, whitespace, line breaks, and other such features in the input source
+   are not passed literally into the output. Therefore, you can break lines more
+   or less wherever you please; when formatting paragraphs, L A T E X will fit
+   the lines back together again. Of course, there are exceptions: blank lines
+   in the input begin new paragraphs, and there are commands to force L A T E X
+   to treat the source text literally.
+
+   On line 6, the command \begin{document} signifies the beginning of the
+   document as a whole. Everything enclosed within the \begin{document} and
+   \end{document} on line 22 is considered part of the text to be formatted;
+   anything before \begin{document} is called the preamble and defines
+   formatting parameters before the actual body.
+
+   On lines 7-9, \begin{letter} begins the actual letter. This is required
+   because you may have many letters within a single source file, and
+   a \begin{letter} is needed for each. This command takes as an argument the
+   address of the intended recipient; as with the address command,
+   double-backslashes signify line breaks in the address.
+** 
+   Line 11 uses the opening command to open the letter. Following on lines 12-18
+   is the actual body of the letter. As straightforward as it may seem, there
+   are a few tricks hidden in the body as well. On line 13 the L A T E X command
+   generates the logo. You'll notice that a backslash follows as well as
+   precedes the L A T E X command; the trailing backslash is used to force a
+   space after the word "L A T E X" This is because T E X ignores spaces after
+   command invocations; the command must be followed by a backslash and a space.
+   (Otherwise, "L A T E X//" would appear as "L A T E X is fun.")
+
+   There are two quirks of note on line 14. First of all, a tilde ( ~ ) is
+   present between Chapter and 9 , which causes a space to appear between the
+   two words, but prevents a line break between them in the output (that is, to
+   prevent Chapter from being on the end of a line, and 9 from being on the
+   beginning of the next). You need only use the tilde to generate a space
+   between two words that should be stuck together on the same line, as in
+   Chapter~9 and Mr.~Jones . (In retrospect, we could have used the tilde in
+   the \begin{letter} and opening commands, although it's doubtful T E X would
+   break a line anywhere within the address or the opening.)
+** 
+   The second thing to take note of on line 14 is the use of \em to generate
+   emphasized text in the output. T E X supports various other fonts, including
+   boldface (\bf) and typewriter (\tt).
+
+   Line 20 uses the closing command to close off the letter. This also has the
+   effect of appending the signature used on line 4 after the closing in the
+   output. Lines 22-23 use the commands \end{letter} and \end{document} to end
+   the letter and document environments begun on lines 6 and 7.
+
+   You'll notice that none of the commands in the L A T E X source has anything
+   to do with setting up margins, line spacing, or other functional issues of
+   text formatting. That's all taken care of by the L A T E X macros on top of
+   the T E X engine. L A T E X provides reasonable defaults for these
+   parameters; if you wanted to change any of these formatting options, you
+   could use other L A T E X commands (or lower-level T E X commands) to modify
+   them.
+** 
+   We don't expect you to understand all the intricacies of using L A T E X from
+   such a limited example, although this should give you an idea of how a
+   living, breathing L A T E X document looks. Now, let's format the document in
+   order to print it out.
+** 9.3.2.2 Formatting and printing
+   Believe it or not, the command used to format L A T E X source files into
+   something printable is *latex*. After editing and saving the previous example,
+   letter.tex, you should be able to use the command:
+** 
+   #+begin_src shell
+   latex letter
+   This is TeX, Version 3.14159 (Web2C 7.3.1)
+   (letter.tex
+   LaTeX2e <2000/06/01>
+   Babel <v3.7h> and hyphenation patterns for american, french, german, ngerman, no
+   hyphenation, loaded.
+   (/usr/share/texmf/tex/latex/base/letter.cls
+   Document Class: letter 1999/04/29 v1.2z Standard LaTeX document class
+   (/usr/share/texmf/tex/latex/base/size10.clo))
+   No file letter.aux.
+   [1] (letter.aux) )
+   Output written on letter.dvi (1 page, 1128 bytes).
+   Transcript written on letter.log.
+   eggplant$
+   #+end_src
+** 
+   latex assumes the extension .tex for source files. Here, L A T E X has
+   processed the source letter.tex and saved the results in the file letter.dvi.
+   This is a "*device-independent*" file that generates printable output on a
+   variety of printers. Various tools exist for converting .dvi files to
+   PostScript, HP LaserJet, and other formats, as we'll see shortly.
+
+   Instead of immediately printing your letter, you may wish to preview it to be
+   sure that everything looks right. If you're running the X Window System, you
+   can use the xdvi command to preview .dvi files on your screen. If you are
+   also using the KDE desktop environment, kdvi is a more user-friendly version
+   of xdvi. What about printing the letter? First, you need to convert the .dvi
+   to something your printer can handle. DVI drivers exist for many printer
+   types. Almost all the program names begin with the three characters dvi, as
+   in dvips, dvilj, and so forth. If your system doesn't have one you need, you
+   have to get the appropriate driver from the archives if you have Internet
+   access. See the FAQ for comp.text.tex for details.
+** 
+   If you're lucky enough to have a PostScript printer, you can use dvips to
+   generate PostScript from the .dvi:
+   #+begin_src shell
+     dvips -o letter.ps letter.dvi
+   #+end_src
+   You can then print the PostScript using lpr. Or, to do this in one step:
+   #+begin_src shell
+     dvips letter.dvi | lpr
+   #+end_src
+   There are printer-specific DVI drivers like dvilj for HP LaserJets as well,
+   but most of these are considered obsolete; use dvips instead and, if
+   necessary, Ghostscript (see below) instead. If you can't find a DVI driver
+   for your printer, you might be able to use Ghostscript to convert PostScript
+   (produced by dvips) into something you can print. Although some of
+   Ghostscript's fonts are less than optimal, Ghostscript does allow you to use
+   Adobe fonts (which you can obtain for Windows and use with Ghostscript under
+   Linux). Ghostscript also provides an SVGA preview mode you can use if you're
+   not running X. At any rate, after you manage to format and print the example
+   letter, it should end up looking something like that in Figure 9-3.
+** 
+   [[file:../img/Figure 9-3. Sample output from a file.png]]
+
+   Finally, it should be mentioned that you can also use T E X to create PDF
+   files, either using the *dvipdf* driver or using a special program called
+   *pdftex*.
+** 9.3.2.3 Further reading 
+   If L A T E X seems right for your document-processing needs, and you have
+   been able to get at least this initial example working and printed out, we
+   suggest checking into Leslie Lamport's L A T E X User's Guide and Reference
+   Manual (Addison Wesley), which includes everything you need to know about L A
+   T E X for formatting letters, articles, books, and more. If you're interested
+   in hacking or want to know more about the underlying workings of T E X (which
+   can be invaluable), Donald Knuth's The T E X book (Addison-Wesley) is the
+   definitive guide to the system.
+
+   comp.text.tex is the Usenet newsgroup for questions and information about
+   these systems, although information found there assumes you have access to T
+   E X and L A T E X documentation of some kind, such as the manuals mentioned
+   earlier.

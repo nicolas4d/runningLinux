@@ -1,0 +1,155 @@
+* 
+  The Emacs online documentation should be sufficient to get you on track to
+  learning more about the system and growing accustomed to it. However,
+  sometimes it is hard to locate some of the most helpful hints for getting
+  started. Here we'll present a rundown on certain customization options many
+  Emacs users choose to employ to make life easier.
+
+  The Emacs personal customization file is .emacs, which should reside in your
+  home directory. This file should contain code, written in Emacs LISP, which
+  runs or defines functions to customize your Emacs environment. (If you've
+  never written LISP before, don't worry; most customizations using it are quite
+  simple.)
+
+  One of the most common things users customize are key bindings. For instance, if you use
+  Emacs to edit SGML documents, you can bind the key C-c s to switch to SGML mode. Put
+  this in your .emacs file:
+  #+begin_src emacs-lisp :tangle yes
+  ; C-c followed by s will put buffer into SGML mode."
+  (global-set-key "\C-cs" 'sgml-mode)
+  #+end_src
+* 
+  Comments in Emacs LISP start with a semicolon. The command that follows runs
+  the command global-set-key. Now you don't have to type in the long sequence
+  M-x sgml-mode to start editing in SGML. Just press the two characters C-c s .
+  This works anywhere in Emacs — no matter what mode your buffer is in — because
+  it is global. (Of course, Emacs may also recognize an SGML or XML file by its
+  suffix and put it in SGML mode for you automatically.)
+
+  A customization that you might want to use is making the text mode the default
+  mode and turning on the "auto-fill" minor mode (which makes text automatically
+  wrap if it is too long for one line) like this:
+  #+begin_src emacs-lisp
+  ; Make text mode the default, with auto-fill
+  (setq default-major-mode 'text-mode)
+  (add-hook 'text-mode-hook 'turn-on-auto-fill)
+  #+end_src
+* 
+  You don't always want your key mappings to be global. As you use T E X mode, C
+  mode, and other modes defined by Emacs, you'll find useful things you'd like
+  to do only in a single mode. Here, we define a simple LISP function to insert
+  some characters into C code, and then bind the function to a key for our
+  convenience:
+  #+begin_src emacs-lisp :tangle yes
+    (defun start-if-block( )
+    (interactive)
+    (insert "if ( ) {\n}\n")
+    (backward-char 6)
+    )
+  #+end_src
+  We start the function by declaring it "interactive" so that we can invoke it
+  (otherwise, it would be used only internally by other functions). Then we use
+  the insert function to put the following characters into our C buffer:
+  #+begin_src c
+  if (){
+  }
+  #+end_src
+* 
+  Strings in Emacs can contain standard C escape characters. Here, we've used \n
+  for a newline.
+
+  Now we have a template for an if block. To put on the ribbon and the bow, our
+  function also moves backward six characters so that point is within the
+  parentheses, and we can immediately start typing an expression.
+
+  Our whole goal was to make it easy to insert these characters, so now let's
+  bind our function to a key:
+  #+begin_src emacs-lisp :tangle yes
+  (define-key c-mode-map "\C-ci" 'start-if-block)
+  #+end_src
+  The define-key function binds a key to a function. By specifying c-mode-map ,
+  we indicate that the key works only in C mode. There is also a tex-mode-map
+  for mode, a lisp- mode-map that you will want to know about if you play with
+  your .emacs file a lot. If you'd like to write your own Emacs LISP functions,
+  you should read the Info pages for elisp, which should be available on your
+  system. Two good books on writing Emacs LISP functions are An Introduction to
+  Programming in Emacs Lisp, by Robert J. Chassell (GNU Press) and Writing GNU
+  Emacs Extensions, by Bob Glickstein (O'Reilly).
+* 
+  Now here's an important customization you may need. On many terminals the
+  Backspace key sends the character C-h , which is the Emacs help key. To fix
+  this, you should change the internal table Emacs uses to interpret keys, as
+  follows:
+  #+begin_src emacs-lisp :tangle yes
+  (keyboard-translate ?\C-h ?\C-?)
+  #+end_src
+  Pretty cryptic code. \C-h is recognizable as the Control key pressed with h ,
+  which happens to produce the same ASCII code (8) as the Backspace key. \C-?
+  represents the Delete key (ASCII code 127). Don't confuse this question mark
+  with the question marks that precede each backslash. ?\C-h means "the ASCII
+  code corresponding to \C-h ." You could just as well specify 8 directly.
+
+  So now, both Backspace and C-h will delete. You've lost your help key.
+  Therefore, another good customization would be to bind another key to C-h .
+  Let's use C-\ , which isn't used often for anything else. You have to double
+  the backslash when you specify it as a key:
+  #+begin_src emacs-lisp :tangle yes
+    (keyboard-translate ?\C-\\ ?\C-h)
+  #+end_src
+* 
+  On the X Window System, there is a way to change the code sent by your
+  Backspace key using the xmodmap command, but we'll have to leave it up to you
+  to do your own research. It is not a completely portable solution (so we can't
+  show you an example guaranteed to work), and it may be too sweeping for your
+  taste (it also changes the meaning of the Backspace key in your xterm shell
+  and everywhere else).
+
+  There are other key bindings you may want to use. For example, you may prefer
+  to use the keys C-f and C-b to scroll forward (or backward) one page at a
+  time, as in vi. In your .emacs file you might include the following lines:
+  #+begin_src emacs-lisp :tangle yes
+  (global-set-key "\C-f" 'scroll-up)
+  (global-set-key "\C-b" 'scroll-down)
+  #+end_src
+  You can create your own prefix keys, if you really want to extend your current
+  mode with lots of new commands. Use something like:
+  #+begin_src emacs-lisp :tangle yes
+  (global-unset-key "\C-d")
+  (global-set-key "\C-d\C-f" 'my-function)
+  #+end_src
+* 
+  First, we must unbind the C-d key (which simply deletes the character under
+  the cursor) in order to use it as a prefix for other keys. Now, pressing C-d
+  C-f will execute my-function. You may also prefer to use another mode besides
+  Fundamental or Text for editing "vanilla" files. Indented Text mode, for
+  example, automatically indents lines of text relative to the previous line so
+  that it starts in the same column (as with the :set ai function in vi). To
+  turn on this mode by default, use:
+  #+begin_src emacs-lisp :tangle yes
+  ; Default mode for editing text
+  (setq default-major-mode 'indented-text-mode)
+  #+end_src
+  You should also rebind the Enter key to indent the next line of text:
+  #+begin_src emacs-lisp :tangle yes
+    (define-key indented-text-mode-map "\C-m" 'newline-and-indent)
+  #+end_src
+  Emacs also provides "minor" modes, which are modes you use along with major
+  modes. For example, Overwrite mode is a minor mode that causes newly typed
+  characters to overwrite the text in the buffer, instead of inserting it. To
+  bind the key C-r to toggle overwrite mode, use the command:
+* 
+  #+begin_src emacs-lisp :tangle yes
+  ; Toggle overwrite mode.
+  (global-set-key "\C-r" 'overwrite-mode)
+  #+end_src
+  Another minor mode is Autofill , which automatically wraps lines as you type
+  them. That is, instead of pressing the Enter key at the end of each line of
+  text, you may continue typing and Emacs automatically breaks the line for you.
+  To enable Autofill mode, use the commands:
+  #+begin_src emacs-lisp :tangle yes
+  (setq text-mode-hook 'turn-on-auto-fill)
+  (setq fill-column 72)
+  #+end_src
+  This turns on Autofill mode whenever you enter Text mode (through the
+  text-mode-hook function). It also sets the point at which to break lines at 72
+  characters.

@@ -1,0 +1,57 @@
+* 
+  We come now to the X Window System — one of the most powerful and important
+  software packages available for Linux. If you've ever used X on a Unix system
+  before, you're in luck; running X under Linux is almost no different from
+  running it under Unix systems. And, if you've never had the occasion to use it
+  before, never fear: salvation is at hand.
+
+  It's difficult to describe the X Window System in a nutshell. X is a complete
+  windowing graphics interface for Unix systems. It provides a huge number of
+  options to both the programmer and the user. For instance, at least half a
+  dozen window managers are available for X, each one offering a different
+  interface for manipulating windows. By customizing the attributes of the
+  window manager, you have complete control over how windows are placed on the
+  screen, the colors and borders used to decorate them, and so forth.
+
+  Even if you have not heard about the X Window System yet, you may already have
+  heard about KDE and GNOME. These are so-called desktop environments that
+  provide a user-friendly work environment for your daily Linux work. We'll
+  cover these in great detail in the next chapter.
+* 
+  X was originally developed by Project Athena at MIT and Digital Equipment
+  Corporation. The current version of X is Version 11 revision 6 (X11R6), which
+  was first released in April 1994. Since the release of Version 11, X has
+  virtually taken over as the de facto standard for Unix graphical environments.
+
+  Despite its commercial use, the X Window System remains distributable under a
+  liberal license from the X Consortium. As such, a complete implementation of X
+  is freely available for Linux systems. XFree86, an implementation of X
+  originally for i386 Unix systems, is the version that Linux uses most often.
+  Today, this version supports not only Intel-based systems, but also Alpha AXP,
+  MicroSPARC, PowerPC, and other architectures. Further architectures will
+  follow. XFree86 is based on X386-1.2, which was part of the official X11R5
+  sources, but is no longer maintained and is therefore outdated. The current
+  versions now have very little in common with their ancestors. Support for
+  innumerable graphics boards and many other operating systems (including Linux)
+  has been added — and XFree86 implements the latest version, X11R6.3.
+* 
+  We should mention here that commercial X Window System servers are available
+  for Linux that may have advantages over XFree86 (like support for certain
+  video cards). Most people use XFree86 happily, though, so this should
+  certainly be your first stop.
+
+  Linux distributions usually automatically install X. If you're lucky, you
+  won't need this chapter at all. But a few users aren't lucky — the
+  distribution doesn't recognize some graphics hardware, writes a file to the
+  wrong location so that the X server can't start up, or has some other problem.
+  One of the big advantages of this book is that we take you down to the depths
+  of X configuration so that you can get it running no matter what your
+  distribution does. You may not need to read this chapter, but if you do need
+  it, you'll appreciate everything that's here.
+
+  One word of advice: if you plan to run your Linux machine as a server only,
+  there is no need to install X on it (unless you want to use graphical
+  administration tools). X requires system resources, and if your system never
+  has a monitor attached to it, installing X is a waste of time and resources.
+  In this chapter, we will tell you how to install and configure the X Window
+  System, and in the next chapter, we will explore how to use X.

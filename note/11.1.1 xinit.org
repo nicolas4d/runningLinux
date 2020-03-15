@@ -1,0 +1,143 @@
+* 
+  You run X with the *startx* command. This in turn is a frontend for xinit, the
+  program responsible for starting the X server and running various X clients
+  that you specify. xinit (via startx) executes the shell script *.xinitrc* in
+  your home directory. This script merely contains commands that you wish to run
+  when starting X, such as xterm, xclock, and so on. If you don't have a
+  .xinitrc file, the system default */usr/lib/X11/xinit/xinitrc* is used
+  instead.
+
+  When using KDE, you will often have only one single command in your .xinitrc
+  file: startkde. This is a shell script shipped with KDE that starts all
+  necessary services. Your distributor might add other stuff to .xinitrc,
+  though.
+
+  Here, we'll present a sample .xinitrc file for a bare-bones X system without
+  any desktop environment and explain what it does. You could use this as your
+  own, very bare-bones .xinitrc or copy the system default xinitrc as a starting
+  point:
+* 
+  #+begin_src shell
+    #!/bin/sh
+    # Sample .xinitrc shell script
+    # Start xterms
+    xterm -geometry 80x40+10+100 -fg black -bg white &
+    xterm -geometry -20+10 -fn 7x13bold -fg darkslategray -bg white &
+    xterm -geometry -20-30 -fn 7x13bold -fg black -bg white &
+    # Other useful X clients
+    oclock -geometry 70x70+5+5 &
+    xload -geometry 85x60+85+5 &
+    xbiff -geometry +200+5 &
+    xsetroot -solid darkslateblue &
+    # Start the window manager
+    exec fvwm2
+  #+end_src
+* 
+  A number of programs are started here; obviously, this will work only if you
+  have installed them. If you go with the default installation of your
+  distribution, chances are that either the desktop environment KDE or GNOME
+  will be installed and these older programs will not be available. They should
+  be on the distribution media, though, waiting to be installed. While you
+  cannot have more than one window manager running at the same time, you can
+  have as many of them installed as you like.
+
+  This should be quite straightforward, even if you're not familiar with X. The
+  first two lines simply identify the shell script. Lines 5-7 start up three
+  xterm clients (recall that xterm is a terminal-emulator client). Other clients
+  are started on lines 10-13, and on line 16 the window manager, fvwm, is
+  started.
+
+  Running startx with this particular .xinitrc in place gives you something that
+  looks like Figure 11-1.(All right, so it's not a work of art, but we needed
+  something simple that would work correctly on most displays!)
+* 
+  Let's look at this in more detail. On line 5, we see that xterm is started
+  with several options, - geometry, -fg, and -bg. Most X clients support these
+  standard options, among others.
+
+  The -geometry option allows you to specify the size and position of the window
+  on the display. The geometry specification has the format:
+  #+begin_src shell
+    xsize x ysize + xoffset + yoffset
+  #+end_src
+  In this case, the option -geometry 80x40+10+100 puts the window at the
+  location (10,100) on the screen (where (0,0) is the top-left corner), making
+  it 80 characters wide by 40 characters high. Note that xterm measures the size
+  of the window in characters, not pixels. The actual size of the window in
+  pixels is determined by the font that is used.
+* 
+  The -fg and -bg arguments allow you to specify the foreground (text) and
+  background colors for the xterm window, respectively. The colors used here are
+  a rather boring black and white, but this should work on color and monochrome
+  displays alike. Under X, colors are usually specified by name, although you
+  can provide your own RGB values if you prefer. The list of color names (and
+  corresponding RGB values) is given in the file /usr/lib/X11/rgb.txt. Running
+  xcolors will display these colors, along with their names.
+
+  Line 6 runs another xterm, although the arguments are slightly different:
+  #+begin_src shell
+    xterm -geometry -20+10 -fn 7x13bold -fg darkslategray -bg white &
+  #+end_src
+  First of all, the geometry specification is just -20+10 . Without size
+  parameters, xterm will use the default, which is usually 80x25 . Also, we see
+  that the xoffset is prefixed with a - , instead of a + . This places the
+  window 20 pixels from the right edge of the screen. Likewise, a geometry
+  specification of -20-30 (as used on line 7) means to place the window 20
+  pixels from the right edge of the screen and 30 pixels from the bottom. In
+  this way, the placement of windows is less dependent on the particular
+  resolution you're using.
+* 
+  The -fn option on lines 6 and 7 specifies that the font used by xterm should
+  be 7x13bold . Using the command xlsfonts displays a complete list of fonts on
+  your system; the X client xfontsel allows you to select fonts interactively —
+  more about fonts later.
+
+  On line 10 we start an oclock client, which is a simple analog clock. Line 11
+  starts xload, which displays a graph of the system load average (number of
+  running processes) that changes with time. Line 12 starts xbiff, which just
+  lets you know when mail is waiting to be read. Finally, on line 13 we do away
+  with the bland gray X background and replace it with a flashy darkslateblue.
+  (Fear not; there is more fun to be had with X decor than this example shows.)
+
+  You'll notice that each X client started on lines 6-13 is executed in the
+  background (the ampersand on the end of each line forces this). If you forget
+  to put each client in the background, xinit executes the first xterm, waits
+  for it to exit (usually after you log out), executes the next xterm, and so
+  on. The ampersands cause each client to start up concurrently.
+* 
+  What about line 16? Here, we start fvwm (Version 2), a window manager used on
+  many Linux systems. As mentioned before, the window manager is responsible for
+  decorating the windows, allowing you to place them with the mouse, and so
+  forth. However, it is started with the command:
+  #+begin_src 
+    exec fvwm2
+  #+end_src
+  This causes the fvwm2 process to replace the xinit process. This way, once you
+  kill fvwm,(If you have experimented with fvwm, you'll notice that pressing the
+  first mouse button while the cursor is on the background causes a menu to pop
+  up. Selecting the Quit fvwm option from this menu causes fvwm to exit.) the X
+  server shuts down. This is equivalent to, but more succinct than, using the
+  Ctrl-Alt-Backspace key combination. Whether you are returned to the command
+  line after the X server has shut down or are presented with a new graphical
+  login depends on your system configuration.
+* 
+  In general, you should put an ampersand after each X client started from
+  .xinitrc, and exec the window manager at the end of the file. Of course, there
+  are other ways of doing this, but many users employ this technique.
+
+  The fvwm2 window manager was the default window manager on most Linux systems
+  for a very long time. It is still around, but has mostly been superseded by
+  either the very advanced kwin window manager shipped with KDE or one of the
+  more modern freestanding window managers, such as blackbox or sawfish.
+
+  If you read the manual pages for xterm and the other X clients, you'll see
+  many more command-line options than those described here. As we said,
+  virtually everything about X is configurable. fvwm (Version 2) uses a
+  configuration file of its own, .fvwm2rc, described in its manual page. (If you
+  have no .fvwm2rc file, the system default /usr/lib/X11/fvwm2/system.fvwmrc is
+  used instead.) More modern window managers still use configuration files, but
+  usually provide you with user-friendly, GUI-based configuration programs that
+  let you make your settings and then save them to the configuration file in the
+  correct format. The manual pages, as well as books on using X, such as the X
+  Window System User's Guide (O'Reilly), provide more information on configuring
+  individual clients.

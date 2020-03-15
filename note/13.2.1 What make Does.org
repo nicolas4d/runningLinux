@@ -1,0 +1,141 @@
+* 
+  *The basic goal of make is to let you build a file in small steps.* If a lot
+  of source files make up the final executable, you can change one and rebuild
+  the executable without having to recompile everything. In order to give you
+  this flexibility, make records what files you need to do your build.
+
+  Here's a trivial makefile. Call it makefile or Makefile and keep it in the
+  same directory as the source files:
+  #+begin_src 
+  edimh: main.o edit.o
+  gcc -o edimh main.o edit.o
+  main.o: main.c
+  gcc -c main.c
+  edit.o: edit.c
+  gcc -c edit.c
+  #+end_src
+  This file builds a program named edimh from two source files named main.c and
+  edit.c. You aren't restricted to C programming in a makefile; the commands
+  could be anything.
+* 
+  Three entries appear in the file. Each contains a dependency line that shows
+  how a file is built. Thus the first line says that edimh (the name before the
+  colon) is built from the two object files main.o and edit.o (the names after
+  the colon). This line tells make that it should execute the following gcc line
+  whenever one of those object files changes. The lines containing commands have
+  to begin with tabs (not spaces).
+  
+  The command:
+  #+begin_src shell
+    make edimh
+  #+end_src
+  executes the gcc line if there isn't currently any file named edimh. However,
+  the gcc line also executes if edimh exists, but one of the object files is
+  newer. Here, edimh is called a target. The files after the colon are called
+  either dependencies or prerequisites.
+* 
+  The next two entries perform the same service for the object files. main.o is
+  built if it doesn't exist or if the associated source file main.c is newer.
+  edit.o is built from edit.c. How does make know if a file is new? It looks at
+  the timestamp, which the filesystem associates with every file. You can see
+  timestamps by issuing the ls -l command. Since the timestamp is accurate to
+  one second, it reliably tells make whether you've edited a source file since
+  the latest compilation or have compiled an object file since the executable
+  was last built.
+
+  Let's try out the makefile and see what it does:
+  #+begin_src shell
+    papaya$ make edimh
+      gcc -c main.c
+      gcc -c edit.c
+      gcc -o edimh main.o edit.o
+  #+end_src
+* 
+  If we edit main.c and reissue the command, it rebuilds only the necessary files, saving us
+  some time:
+  #+begin_src shell
+  papaya$ make edimh
+  gcc -c main.c
+  gcc -o edimh main.o edit.o
+  #+end_src
+  It doesn't matter what order the three entries are within the makefile. make
+  figures out which files depend on which and executes all the commands in the
+  right order. Putting the entry for edimh first is convenient because that
+  becomes the file built by default. In other words, typing make is the same as
+  typing make edimh .
+
+  Here's a more extensive makefile. See if you can figure out what it does:
+*   
+  #+begin_src makefile
+    install: all
+    mv edimh /usr/local
+    mv readimh /usr/local
+    all: edimh readimh
+    readimh: read.o edit.o
+    gcc -o readimh main.o read.o
+    edimh: main.o edit.o
+    gcc -o edimh main.o edit.o
+    main.o: main.c
+    gcc -c main.c
+    edit.o: edit.c
+    gcc -c edit.c
+    read.o: read.c
+    gcc -c read.c
+  #+end_src
+* 
+  First we see the target install . This is never going to generate a file; it's
+  called a phony target because it exists just so that you can execute the
+  commands listed under it. But before install runs, all has to run because
+  install depends on all . (Remember, the order of the entries in the file
+  doesn't matter.)
+
+  So make turns to the all target. There are no commands under it (this is
+  perfectly legal), but it depends on edimh and readimh . These are real files;
+  each is an executable program. So make keeps tracing back through the list of
+  dependencies until it arrives at the .c files, which don't depend on anything
+  else. Then it painstakingly rebuilds each target.
+
+  Here is a sample run (you may need root privilege to install the files in the /usr/local
+  directory):
+* 
+  #+begin_src shell
+    papaya$ make install
+      gcc -c main.c
+      gcc -c edit.c
+      gcc -o edimh main.o edit.o
+      gcc -c read.c
+      gcc -o readimh main.o read.o
+      mv edimh /usr/local
+      mv readimh /usr/local
+  #+end_src
+  This run of make does a complete build and install. First it builds the files
+  needed to create edimh. Then it builds the additional object file it needs to
+  create readmh. With those two executables created, the all target is
+  satisfied. Now make can go on to build the install target, which means moving
+  the two executables to their final home.
+* 
+  Many makefiles, including the ones that build Linux, contain a variety of
+  phony targets to do routine activities. For instance, the makefile for the
+  Linux kernel includes commands to remove temporary files:
+  #+begin_src makefile
+    clean:  archclean
+    rm -f kernel/ksyms.lst
+    rm -f core `find . -name '*.[oas]' -print`
+    .
+    .
+    .
+  #+end_src
+  and to create a list of object files and the header files they depend on (this
+  is a complicated but important task; if a header file changes, you want to
+  make sure the files that refer to it are recompiled):
+  #+begin_src makefile
+    depend dep:
+    touch tools/version.h
+    for i in init/*.c;do echo -n "init/";$(CPP) -M $$i;done > .tmpdep
+    .
+    .
+    .
+  #+end_src
+* 
+  Some of these shell commands get pretty complicated; we'll look at makefile
+  commands later in this chapter, in Section 13.2.5.

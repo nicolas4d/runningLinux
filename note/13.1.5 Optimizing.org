@@ -1,0 +1,16 @@
+Telling gcc to optimize your code as it compiles is a simple matter; just use
+the -O switch on the gcc command line:
+#+begin_src shell
+  gcc -O -o fishsticks fishsticks.c
+#+end_src
+As we mentioned not long ago, gcc supports different levels of optimization.
+Using -O2 instead of -O will turn on several "expensive" optimizations that may
+cause compilation to run more slowly but will (hopefully) greatly enhance
+performance of your code.
+
+You may notice in your dealings with Linux that a number of programs are
+compiled using the switch -O6 (the Linux kernel being a good example). The
+current version of gcc does not support optimization up to -O6, so this defaults
+to (presently) the equivalent of -O2. However, -O6 is sometimes used for
+compatibility with future versions of gcc to ensure that the greatest level of
+optimization is used.

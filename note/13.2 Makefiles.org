@@ -1,0 +1,38 @@
+* 
+  Sometime during your life with Linux you will probably have to deal with make,
+  even if you don't plan to do any programming. It's possible you'll want to
+  patch and rebuild the kernel, and that involves running make. If you're lucky,
+  you won't have to muck with the makefiles — but we've tried to direct this
+  book toward unlucky people as well. So in this section, we'll explain enough
+  of the subtle syntax of make so that you're not intimidated by a makefile.
+
+  For some of our examples, we'll draw on the current makefile for the Linux
+  kernel. It exploits a lot of extensions in the powerful GNU version of make,
+  so we'll describe some of those as well as the standard make features. A good
+  introduction to make is provided in Managing Projects with make by Andrew Oram
+  and Steve Talbott (O'Reilly). GNU extensions are well documented by the GNU
+  make manual.
+
+  Most users see make as a way to build object files and libraries from sources
+  and to build executables from object files. *More conceptually, make is a
+  general-purpose program that builds targets from dependencies.* The target can
+  be a program executable, a PostScript document, or whatever. The prerequisites
+  can be C code, a TeX text file, and so on.
+* 
+  While you can write simple shell scripts to execute gcc commands that build an
+  executable program, make is special in that it knows which targets need to be
+  rebuilt and which don't. An object file needs to be recompiled only if its
+  corresponding source has changed.
+
+  For example, say you have a program that consists of three C source files. If
+  you were to build the executable using the command:
+  #+begin_src shell
+    gcc -o foo foo.c bar.c baz.c
+  #+end_src
+  each time you changed any of the source files, all three would be recompiled
+  and relinked into the executable. If you changed only one source file, this is
+  a real waste of time (especially if the program in question is much larger
+  than a handful of sources). What you really want to do is recompile only the
+  one source file that changed into an object file and relink all the object
+  files in the program to form the executable. make can automate this process
+  for you.

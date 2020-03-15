@@ -1,0 +1,44 @@
+* 
+  One other important part of the system to keep up to date is the C compiler
+  and related utilities. These include gcc (the GNU C and C++ compiler itself),
+  the linker, the assembler, the C preprocessor, and various include files and
+  libraries used by the compiler itself. All are included in the Linux gcc
+  distribution. Usually, a new version of gcc is released along with new
+  versions of the *libc* library and include files, and each requires the other.
+
+  You can find the current gcc release for Linux on the various FTP archives,
+  including /pub/Linux/GCC on ftp://ftp.ibiblio.org. The release notes there
+  should tell you what to do. Usually, upgrading the compiler is a simple matter
+  of unpacking several tar files as root , and possibly removing some additional
+  files. If you don't have Internet access, you can obtain the newest compiler
+  from CD-ROM archives of the FTP sites, as described earlier.
+
+  To find out what version of gcc you have, use the command:
+  #+begin_src shell
+    gcc -v
+  #+end_src
+* 
+  This should tell you something like:
+  #+begin_src shell
+    Reading specs from /usr/lib/gcc-lib/i486-suse-linux/2.95.3/specs
+    gcc version 2.95.3 20010315 (SuSE)
+  #+end_src
+  Note that gcc itself is just a frontend to the actual compiler and
+  code-generation tools found under:
+  #+begin_src shell
+    /usr/lib/gcc-lib/ machine / version
+  #+end_src
+  gcc (usually in /usr/bin) can be used with multiple versions of the compiler
+  proper, with the - V option. In Section 13.1 in Chapter 13, we describe the
+  use of gcc in detail.
+* 
+  We would at this point like to warn you not to try newer compilers without
+  knowing exactly what you are doing. Newer compilers might generate object
+  files that are incompatible with the older ones; this can lead to all kinds of
+  trouble. Version 2.95.3 of gcc is, at the time of this writing, considered the
+  standard compiler for Linux that everybody expects to find available. When one
+  distributor (Red Hat) started to ship a newer version instead (and even that
+  newer version was not officially released), users ran into lots of trouble. Of
+  course, by the time you read this, another compiler version might be
+  considered the standard. And if you feel adventurous, by all means try newer
+  versions, just be prepared for some serious tweaking.

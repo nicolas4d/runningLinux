@@ -1,0 +1,50 @@
+* 
+  vi is extensible in many ways. Most of the commands we've introduced can be
+  generalized to arbitrary regions of text. As we've already seen, commands such
+  as d and y operate on the text from the cursor to a move operation, such as $
+  or G . ( dG deletes text from the cursor to the end of the file.) Many other
+  commands operate on text through a move command in the same way. Using marks
+  you can operate on any region of text.
+
+  As we mentioned before, vi is just a text editor; it doesn't have facilities
+  for spell checking text, compiling programs, and other such features. However,
+  vi executes other programs that you can use to extend the editor. The command:
+  #+begin_src 
+  :x,y!command
+  #+end_src
+* 
+  executes the named command with the text on lines x through y as standard
+  input, and replaces the lines with the standard output of the command. As with
+  the s (search and replace) command, other specifications, such as % and $ ,
+  can be used for the line numbers. For example, let's say you want to prepend a
+  quote character ( > ) to all the lines in a region of text. One way to do this
+  is to write a short shell or Perl script (see Section 1.5.4) that reads lines
+  of input and outputs those same lines with the quote character prepended. (Or
+  use a sed command; there are many alternatives.) You can then send lines of
+  text through this filter, which replaces them with the quoted text within vi.
+  If the script is called quote, just use a command, such as:
+  #+begin_src 
+  :`a,.!quote
+  #+end_src
+  which quotes the region of text between the cursor location and the mark a.
+* 
+  Be familiar with the various ex commands that are available. The :set command
+  allows you to set various options; for example, :set ai turns on auto
+  indentation of text. ( :set noai turns it off.)
+
+  You can specify ex commands (such as :set ) to execute when starting up vi in
+  the file .exrc in your home directory. (The name of this file can be changed
+  with the EXINIT environment variable.) For example, your .exrc file might
+  contain:
+  #+begin_src 
+  set ai
+  #+end_src
+  to turn on autoindentation. You don't need the : before ex commands in this
+  file.
+
+  A number of good tutorials and references for vi are available — both online
+  as well as in print. Learning the vi Editor is a good place to look for more
+  information. If you have Internet access, the comp.editors archives for vi
+  contain a number of reference and tutorial documents, as well as interesting
+  vi hacks. ftp://alf.uib.no:/pub/vi is the archive home site; it is mirrored at
+  cs.uwp.edu and elsewhere. The home of vim on the Web is http://www.vim.org.

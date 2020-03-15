@@ -1,0 +1,129 @@
+* 
+  It is sometimes necessary to check your Linux filesystems for consistency and
+  repair them if there are any errors or if you lose data. Such errors commonly
+  result from a system crash or loss of power, making the kernel unable to sync
+  the filesystem buffer cache with the contents of the disk. In most cases, such
+  errors are relatively minor. However, if the system were to crash while
+  writing a large file, that file may be lost and the blocks associated with it
+  marked as "in use," when in fact no file entry is corresponding to them. In
+  other cases, errors can be caused by accidentally writing data directly to the
+  hard-drive device (such as /dev/hda), or to one of the partitions.
+
+  The program *fsck* is used to check filesystems and correct any problems. Like
+  mkfs, fsck is a frontend for a filesystem-type-specific fsck.type , such as
+  fsck.ext2 for Second Extended filesystems. (As with mkfs.ext2, fsck.ext2 is a
+  symbolic link to e2fsck, either of which you can execute directly if the fsck
+  frontend is not installed.)
+* 
+  Use of fsck is quite simple; the format of the command is:
+  #+begin_src shell
+    fsck -t type device
+  #+end_src
+  where type is the type of filesystem to repair, as given in Table 6-1, and
+  device is the device (drive partition or floppy) on which the filesystem
+  resides.
+
+  For example, to check an ext2 filesystem on /dev/hda2, you use:
+* 
+  #+begin_src shell
+  rutabaga# fsck -t ext2 /dev/hda2
+  Parallelizing fsck version 1.06 (7-Oct-96)
+  e2fsck 1.06, 7-Oct-96 for EXT2 FS 0.5b, 95/08/09
+  /dev/hda2 is mounted. Do you really want to continue (y/n)? y
+  /dev/hda2 was not cleanly unmounted, check forced.
+* 
+  Pass 1: Checking inodes, blocks, and sizes
+  Pass 2: Checking directory structure
+  Pass 3: Checking directory connectivity
+  Pass 4: Checking reference counts.
+  Pass 5: Checking group summary information.
+  Free blocks count wrong for group 3 (3331, counted=3396). FIXED
+  Free blocks count wrong for group 4 (1983, counted=2597). FIXED
+  Free blocks count wrong (29643, counted=30341). FIXED
+  Inode bitmap differences: -8280. FIXED
+  Free inodes count wrong for group #4 (1405, counted=1406). FIXED
+  Free inodes count wrong (34522, counted=34523). FIXED
+  /dev/hda2: ***** FILE SYSTEM WAS MODIFIED *****
+  /dev/hda2: ***** REBOOT LINUX *****
+  /dev/hda2: 13285/47808 files, 160875/191216 blocks
+  #+end_src
+* 
+  First of all, note that the system asks for confirmation before checking a
+  mounted filesystem. If any errors are found and corrected while using fsck,
+  you'll have to reboot the system if the filesystem is mounted. This is because
+  the changes made by fsck may not be propagated back to the system's internal
+  knowledge of the filesystem layout. In general, it's not a good idea to check
+  mounted filesystems.
+
+  As we can see, several problems were found and corrected, and because this
+  filesystem was mounted, the system informed us that the machine should be
+  rebooted.
+* 
+  How can you check filesystems without mounting them? With the exception of the
+  root filesystem, you can simply umount any filesystems before running fsck on
+  them. The root filesystem, however, can't be unmounted while running the
+  system. *One way to check your root filesystem* while it's unmounted is to use
+  a boot/root floppy combination, such as the installation floppies used by your
+  Linux distribution. This way, the root filesystem is contained on a floppy,
+  the root filesystem (on your hard drive) remains unmounted, and you can check
+  the hard-drive root filesystem from there. See Section 8.6 in Chapter 8 for
+  more details about this.
+* 
+  *Another way to check the root filesystem* is to mount it as read-only. This
+  can be done using the option ro from the LILO boot prompt (see Section 5.2.2.3
+  in Chapter 5). However, other parts of your system configuration (for example,
+  the programs executed by /etc/init at boot time) may require write access to
+  the root filesystem, so you can't boot the system normally or these programs
+  will fail. To boot the system with the root filesystem mounted as read-only
+  you might want to boot the system into single-user mode as well (using the
+  boot option single ). This prevents additional system configuration at boot
+  time; you can then check the root filesystem and reboot the system normally.
+
+  To cause the root filesystem to be mounted as read-only, you can use either
+  the ro boot option, or rdev to set the read-only flag in the kernel image
+  itself.
+* 
+  Many Linux systems automatically check the filesystems at boot time. This is
+  usually done by executing fsck from */etc/rc.d/rc.sysinit*. When this is done,
+  the system usually mounts the root filesystem initially as read-only, runs
+  fsck to check it, and then runs the command:
+  #+begin_src shell
+    mount -w -o remount /
+  #+end_src
+  The -o remount option causes the given filesystem to be remounted with the new
+  parameters; the -w option (equivalent to -o rw) causes the filesystem to be
+  mounted as read-write. The net result is that the root filesystem is remounted
+  with read-write access.
+
+  When fsck is executed at boot time, it checks all filesystems other than root
+  before they are mounted. Once fsck completes, the other filesystems are
+  mounted using mount. Check out the files in /etc/rc.d, especially rc.sysinit
+  (if present on your system), to see how this is done. If you want to disable
+  this feature on your system, comment out the lines in the appropriate
+  /etc/rc.d file that executes fsck.
+* 
+  You can pass options to the type-specific fsck. Most types support the option
+  -a, which automatically confirms any prompts that fsck. type may display; -c,
+  which does bad-block checking, as with mkfs; and -v, which prints verbose
+  information during the check operation. These options should be given after
+  the -t type argument to fsck, as in:
+  #+begin_src shell
+    fsck -t type -v device
+  #+end_src
+  to run fsck with verbose output.
+
+  See the manual pages for fsck and e2fsck for more information.
+
+  Not all filesystem types supported by Linux have a fsck variant available. To
+  check and repair MS-DOS filesystems, you should use a tool under MS-DOS, such
+  as the Norton Utilities, to accomplish this task. You should be able to find
+  versions of fsck for the Second Extended filesystem, Minix filesystem, and Xia
+  filesystem at least.
+* 
+  In Section 8.6 in Chapter 8, we provide additional information on checking
+  filesystems and recovering from disaster. fsck will by no means catch and
+  repair every error to your filesystems, but most common problems should be
+  handled. If you delete an important file, there is currently no easy way to
+  recover it — fsck can't do that for you. There is work underway to provide an
+  "undelete" utility in the Second Extended filesystem. Be sure to keep backups,
+  or use rm -i, which always prompts you before deleting a file.

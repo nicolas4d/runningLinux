@@ -1,0 +1,72 @@
+* 
+  You might need to access the files on your hard-drive filesystems when booting
+  from an emergency floppy. In order to do this, simply use the mount command as
+  described in Section 6.1.2 in Chapter 6, mounting your filesystems under a
+  directory such as /mnt. (This directory must exist on the root filesystem
+  contained on the floppy.) For example:
+  #+begin_src shell
+    mount -t ext2 /dev/hda2 /mnt
+  #+end_src
+  will allow us to access the files on the Second Extended filesystem stored on
+  /dev/hda2 in the directory /mnt. You can then access the files directly and
+  even execute programs from your hard-drive filesystems. For example, if you
+  wish to execute vi from the hard drive, normally found in /usr/bin/vi, you
+  would use the command:
+  #+begin_src shell
+    /mnt/usr/bin/vi filename
+  #+end_src
+* 
+  You could even place subdirectories of /mnt on your path to make this easier.
+
+  Be sure to unmount your hard-drive filesystems before rebooting the system. If
+  your emergency disks don't have the ability to do a clean shutdown, unmount
+  your filesystems explicitly with umount, to be safe.
+
+  Two problems that can arise when doing this are forgetting the root password
+  or trashing the contents of /etc/passwd. In either case, it might be
+  impossible to log in to the system or su to root . To repair this problem,
+  simply boot from your emergency disks, mount your root filesystem under /mnt,
+  and edit /mnt/etc/passwd. (It might be a good idea to keep a backup copy of
+  this file somewhere in case you delete it accidentally.) For example, to clear
+  the root password altogether, change the entry for root to:
+  #+begin_src 
+    root::0:0:The root of all evil:/:/bin/bash
+  #+end_src
+  Now root will have no password; you can reboot the system from the hard drive
+  and use the passwd command to reset it.
+* 
+  If you are conscientious about system security, you might have shivered by
+  now. You have read correctly: if somebody has physical access to your system,
+  he or she can change your root password by using a boot floppy. Luckily, there
+  are ways to protect your system against possible assaults. Most effective are,
+  of course, the physical ones: if your computer is locked away, nobody can
+  access it and put a boot floppy into it. There are also locks for the floppy
+  drive only, but notice that you need such a protection for the CD-ROM drive as
+  well for floppy-drive locks to be useful. If you don't want to use physical
+  protection, you can also use the BIOS password if your computer supports that:
+  configure the BIOS so that it does not try to boot from CD-ROM or floppy (even
+  if a CD or floppy disk is inserted at boot time) and protect the BIOS settings
+  with a BIOS password. This is not as secure because it is possible to reset
+  the BIOS password with hardware means, but it still protects you against
+  casual would- be intruders. Actually, of course, somebody could steal the
+  whole computer.
+* 
+  Another common problem is corrupt links to shared system libraries. The shared
+  library images in /lib are generally accessed through symbolic links, such as
+  /lib/libc.so.5, which point to the actual library, /lib/libc.so.version. If
+  this link is removed or is pointing to the wrong place, many commands on the
+  system won't run. You can fix this problem by mounting your hard-drive
+  filesystems and relinking the library with a command, such as:
+  #+begin_src shell
+    cd /mnt/lib; ln -sf libc.so.5.4.47 libc.so.5
+  #+end_src
+  to force the libc.so.5 link to point to libc.so.5.4.47. Remember that symbolic
+  links use the pathname given on the ln command line. For this reason, the
+  command:
+  #+begin_src shell
+    ln -sf /mnt/lib/libc.so.5.4.47 /mnt/lib/libc.so.5
+  #+end_src
+  won't do the right thing; libc.so.5 will point to /mnt/lib/libc.so.5.4.47.
+  When you boot from the hard drive, /mnt/lib can't be accessed, and the library
+  won't be located. The first command works because the symbolic link points to
+  a file in the same directory.

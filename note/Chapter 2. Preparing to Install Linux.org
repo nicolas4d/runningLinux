@@ -1,0 +1,454 @@
+* 
+  This chapter represents your first step in installing Linux. We'll describe
+  how to obtain the Linux software, in the form of one of the various
+  prepackaged distributions, and how to prepare your system. We'll include ways
+  to partition disks so that Linux can coexist with Windows, or another
+  operating system.
+
+  As we have mentioned, there is no single "official" distribution of the Linux
+  software; there are, in fact, many distributions, each serving a particular
+  purpose and set of goals. These distributions are available via anonymous FTP
+  from the Internet and via mail on CD-ROM and DVD, as well as in retail stores.
+* 2.1 Distributions of Linux
+** 
+*** 
+    Because Linux is free software, no single organization or entity is
+    responsible for releasing and distributing the software. Therefore, anyone
+    is free to put together and distribute the Linux software, as long as the
+    restrictions in the GPL are observed. The upshot of this is that there are
+    many distributions of Linux, available via anonymous FTP or mail order.
+
+    You are now faced with the task of deciding on a particular distribution of
+    Linux that suits your needs. Not all distributions are alike. Many of them
+    come with just about all the software you'd need to run a complete system —
+    and then some. Other Linux distributions are "small" distributions intended
+    for users without copious amounts of disk space.
+
+    You might also want to consider that distributions have different target
+    groups. Some are meant more for businesses, others more for the home user.
+    Some put more emphasis on server use, others on desktop use.
+*** 
+    The Linux Distribution HOWTO contains a list of Linux distributions
+    available via the Internet as well as mail order.
+
+    How can you decide among all these distributions? If you have access to
+    Usenet news, or another computer conferencing system, you might want to ask
+    there for opinions from people who have installed Linux. Even better, if you
+    know someone who has installed Linux, ask him for help and advice. In
+    actuality, most of the popular Linux distributions contain roughly the same
+    set of software, so the distribution you select is more or less arbitrary.
+** 2.1.1 Getting Linux via Mail Order or Other Hard Media
+***   
+    If you don't have Internet access, you can get many Linux distributions via
+    mail order CD-ROM or DVD. Many distributors accept credit cards as well as
+    international orders, so no matter where you live, you should be able to
+    obtain Linux in this way.
+
+    Linux is free software, but distributors are allowed by the GPL to charge a
+    fee for it. Therefore, ordering Linux via mail order might cost you between
+    U.S. $5 and U.S. $150, depending on the distribution. However, if you know
+    people who have already purchased or downloaded a release of Linux, you are
+    free to borrow or copy their software for your own use. Linux distributors
+    are not allowed to restrict the license or redistribution of the software in
+    any way. If you are thinking about installing an entire lab of machines with
+    Linux, for example, you need to purchase only a single copy of one of the
+    distributions, which can be used to install all the machines. There is one
+    exception to this rule, though: in order to add value to their distribution,
+    some vendors include commercial packages that you might not be allowed to
+    install on several machines. If this is the case, it should be explicitly
+    stated on the package.
+*** 
+    Many Linux user groups offer their own distributions; see if there's a user
+    group near you. For special platforms like Alpha, a user group may be an
+    excellent place to get Linux.
+** 2.1.2 Getting Linux from the Internet
+*** 
+    If you have access to the Internet, the easiest way to obtain Linux is via
+    anonymous FTP.(If you do not have direct Internet access, you can obtain
+    Linux via the FTPMAIL service, provided that you have the ability to
+    exchange email with the Internet.) One major FTP site is
+    ftp://ftp.ibiblio.org, and the various Linux distributions can be found
+    there in the directory /pub/Linux/distributions.
+
+    When downloading the Linux software, be sure to use binary mode for all file
+    transfers (with most FTP clients, the command binary enables this mode).
+
+    You might run into a minor problem when trying to download files for one
+    system (like Linux) with another system (like Windows), because the systems
+    are not always prepared to handle each other's files sensibly. However, with
+    the hints given in this chapter, you should be able to complete the
+    installation process nevertheless.
+*** 
+    Some distributions are released via anonymous FTP as a set of disk images.
+    That is, the distribution consists of a set of files, and each file contains
+    the binary image of a floppy. In order to copy the contents of the image
+    file onto the floppy, you can use the RAWRITE.EXE program under Windows.
+    This program copies, block for block, the contents of a file to a floppy,
+    without regard for disk format. RAWRITE.EXE is available on the various
+    Linux FTP sites, including ftp://ftp.ibiblio.org in the directory
+    /pub/Linux/system/Install/rawwrite.
+
+    Be forewarned that this is a labor-intensive way of installing Linux: the
+    distribution can easily come to more than 50 floppies.
+*** 
+    To proceed, download the set of floppy images and use RAWRITE.EXE with each
+    image in turn to create a set of floppies. Boot from the so-called "boot
+    floppy," and you're ready to roll. The software is usually installed
+    directly from the floppies, although some distributions allow you to install
+    from a Windows partition on your hard drive, while others allow you to
+    install over a TCP/IP network. The documentation for each distribution
+    should describe these installation methods if they are available.
+
+    Other Linux distributions are installed from a set of MS-DOS-formatted
+    floppies. For example, the Slackware distribution of Linux requires
+    RAWRITE.EXE only for the boot and root floppies. The rest of the floppies
+    are copied to MS-DOS-formatted floppies using the MS-DOS COPY command. The
+    system installs the software directly from the MS-DOS floppies. This saves
+    you the trouble of having to use RAWRITE.EXE for many image files, although
+    it requires you to have access to an MS-DOS system to create the floppies.
+*** 
+    If you have access to a Unix workstation with a floppy drive, you can also
+    use the dd command to copy the file image directly to the floppy. A command
+    such as dd of=/dev/rfd0 if=foo bs=18k will "raw write" the contents of the
+    file foo to the floppy device on a Sun workstation. Consult your local Unix
+    gurus for more information on your system's floppy devices and the use of
+    dd.
+
+    Each distribution of Linux available via anonymous FTP should include a
+    README file describing how to download and prepare the floppies for
+    installation. Be sure to read all available documentation for the release
+    you are using.
+
+    Today, some of the bigger Linux distributions are also distributed as one or
+    a few ISO images that you can burn on a CD-ROM or DVD. Downloading these is
+    feasible only for people with big hard-disks and a broadband connection to
+    the Internet, due to the enormous amounts of data involved.
+* 2.2 Preparing to Install Linux
+** 
+   After you have obtained a distribution of Linux, you're ready to prepare your
+   system for installation. This takes a certain degree of planning, especially
+   if you're already running other operating systems. In the following sections,
+   we'll describe how to plan for the Linux installation.
+** 2.2.1 Installation Overview
+*** 
+    While each release of Linux is different, in general the method used to
+    install the software is as follows:
+**** 1. Repartition your hard drive(s). 
+     If you have other operating systems already installed, you will need to
+     repartition the drives in order to allocate space for Linux. This is
+     discussed in Section 2.2.4 later in this chapter. In some distributions,
+     this step is integrated into the installation procedure. Check the
+     documentation of your distribution to see whether this is the case. Still,
+     it won't hurt you to follow the steps given here and repartition your hard
+     drive in advance.
+**** 2. Boot the Linux installation media.
+     Each distribution of Linux has some kind of installation media — usually a
+     "boot floppy" or a bootable CD-ROM — that is used to install the software.
+     Booting this media will either present you with some kind of installation
+     program, which will step you through the Linux installation, or allow you to
+     install the software by hand.
+**** 3. Create Linux partitions.
+     After repartitioning to allocate space for Linux, you create Linux
+     partitions on that empty space. This is accomplished with the Linux *fdisk*
+     program, covered in Section 3.1.3 in Chapter 3, or with some other
+     distribution-specific program, such as the Disk Druid, that comes with Red
+     Hat Linux.
+**** 4. Create filesystems and swap space.
+     At this point, you will create one or more filesystems, used to store files,
+     on the newly created partitions. In addition, if you plan to use swap space
+     (which you should, unless you have really huge amounts of physical memory,
+     or RAM), you will create the swap space on one of your Linux partitions.
+     This is covered in the sections Section 3.1.4 and Section 3.1.3, both in
+     Chapter 3.
+**** 5. Install the software on the new filesystems.
+     Finally, you will install the Linux software on your newly created
+     filesystems. After this, if all goes well, it's smooth sailing. This is
+     covered in Section 3.1.6 in Chapter 3. Later, in Section 3.3, also in
+     Chapter 3, we describe what to do if anything goes wrong.
+*** 
+    People who want to switch back and forth between different operating systems
+    sometimes wonder which to install first: Linux or the other system? We can
+    testify that some people have had trouble installing Windows 95/98/ME after
+    Linux. Windows 95/98/ME tends to wipe out existing boot information when
+    it's installed, so you're safer installing it first and then installing
+    Linux afterward using the information in this chapter. Windows NT/2000 seems
+    to be more tolerant of existing boot information. We would assume that this
+    is the same for Windows XP, being an evolution of Windows 2000, but we don't
+    have any personal experiences (no pun intended) with this yet.
+
+    Many distributions of Linux provide an installation program that will step
+    you through the installation process and automate one or more of the
+    previous steps for you. Keep in mind throughout this chapter and the next
+    that any number of the previous steps may be automated for you, depending on
+    the distribution.
+*** 
+    While preparing to install Linux, the best advice we can give is to take
+    notes during the entire procedure. Write down everything you do, everything
+    you type, and everything you see that might be out of the ordinary. The idea
+    here is simple: if (or when!) you run into trouble, you want to be able to
+    retrace your steps and find out what went wrong. Installing Linux isn't
+    difficult, but there are many details to remember. You want to have a record
+    of all these details so that you can experiment with other methods if
+    something goes wrong. Also, keeping a notebook of your Linux installation
+    experience is useful when you want to ask other people for help — for
+    example, when posting a message to one of the Linux-related Usenet groups.
+    Your notebook is also something you'll want to show to your grandchildren
+    someday.(Matt shamefully admits that he kept a notebook of all his
+    tribulations with Linux for the first few months of working with the system.
+    It is now gathering dust on his bookshelf.)
+** 2.2.2 Repartitioning Concepts
+*** 
+    In general, hard drives are divided into partitions, with one or more
+    partitions devoted to an operating system. For example, on one hard drive
+    you may have several separate partitions — one devoted to, say, Windows,
+    another to OS/2, and another two to Linux.
+
+    If you already have other software installed on your system, you may need to
+    resize those partitions in order to free up space for Linux. You will then
+    create one or more Linux partitions on the resulting free space for storing
+    the Linux software and swap space. We call this process repartitioning.
+
+    Many Windows systems utilize a single partition inhabiting the entire drive.
+    To Windows, this partition is known as C :. If you have more than one
+    partition, Windows names them D :, E :, and so on. In a way, each partition
+    acts like a separate hard drive.
+*** 
+    *On the first sector of the disk is a master boot record along with a
+    partition table.* The boot record (as the name implies) is used to boot the
+    system. The partition table contains information about the locations and
+    sizes of your partitions.
+
+    There are three kinds of partitions: primary, extended, and logical. Of
+    these, primary partitions are used most often. However, because of a limit
+    on the size of the partition table, you can have only four primary
+    partitions on any given drive. This is due to the poor design of MS-DOS and
+    Windows; even other operating systems that originated in the same era do not
+    have such limits.
+
+    The way around this four-partition limit is to use an extended partition. An
+    extended partition doesn't hold any data by itself; instead, it acts as a
+    "container" for logical partitions. Therefore, you could create one extended
+    partition, covering the entire drive, and within it create many logical
+    partitions. However, you are limited to only one extended partition per
+    drive.
+** 2.2.3 Linux Partition Requirements
+*** 
+    Before we explain how to repartition your drives, you need an idea of how
+    much space you will be allocating for Linux. We will be discussing how to
+    create these partitions later, in Section 3.1.3 in Chapter 3.
+
+    On Unix systems, files are stored on a filesystem, which is essentially a
+    section of the hard drive (or other medium, such as CD-ROM or floppy)
+    formatted to hold files. Each filesystem is associated with a specific part
+    of the directory tree; for example, on many systems, there is a filesystem
+    for all the files in the directory /usr, another for /tmp, and so on. The
+    root filesystem is the primary filesystem, which corresponds to the topmost
+    directory, /.
+
+    Under Linux, each filesystem lives on a separate partition on the hard
+    drive. For instance, if you have a filesystem for / and another for /usr,
+    you will need two partitions to hold the two filesystems.
+*** 
+    Before you install Linux, you will need to prepare filesystems for storing
+    the Linux software. You must have at least one filesystem (the root
+    filesystem), and therefore one partition, allocated to Linux. Many Linux
+    users opt to store all their files on the root filesystem, which, in most
+    cases, is easier to manage than several filesystems and partitions.
+
+    However, you may create multiple filesystems for Linux if you wish — for
+    example, you may want to use separate filesystems for /usr and /home. Those
+    readers with Unix system administration experience will know how to use
+    multiple filesystems creatively. In Section 6.1.4 in Chapter 6, we discuss
+    the use of multiple partitions and filesystems.
+
+    Why use more than one filesystem? The most commonly stated reason is safety;
+    if, for some reason, one of your filesystems is damaged, the others will
+    (usually) be unharmed. On the other hand, if you store all your files on the
+    root filesystem, and for some reason the filesystem is damaged, you may lose
+    all your files in one fell swoop. This is, however, rather uncommon; if you
+    back up the system regularly, you should be quite safe.
+*** 
+    On the other hand, using several filesystems has the advantage that you can
+    easily upgrade your system without endangering your own precious data. You
+    might have a partition for the users' home directories, and when upgrading
+    the system, you leave this partition alone, wipe out the others, and
+    reinstall Linux from scratch. Of course, nowadays distributions all have
+    quite elaborate update procedures, but from time to time, you might want a
+    "fresh start."
+
+    Another reason to use multiple filesystems is to divvy up storage among
+    multiple hard drives. If you have, say, 100 MB free on one hard drive, and 2
+    GB free on another, you might want to create a 100-MB root filesystem on the
+    first drive and a 2-GB /usr filesystem on the other. It is possible to have
+    a single filesystem span multiple drives by using a tool called Logical
+    Volume Manager (LVM), but setting this up requires considerable knowledge,
+    unless your distribution's installation program automates it for you.
+*** 
+    In summary, Linux requires at least one partition, for the root filesystem.
+    If you wish to create multiple filesystems, you need a separate partition
+    for each additional filesystem. Some distributions of Linux automatically
+    create partitions and filesystems for you, so you may not need to worry
+    about these issues at all.
+    
+    Another issue to consider when planning your partitions is swap space. Swap
+    space is a portion of the disk used by an operating system to temporarily
+    store parts of programs that were loaded by the user but aren't currently in
+    use. You are not required to use swap space with Linux, but if you have less
+    than 64 MB of physical RAM, it is strongly suggested that you do.
+*** 
+    You have two options. The first is to use a swap file that exists on one of
+    your Linux filesystems. You will create the swap file for use as virtual RAM
+    after you install the software. The second option is to create a swap
+    partition, an individual partition to be used only as swap space. Most
+    people use a swap partition instead of a swap file.
+
+    A single swap file or partition may be up to 2 GB.(This value applies to
+    machines with Intel processors. On other architectures it can be both higher
+    and lower.) If you wish to use more than 2 GB of swap (hardly ever
+    necessary), you can create multiple swap partitions or files — up to eight
+    in all.
+*** 
+    Setting up a swap partition is covered in Section 3.1.4 in Chapter 3, and
+    setting up a swap file in Section 6.2 in Chapter 6.
+
+    Therefore, in general, you will create *at least two partitions* for Linux:
+    one for use as the root filesystem, and the other for use as swap space.
+    There are, of course, many variations on partitioning, but this is the
+    minimal setup.
+*** 
+    Of course, you need to know how much space these partitions will require.
+    The size of your Linux filesystems (containing the software itself) depends
+    greatly on how much software you're installing and what distribution of
+    Linux you are using. Hopefully, the documentation that came with your
+    distribution will give you an approximation of the space requirements. A
+    small Linux system can use 60 MB or less; a larger system anywhere from 500
+    MB to 2 GB, perhaps even more. Keep in mind that in addition to the space
+    required by the software itself, you need to allocate extra space for user
+    directories, room for future expansion, and so forth.
+    
+    If you use several partitions, you can use a rather small partition for the
+    root directory. A partition of 128 MB should suffice. Use at least 30 to 50
+    MB more if you keep /var on thesame partition, as most people do. On the
+    other hand, you will probably want to have a largish /usr partition.
+*** 
+    *The size of your swap partition* (should you elect to use one) depends on
+    how much virtual RAM you require. A rule of thumb is to use a swap partition
+    that measures twice the space of your physical RAM; for example, if you have
+    64 MB of physical RAM, a 128-MB swap partition should suffice. Of course,
+    this is mere speculation; the actual amount of swap space you require
+    depends on the software you will be running. If you have a great deal of
+    physical RAM (say, 256 MB or more), you may not wish to use swap space at
+    all.
+
+    Because of BIOS limitations, it is sometimes impossible to boot from
+    partitions using cylinders numbered over 1023. Therefore, when setting aside
+    space for Linux, keep in mind you may not want to use a partition in the
+    over-1023 cylinder range for your Linux root filesystem. Linux can still use
+    partitions with cylinders numbered over 1023, but you may not be able to
+    boot Linux from such a partition. This advice may seem premature, but it is
+    important to know when planning your drive layout, and today, many people
+    have large disks with more than 1023 cylinders. There are also some newer
+    tools that let you get around this restriction, but we would still advise
+    against using these unless absolutely necessary.
+*** 
+    If you must use a partition with cylinders numbered over 1023 for your Linux
+    root filesystem, and other options do not work, you can always boot Linux
+    from a floppy. This is not so bad, actually; it takes only a few seconds
+    longer to boot from a floppy than from the hard drive.
+** 2.2.4 Repartitioning Your Drives
+***   
+    In this section, we'll describe how to resize your current partitions (if
+    any) to make space for Linux. If you are installing Linux on a "clean" hard
+    drive, skip this section and proceed to Section 3.1.
+
+    The usual way to resize an existing partition is to delete it (thus
+    destroying all data on that partition) and re-create it. Before
+    repartitioning your drives, back up your system. After resizing the
+    partitions, you can reinstall your original software from the backup.
+    However, several programs are available for Windows that resize partitions
+    nondestructively. One of these is known as FIPS and can be found on many
+    Linux FTP sites.
+
+    Also, keep in mind that because you'll be shrinking your original
+    partitions, you may not have space to reinstall everything. In this case,
+    you need to delete enough unwanted software to allow the rest to fit on the
+    smaller partitions.
+*** 
+    *The program used to create and assign partitions is known as fdisk.* Each
+    operating system has its own analog of this program; for example, under
+    Windows, it is invoked with the FDISK command. You should consult your
+    documentation for whatever operating systems you are currently running for
+    information on repartitioning. Here, we'll discuss how to resize partitions
+    for Windows using fdisk, but this information should be easily extrapolated
+    to other operating systems.
+*** 
+    The fdisk program (on any operating system) is responsible for reading the
+    partition table on a given drive and manipulating it to add or delete
+    partitions. However, some versions of fdisk do more than this, such as
+    adding information to the beginning of a new partition to make it usable by
+    a certain operating system. For this reason, you should usually only create
+    partitions for an operating system with the version of fdisk that comes with
+    it. You can't create Windows partitions with Linux fdisk; partitions created
+    in this way can't be used correctly by Windows. (Actually, if you really
+    know what you are doing, you might be lucky in creating Windows partitions
+    from Linux, but we would not advise doing so.) Similarly, Windows fdisk may
+    not be able to recognize Linux partitions. As long as you have a version of
+    fdisk for each operating system you use, you should be fine. (Note that not
+    all systems name this program fdisk; some refer to it as a "disk manager" or
+    "volume manager.")
+
+    Later, in Section 3.1.3 in Chapter 3, we describe how to create new Linux
+    partitions, but for now we are concerned with resizing your current ones.
+*** 
+    Consult the documentation for your current operating systems before
+    repartitioning your drive. This section is meant to be a general overview of
+    the process; there are many subtleties we do not cover here. You can lose
+    all the software on your system if you do not repartition the drive
+    correctly.
+*** 
+    Let's say that you have a single hard drive on your system, currently
+    devoted entirely to Windows. Hence, your drive consists of a single Windows
+    partition, commonly known as C :. Because this repartitioning method will
+    destroy the data on that partition, you need to create a bootable Windows
+    "system disk," which contains everything necessary to run fdisk and restore
+    the software from backup after the repartitioning is complete.
+
+    In many cases, you can use the Windows installation disks for this purpose.
+    However, if you need to create your own system disk, format a floppy with
+    the command:
+
+    FORMAT /s A:
+*** 
+    Copy onto this floppy all necessary Windows utilities (usually most of the
+    software in the directory \DOS on your drive), as well as the programs
+    FORMAT.COM and FDISK.EXE. You should now be able to boot this floppy and run
+    the command:
+
+    FDISK 
+
+    to start up fdisk.
+
+    Use of fdisk should be self-explanatory, but consult the Windows
+    documentation for details. When you start fdisk, use the menu option to
+    display the partition table, and write down the information displayed there.
+    It is important to keep a record of your original setup in case you want to
+    back out of the Linux installation.
+*** 
+    To delete an existing partition, choose the FDISK menu option " Delete an
+    MS-DOS Partition or Logical DOS Drive ." Specify the type of partition you
+    wish to delete (primary, extended, or logical) and the number of the
+    partition. Verify all the warnings. Poof!
+
+    To create a new (smaller) partition for Windows, choose the FDISK option "
+    Create an MS-DOS Partition or Logical DOS Drive ." Specify the type of
+    partition (primary, extended, or logical) and the size of the partition to
+    create (specified in megabytes). fdisk should create the partition, and
+    you're ready to roll.
+
+    After you're done using fdisk, exit the program and reformat any new
+    partitions. For example, if you resized the first DOS partition on your
+    drive ( C :), you should run the command:
+
+    FORMAT /s C:
+
+    You may now reinstall your original software from backup.

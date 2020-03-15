@@ -1,0 +1,42 @@
+* 
+  Already Emacs looks a bit complex; that is simply because it's such a flexible
+  system. Before we go any further, it is instructive to introduce Emacs's
+  built-in online help and tutorial. This documentation has also been published
+  in book form as the GNU Emacs Manual, by Richard M. Stallman (GNU Press).
+
+  Using the C-h command gives you a list of help options on the last line of the
+  display. Pressing C-h again describes what they are. In particular, C-h
+  followed by t drops you into the Emacs tutorial. It should be
+  self-explanatory, and an interactive tutorial about Emacs tells you more about
+  the system than we can hope to cover here.
+
+  After going through the Emacs tutorial you should get accustomed to the Info
+  system, where the rest of the Emacs documentation resides. C-h followed by i
+  enters the Info reader. A mythical Info page might look like this:
+* 
+  As you see, text is presented along with a menu to other "nodes." Pressing m
+  and then entering a node name from the menu will allow you to read that node.
+  You can read nodes sequentially by pressing the spacebar, which jumps to the
+  next node in the document (indicated by the information line at the top of the
+  buffer). Here, the next node is Instructions , which is the first node in the
+  menu.
+
+  Each node also has a link to the parent node ( Up ), which here is (dir) ,
+  meaning the Info page directory. Pressing u takes you to the parent node. In
+  addition, each node has a link to the previous node, if it exists (in this
+  case, it does not). The p command moves to the previous node. The l command
+  returns you to the node most recently visited.
+
+  Within the Info reader, pressing ? gives you a list of commands and pressing h
+  presents you with a short tutorial on using the system. Since you're running
+  Info within Emacs, you can use Emacs commands as well (such as C-x b to switch
+  to another buffer).
+* 
+  If you think that the Info system is arcane and obsolete, please keep in my
+  mind that it was designed to work on all kinds of systems, including those
+  lacking graphics or powerful processing capabilities.
+
+  Other online help is available within Emacs. Pressing C-h C-h gives you a list
+  of help options. One of these is C-h k , after which you press a key, and
+  documentation about the function that is bound to that key appears.
+

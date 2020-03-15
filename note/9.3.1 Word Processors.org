@@ -1,0 +1,58 @@
+* 
+  One obvious sign that Linux has come of age is that many popular WYSIWYG word
+  processing systems are available for it today. For some time, it had even been
+  rumored that Microsoft was going to port its office suite to Linux, but this
+  is not likely to happen. A Microsoft suite is not really needed any longer
+  anyway because you can get other quite good word processors.
+
+  Another option is to use *Anyware Office* by VistaSource, Inc. Anyware Office
+  is an office suite that is commercially made but inexpensive for Linux. It
+  includes not only a word processor, but also a spreadsheet, a drawing program,
+  a mail program, and other smaller tools. In some respects, Anyware Office
+  behaves differently from word processors like Microsoft Word or WordPerfect,
+  but once you get used to it, it can be quite useful and handy. Especially
+  noteworthy is its support for importing and exporting FrameMaker documents.
+  The development seems to have stopped somewhat, though, and it is uncertain
+  what will become of this product.
+* 
+  Sun Microsystems provides its office productivity suite *StarOffice* on a
+  number of platforms, including Linux. It was open sourced a while ago and is
+  now maintained in two branches: the commercial StarOffice one which you can
+  purchase from Sun, and the freely available OpenOffice one which you can
+  download from http://www.openoffice.org. Both are supposed to be mostly
+  functionally identical, but OpenOffice may not have all the bells and whistles
+  (like templates, clipart, etc.) that StarOffice has. OpenOffice is released
+  under the GPL, so if you fancy reading through the 3 million lines of source
+  code making up an office productivity suite, this would be an opportunity for
+  you.
+
+  *OpenOffice* is huge, so if you have a slow connection to the Net, check first
+  whether your distribution doesn't already contain it.
+
+  In addition, there is *KWord*, the word processor of the office productivity
+  suite of the KDE desktop environment, KOffice. KWord has made a lot of
+  progress lately. It sports an interesting frame concept that makes it suitable
+  even for some desktop publishing tasks. Of course, you can also write your
+  letter to grandma with it. You can find more information about it at
+  http://www.kde.org.
+* 
+  Finally, a good and lightweight alternative is *AbiWord*, more information
+  about which you can find at http://www.abiword.org.
+
+  All those programs have one feature in common that many consider a key
+  requirement for doing office-type work on Linux: they can import Microsoft
+  Word documents quite well. While you may well decide, as a new Linux
+  enthusiast, that you won't accept documents sent to you in proprietary
+  formats, sometimes they come from your boss, and you can't refuse to read them
+  just because you are running Linux. In this case, it is good to know that
+  Linux- based solutions are available.
+
+  The LyX package (also available as KLyX with a more modern user interface) is
+  another alternative. It provides a decent WYSIWYG X user interface that works
+  with window managers from standard Linux distributions and uses the L A T E X
+  and T E X packages in order to format the text for printing. If you can live
+  with the formatting limits of the package (most of us can), you may find that
+  LyX/KLyX is an excellent solution. LyX/KLyX does not know how to display some
+  of the powerful formatting features that T E X provides, so if you are a power
+  T E X user, this isn't for you. LyX/KLyX isn't part of most Linux
+  distributions; to try it you will have to get it from a Linux archive.

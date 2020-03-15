@@ -1,0 +1,38 @@
+* 
+  Text editors are among the most important applications in the Unix world. They
+  are used so often that many people spend more time within an editor than
+  anywhere else on their Unix system. The same holds true for Linux.
+
+  The choice of an editor can be a religious one. Many editors exist, but the
+  Unix community has arranged itself into two major groups: the Emacs camp and
+  the vi camp. Because of vi's somewhat nonintuitive user interface, many people
+  (newcomers and seasoned users alike) prefer Emacs over vi. However, long-time
+  users of vi (and single-finger typists) use it more efficiently than a more
+  complex editor such as Emacs.
+
+  If vi is one end of the text-editor spectrum, Emacs is the other; they are
+  widely different in their design and philosophy. Emacs is partly the
+  brainchild of Richard Stallman, founder of the Free Software Foundation and
+  author of much of the GNU software.
+* 
+  Emacs is a very large system with more features than any single Unix
+  application to date (some people would even go so far as not to call it an
+  editor but an "integrated environment"). It contains its own LISP language
+  engine that you can use to write extensions for the editor. (Many of the
+  functions within Emacs are written in Emacs LISP.) Emacs includes extensions
+  for everything from compiling and debugging programs to reading and sending
+  electronic mail to X Window System support and more. Emacs also includes its
+  own online tutorial and documentation. The book Learning GNU Emacs by Debra
+  Cameron, Bill Rosenblatt, and Eric Raymond (O'Reilly) is a popular guide to
+  the editor.
+* 
+  Most Linux distributions include two variants of Emacs. GNU Emacs is the
+  original version, which is still being developed, but development seems to
+  have slowed down. XEmacs is larger, but much more user-friendly and better
+  integrated with the X Window System (even though you can also use it from the
+  command line, despite its name). If you are not tight on memory and have a
+  reasonably fast computer, we suggest using XEmacs. Another advantage of XEmacs
+  is that many useful packages that you would need to download and install
+  separately with GNU Emacs are already shipped with XEmacs. We will not cover
+  the differences here, though; the discussion in this section applies to both.
+  Whenever we talk about Emacs in this section, we mean either version.

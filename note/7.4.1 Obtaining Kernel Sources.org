@@ -1,0 +1,86 @@
+* 
+  The official kernel is released as a gzipped tar file, containing the sources
+  along with a series of patch files — one per patch level. The tar file contains
+  the source for the unpatched revision; for example, there is a tar file
+  containing the sources for kernel Version 2.4 with no patches applied. Each
+  subsequent patch level is released as a patch file (produced using diff), which
+  can be applied using the patch program. In Section 14.2.8 in Chapter 14, we
+  describe the use of patch in detail.
+
+  Let's say you're upgrading to kernel Version 2.4 patch level 4. You'll need the
+  sources for 2.4 (the file might be named v2.4.0.tar.gz) and the patches for
+  patch levels 1 through 4. These files would be named patch1, patch2, and so
+  forth. (You need all the patch files up to the version to which you're
+  upgrading. Usually, these patch files are rather small, and are gzipped on the
+  archive sites.) All these files can be found in the kernel directory of the
+  Linux FTP archive sites; for example, on ftp://ftp.kernel.org, the directory
+  containing the 2.4 sources and patches is /pub/linux/kernel/v2.4. You will find
+  the kernel sources here as tar archives, compressed with both gzip and bzip2.
+* 
+  If you are already at some patch level of the kernel (such as 2.4 patch
+  level 2) and want to upgrade to a newer patch level, you can simply apply the
+  patches from the version you have up to the version to which you'd like to
+  upgrade. If you're upgrading from, say, 2.4 patch level 2 to 2.4 patch level
+  4, you need the patch files for 2.4.3 and 2.4.4.
+* 7.4.1.1 Unpacking the sources
+** 
+   First, you need to unpack the source tar file from /usr/src. You do this with commands such
+   as:
+   #+begin_src shell
+    rutabaga# cd /usr/src
+    rutabaga# mv linux linux.old
+    rutabaga# tar xzf v2.4.0.tar.gz
+   #+end_src
+   This saves your old kernel source tree as /usr/src/linux.old and creates
+   /usr/src/linux containing the new sources. Note that the tar file containing
+   the sources includes the linux subdirectory.
+
+   You should keep your current kernel sources in the directory */usr/src/linux*
+   because there are two symbolic links — /usr/include/linux and /usr/include/asm
+   — that point into the current kernel source tree to provide certain header
+   files when compiling programs. (You should always have your kernel sources
+   available so that programs using these include files can be compiled.) If you
+   want to keep several kernel source trees around, be sure that /usr/src/linux
+   points to the most recent one.
+** 7.4.1.2 Applying patches
+*** 
+    If you are applying any patch files, you use the patch program. Let's say
+    that you have the files patch1.gz through patch4.gz, which are gzipped. These
+    patches should be applied from the kernel sources main directory. That
+    doesn't mean the patch files themselves should be located there, but rather
+    that patch should be executed from e.g. /usr/src/linux. For each patch file,
+    use the command:
+    #+begin_src shell
+     gunzip -c patchfile | patch -p1
+    #+end_src
+    from /usr/src. The -p1 option tells patch it shouldn't strip any part of the
+    filenames contained within the patch file except for the first one.
+
+    *You must apply each patch in numerical order by patch level. This is very
+    important.* Note that using a wildcard such as patch* will not work because
+    the * wildcard uses ASCII order, not numeric order. (Otherwise, if you are
+    applying a larger number of patches, patch1 might be followed by patch10 and
+    patch11, as opposed to patch2 and patch3.) It is best to run the previous
+    command for each patch file in succession, by hand. This way you can ensure
+    you're doing things in the right order.
+*** 
+    You shouldn't encounter problems when patching your source tree in this way
+    unless you try to apply patches out of order or apply a patch more than
+    once. Check the patch manual page if you do encounter trouble. If all else
+    fails, remove the new kernel source tree and start over from the original
+    tar file.
+
+    To double-check that the patches were applied successfully, use the commands:
+    #+begin_src shell
+    find /usr/src/linux -follow -name "*.rej" -print
+    find /usr/src/linux -follow -name "*#" -print
+    #+end_src
+    This lists any files that are "rejected" portions of the patch process. If
+    any such files exist, they contain sections of the patch file that could not
+    be applied for some reason. Look into these, and if there's any doubt, start
+    over from scratch. You cannot expect your kernel to compile or work
+    correctly if the patch process did not complete successfully and without
+    rejections. A handy script for patching the kernel is available and can be
+    found in scripts/patch-kernel. But as always, you should know what you are
+    doing before using automated tools, even more so when it comes to the very
+    core of the operating system, the kernel.

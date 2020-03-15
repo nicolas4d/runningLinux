@@ -1,0 +1,23 @@
+The error messages from make can be quite cryptic, so we'd like to give you some
+help in interpreting them. The following explanations cover the most common
+messages.
+* *** No targets specified and no makefile found. Stop.
+This usually means that there is no makefile in the directory you are trying to
+compile. By default, make tries to find the file GNUmakefile first; then, if
+this has failed, Makefile, and finally makefile. If none of these exists, you
+will get this error message. If for some reason you want to use a makefile with
+a different name (or in another directory), you can specify the makefile to use
+with the -f command-line option.
+* make: *** No rule to make target `blah.c', needed by `blah.o'. Stop.
+This means that make cannot find a dependency it needs (in this case blah.c) in
+order to build a target (in this case blah.o). As mentioned, make first looks
+for a dependency among the targets in the makefile, and if there is no suitable
+target, for a file with the name of the dependency. If this does not exist
+either, you will get this error message. This typically means that your sources
+are incomplete or that there is a typo in the makefile.
+* *** missing separator (did you mean TAB instead of 8 spaces?). Stop.
+The current versions of make are friendly enough to ask you whether you have
+made a very common mistake: not prepending a command with a TAB. If you use
+older versions of make, missing separator is all you get. In this case, check
+whether you really have a TAB in front of all commands, and not before anything
+else.

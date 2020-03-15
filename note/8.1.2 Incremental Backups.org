@@ -1,0 +1,63 @@
+* 
+  Incremental backups, as described earlier in this chapter, are a good way to
+  keep your system backups up-to-date. For example, you can take nightly backups
+  of only those files that changed in the last 24 hours, weekly backups of all
+  files that changed in the last week, and monthly backups of the entire system.
+
+  You can create incremental backups using the tools mentioned previously: tar,
+  gzip, cpio, and so on. The first step in creating an incremental backup is to
+  produce a list of files that changed since a certain amount of time ago. You
+  can do this easily with the find command.(If you're not familiar with find,
+  become so soon. find is a great way to locate files across many directories
+  that have certain filenames, permissions, or modification times. find can even
+  execute a program for each file that it locates. In short, find is your
+  friend, and all good system administrators know how to use it well.) If you
+  use a special backup program, you will most likely not have to do this, but
+  set some option somewhere that you want to do an incremental backup.
+* 
+  For example, to produce a list of all files that were modified in the last 24
+  hours, we can use the command:
+  #+begin_src shell
+  find / -mtime -1 \! -type d -print > /tmp/filelist.daily
+  #+end_src
+  The first argument to find is the directory to start from — here, /, the root
+  directory. The -mtime -1 option tells find to locate all files that changed in
+  the last 24 hours.
+
+  The \! -type d is complicated (and optional), but it cuts some unnecessary
+  stuff from your output. It tells find to exclude directories from the
+  resulting file list. The ! is a negation operator (meaning here, "exclude
+  files of type d"), but put a backslash in front of it because otherwise the
+  shell interprets it as a special character.
+* 
+  The -print causes all filenames matching the search to be printed to standard
+  output. We redirect standard output to a file for later use. Likewise, to
+  locate all files that changed in the last week, use:
+  #+begin_src shell
+    find / -mtime -7 -print > /tmp/filelist.weekly
+  #+end_src
+  Note that if you use find in this way, it traverses all mounted filesystems.
+  If you have a CD- ROM mounted, for example, find attempts to locate all files
+  on the CD-ROM as well (which you probably do not wish to backup). The -prune
+  option can be used to exclude certain directories from the walk that find
+  performs across the system; or, you can use find multiple times with a first
+  argument other than / . See the manual page for find(1) for details.
+
+  Now you have produced a list of files to back up. Previously, when using tar,
+  we have specified the files to archive on the command line. However, this list
+  of files may be too long for a single command line (which is usually limited
+  to around 2048 characters), and the list itself is contained within a file.
+* 
+  You can use the -T option with tar to specify a file containing a list of
+  files for tar to back up. In order to use this option, you have to use an
+  alternate syntax to tar in which all options are specified explicitly with
+  dashes. For example, to back up the files listed in /tmp/filelist.daily to the
+  device /dev/qft0, use the command:
+  #+begin_src shell
+    tar -cv -T /tmp/filelist.daily -f /dev/qft0
+  #+end_src
+  You can now write a short shell script that automatically produces the list of
+  files and backs them up using tar. You can use cron to execute the script
+  nightly at a certain time; all you have to do is make sure there's a tape in
+  the drive. You can write similar scripts for your weekly and monthly backups.
+  cron is covered in the next section.

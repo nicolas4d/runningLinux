@@ -1,0 +1,48 @@
+* 
+  There's much more to Linux than simply using the system. One of the benefits
+  of free software is that you can modify it to suit your needs. This applies
+  equally to the many free applications available for Linux and to the Linux
+  kernel itself.
+
+  Linux supports an advanced programming interface, using GNU compilers and
+  tools, such as the gcc compiler, the gdb debugger, and so on. A number of
+  other programming languages, including Perl, Python, and LISP, are also
+  supported. Whatever your programming needs, Linux is a great choice for
+  developing Unix applications. Because the complete source code for the
+  libraries and Linux kernel is provided, programmers who need to delve into the
+  system internals are able to do so.(On a variety of Unix systems, the authors
+  have repeatedly found available documentation to be insufficient. With Linux,
+  you can explore the very source code for the kernel, libraries, and system
+  utilities. Having access to source code is more important than most
+  programmers think.)
+* 
+  Linux is an ideal platform for developing software to run under the X Window
+  System. The Linux X distribution, as described in Chapter 10, is a complete
+  implementation with everything you need to develop and support X applications.
+  Programming for X is portable across applications, so the X-specific portions
+  of your application should compile cleanly on other Unix systems.
+
+  In this chapter, we'll explore the Linux programming environment and give you
+  a five-cent tour of the many facilities it provides. Half of the trick to Unix
+  programming is knowing what tools are available and how to use them
+  effectively. Often the most useful features of these tools are not obvious to
+  new users.
+
+  Since C programming has been the basis of most large projects (even though it
+  is nowadays being replaced more and more by C++) and is the language common to
+  most modern programmers — not only on Unix, but on many other systems as well
+  — we'll start out telling you what tools are available for that. The first few
+  sections of the chapter assume you are already a C programmer.
+* 
+  But several other tools are emerging as important resources, especially for
+  system administration. We'll examine one in this chapter: Perl. Perl is a
+  scripting language like the Unix shells, taking care of grunt work like memory
+  allocation, so you can concentrate on your task. But Perl offers a degree of
+  sophistication that makes it more powerful than shell scripts and, therefore,
+  appropriate for many programming tasks.
+
+  Lots of programmers are excited about trying out Java , the new language from
+  Sun Microsystems. While most people associate Java with interactive programs
+  (applets) on web pages, it is actually a general-purpose language with many
+  potential Internet uses. In a later section, we'll explore what Java offers
+  above and beyond older programming languages, and how to get started.

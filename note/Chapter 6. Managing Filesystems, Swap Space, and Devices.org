@@ -1,0 +1,6 @@
+You probably created filesystems and swap space when you first installed Linux
+(most distributions help you do the basics). Here is a chance to fine-tune these
+resources. Most of the time, you do these things shortly after installing your
+operating system, before you start loading up your disks with fun stuff. But
+occasionally you will want to change a running system, in order to add a new
+device or perhaps upgrade the swap space when you upgrade your RAM.

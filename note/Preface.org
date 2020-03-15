@@ -1,0 +1,289 @@
+* Preface
+** -
+   "Technical knowledge is not enough. One must transcend techniques so that the art becomes
+   an artless art, growing out of the unconscious."
+
+   —Daisetsu Suzuki (1870-1966)
+** -
+   This is a book about Linux, a free, open source operating system that's
+   changing the world of computing. In this book, we show how you can completely
+   change the way you work with computers by exploring a powerful and free
+   operating system. Linux goes against the traditional computing mainstream,
+   being developed by a loosely organized group of thousands of volunteers
+   across the Internet. Linux started as a real underground movement — guerrilla
+   hacking, if you will — and brings a lot of excitement, discovery, and self-
+   empowerment back into today's corporate-dominated computing culture. We
+   invite you to dive in, enjoy yourself, and join the throng of people who know
+   what it means to tweak your dot clocks and rdev your kernel image.
+** -
+   The Zen quote at the beginning of this preface summarizes our philosophy in
+   this book. We're targeting readers who are inquisitive and creative enough to
+   delve full-tilt into the world of Linux, and who want to get at the heart of
+   the system. Linux represents a rebellion against commercial operating
+   systems, and many of its users like living on the edge of the latest
+   technological trends. Of course, the casual reader can set up and run a Linux
+   system (or hundreds of them!) without much trouble, but the purpose of this
+   book is to dig more deeply into the system — to bring you completely into the
+   Linux mentality, to reach Linux "enlightenment." Rather than gloss over messy
+   details, we explain the concepts by which the system actually works so that
+   you can troubleshoot problems on your own. By sharing the accumulated
+   expertise of several Linux experts, we hope to give you enough confidence to
+   call yourself a true Linux Guru. (Your first koan: what is the sound of one
+   user hacking?)
+** -
+   You have in your hands the fourth edition of Running Linux, and by most
+   accounts this book is considered the classic text on installing, maintaining,
+   and learning to use a Linux system. The first edition was published way back
+   in 1996, and had its roots in a free book called Linux Installation and
+   Getting Started, which is still floating around the Internet. Since then,
+   Running Linux has gone through many improvements and changes to keep the text
+   up-to-date with the latest developments in the Linux world. Kalle Dalheimer
+   joined Matt Welsh and Lar Kaufman for the third edition, and has done most of
+   the updates for this edition as well. Terry Dawson has contributed some
+   material on security.
+** -
+   In this edition, we have completely updated the installation, configuration,
+   and tutorial information to be up-to-date with the latest Linux software
+   distributions (including Red Hat and its derivatives, SuSE, and Debian) and
+   many application packages. The core of the book, however, has not changed
+   much. This was intentional: in the first three editions we made a great
+   effort to make the book as robust as possible, even though Linux itself is
+   under constant development. No book can adequately capture everything there
+   is to know about Linux. (You won't find chapters here on using Linux on the
+   Space Shuttle, or on finding weaknesses in data encryption algorithms,
+   although it's been done!) Our approach has worked remarkably well and has
+   been preserved in this new, updated edition. We think this book will be of
+   use to you for a long time to come.
+** -
+   The world of Linux has changed a lot since the last edition of Running Linux.
+   Apart from increased performance and robustness, Linux sports an increasing
+   range of applications, from personal productivity tools to high-end
+   databases. Linux is used to running mission-critical services, and drives
+   many popular Internet sites, search engines, and content delivery networks.
+   Linux is also being increasingly adopted on the desktop, and desktop systems
+   such as KDE and GNOME are making it easier than ever before to get the most
+   out of Linux.
+** -
+   In the preface to the first edition, we said that "Linux has the potential to
+   completely change the face of the PC operating system world." Looking back,
+   it's clear that our prediction was right! Linux has erupted into the
+   computing mainstream with an amazing force: it has been covered by every
+   major media channel, has helped usher in the so-called "Open Source
+   Revolution," and is widely claimed as the most viable competitor to
+   Microsoft's dominance in the operating systems market. Today, most estimates
+   place the number of Linux users worldwide at well over 200 million. Linux has
+   matured to the point where many people can dive in and start using Linux
+   without knowing most of the hairy details behind device drivers, XFree86
+   configuration files, and bootloaders. Still, we think it's best to give you
+   some of the behind-the-scenes views, so you have an understanding of the
+   workings of the system, even if it's not strictly necessary for casual Linux
+   use.
+* Why People Like Linux
+  There are many reasons why people are finding that Linux is the right
+  operating system for them. It might have to do with cost, performance,
+  flexibility, size, or features. Or it might have something to do with that
+  intangible thrill that you get from running your own system, rather than
+  simply installing a bunch of software that comes out of a box. Windows XP and
+  Mac OS X are good operating systems, but they are focused on the needs of home
+  users. As such, they have some limitations and are a lot less flexible than
+  Linux. Here are a few reasons why people are switching to Linux:
+** It's free.
+   That is, Linux is a freely redistributable clone of the Unix operating
+   system. You can get Linux free from someone who has it or from the World Wide
+   Web, or you can buy it at a reasonable cost on CD-ROM from a vendor who has
+   packaged it (probably with added value), possibly with support services.
+   Linux is also "free as in speech" (not just "free as in beer"): anyone can
+   modify and distribute modifications and improvements to the system. (We'll
+   get into all of this later, when we talk about open source and free
+   software.)
+** It's popular.
+   It runs on a wide range of hardware platforms, including popular Pentium
+   (Pentium II, III, and 4), AMD, and Cyrix chips, and even older 386/486
+   machines. Linux also runs on higher-end systems based on the Itanium, SPARC,
+   or Alpha architectures, as well as on PowerPC and 68k-based Macs. Linux even
+   runs on IBM 390 mainframes, and stripped-down versions run on personal
+   digital assistants (PDAs) like the Palm Pilot and Compaq iPAQ. Linux supports
+   a broad range of hardware, including video cards, sound cards, CD-ROMs, disk
+   drives, printers, scanners, and many other devices.
+
+   Linux has an enormous user community presence on the World Wide Web, with many
+   web sites devoted to providing information and discussion about the system. A
+   growing number of commercial software vendors are developing applications for
+   Linux, including Corel WordPerfect Office 2000 Suite, the StarOffice suite from Sun
+   Microsystems, and a number of database products from big names such as Oracle,
+   Informix, and IBM.
+** It's powerful.
+   Linux is efficient and fast, and makes excellent use of hardware. Many users
+   switching to Linux from Windows are surprised at how fast and responsive the
+   system is, even with many processes running and with multiple windows open. A
+   Linux machine with a reasonably fast processor and a sufficient amount of
+   memory can perform as well, or better, than Unix workstations costing tens of
+   thousands of dollars. Linux is a multiuser, multitasking operating system
+   that can run many applications (and even have many users logged into the same
+   system) at once. Linux also supports multiprocessor systems, and Linux is
+   commonly used in high-end server environments where this kind of hardware is
+   the norm. Linux is used for building large "clusters" consisting of hundreds
+   of machines connected with a fast network, used for massive scientific
+   calculations or for driving large web sites.
+** It's under your control.
+   Whereas most GUI-heavy proprietary systems embody a policy of keeping the
+   user as ignorant of system processes as possible, Linux is very open and
+   makes it easy for you to know what is happening under the hood. At the same
+   time, if you like, you can relinquish some control and rely on easy-to-use
+   tools like SuSE's yast.
+** It's robust. 
+   Linux is being developed in the open by thousands of programmers, as well as
+   numerous companies and universities, all contributing new features,
+   performance enhancements, and bug fixes. It incorporates the work of these
+   many developers in the form of advanced compilers, editors, and utilities. As
+   a result, Linux is extremely robust; many users have Linux systems that stay
+   up for months at a time (say goodbye to the "blue screen of death!"). Linux
+   has an enormous base of freely available applications, ranging from desktop
+   publishing and office suites to scientific tools to multimedia applications
+   to games.
+** It's full-featured.
+   Linux supports of the features of modern Unix-based operating systems,
+   including virtual memory, threads, multiprocessors, and advanced networking
+   (including IPv6, DHCP, firewalling, network address translation, and more).
+   Linux supports a vast array of software packages, programming languages, and
+   hardware devices. Linux uses the X Window System graphical user interface
+   (GUI) and supports several advanced desktop environments, including KDE and
+   GNOME (all covered later in this book).
+** It's highly compatible with Windows. 
+   Linux will happily coexist on the same machine as any flavor of Windows
+   (including Windows 95/98/NT, Windows 2000, or Windows XP), or other operating
+   systems such as OS X and FreeBSD. Linux can directly access Windows files,
+   either across the network, or on the Windows portions of your hard drive on
+   the same system. Using the popular Samba tool, Linux can also act as a
+   Windows file and print server. Note that Linux does not run under Windows; it
+   is completely independent of it, but features have been added to allow the
+   separate systems to work together.
+** It's small. 
+   The core operating system can run on just 8 MB of system memory, including a
+   desktop GUI and several applications. A basic Linux system can fit into 20 MB
+   or so of disk storage, and many people run a basic Linux "rescue system" from
+   a single 1.44 MB floppy! Linux has even been tuned to run on low-memory
+   embedded systems (such as those used in network routers or robots), and in
+   hand-held PDAs. It's big. Some of the larger distributions can fill several
+   gigabytes of disk space with applications, source code, and datafiles. The
+   number of powerful utilities and applications ported to Linux grows
+   constantly. Most Linux users can run a complete system in 300 MB or so of
+   disk space. This includes all the basics, as well as nice extras such as
+   programming libraries, compilers, text-processing tools, and more. But if
+   you're a real power user, much more is available.
+** It's supported. 
+   The most important line of support is the many web sites devoted to Linux, as
+   well as the many newsgroups and mailing lists online. You can also contract
+   for support from an independent company or buy a supported version of Linux
+   from one of its distributors.
+** It's well-documented.
+   There is this book (a good start, we commend you on that!), which is also
+   available in Spanish, German, French, Italian, Portuguese, Czech, Polish,
+   Chinese, Taiwanese, and Japanese. The Linux development community established
+   the Linux Documentation Project (LDP) early on, which maintains a large
+   amount of online documentation about the system. The many books, FAQ lists,
+   and "how-to" documents from the LDP can guide you through almost any task
+   that needs to be done under Linux. Once you get over a few installation
+   humps, Linux is more or less like any other Unix system, so the many general
+   books about Unix use and administration will give you all the help you need.
+   Finally, there is the popular press, which has written hundreds of books on
+   Linux — both introductory and advanced — which have been translated into most
+   major languages around the world.
+** It's sexy.
+   Let's face it: there's nothing particularly daring or edgy about running the
+   latest shrink-wrapped release from the world's largest software company (need
+   we name names?). Linux has an attitude, a philosophy, and a joie de vivre
+   that you're not going to find in any other operating system. There's much,
+   much more to Linux than a bunch of bits on a CD-ROM . . . can you dig it?
+* Organization of This Book
+** -
+   Each chapter of this book contains a big chunk of information. It takes you
+   into a world of material that could easily take up several books. But we move
+   quickly through the topics you need to know.
+** -
+   Chapter 1 tries to draw together many different threads. It explains why
+   Linux came to be and what makes it different from other versions of Unix as
+   well as other operating systems for personal computers.
+
+   Chapter 2 describes preliminary tasks that you may have to do before
+   installation, such as partitioning your disk (in case you want to run another
+   operating system as well as Linux).
+
+   Chapter 3 is a comprehensive tutorial on installing and configuring Linux on
+   your system.
+
+   Chapter 4 offers a system administrator's introduction to Unix, for people
+   who need one. It is intended to give you enough tools to perform the basic
+   tasks you'll need to do throughout the book. Basic commands are covered,
+   along with some tips for administrators and some concepts you should know.
+** -
+   Chapter 5, Chapter 6, Chapter 7, and Chapter 8 cover system administration
+   and maintenance. These are perhaps the most important and useful chapters of
+   the book; they cover user account management, backups, software upgrading,
+   building a new kernel, audio configuration, and more.
+
+   Chapter 9 introduces you to the most popular and commonly used text tools and
+   editors on Linux — vi and Emacs — and shows you how to print a document and
+   how to use various graphics programs.
+
+   Chapter 10 shows you how to install and configure the X Window System, a
+   powerful GUI for Linux and Unix systems. We show you how to overcome problems
+   you might encounter when your distribution installs the software and how to
+   configure it for the best performance on your video hardware.
+** -
+   Chapter 11 shows you how to set up your own visual environment under the X
+   Window System, covering a wide range of the powerful customizations the
+   system makes available, the KDE and GNOME desktops, and a few useful programs
+   that run under X.
+
+   Chapter 12 presents various tools for interfacing with DOS and Windows
+   systems, particularly the Samba server that integrates Linux with other users
+   running PCs.
+
+   Chapter 13 and Chapter 14 are for programmers. Compilers, interpreters,
+   debuggers, and many other tools for programming under Linux are presented.
+** -
+   Chapter 15 tells you how to set up your all-important connection to the
+   outside world. It shows you how to configure your system so that it can work
+   on a local area network or communicate with an Internet service provider
+   using Point-to-Point Protocol (PPP).
+
+   Chapter 16 goes beyond basic network configuration and shows you how to
+   configure electronic mail, set up the Elm and Netscape mail readers, and even
+   run your own World Wide Web server.
+
+   Chapter 17 offers the most basic, critical rules for securing an
+   Internet-connected system. It will not guarantee by any means that you are
+   safe from break-ins, but it will help you eliminate the obvious and trivial
+   weaknesses in your system.
+** -
+   Chapter 18 introduces the most popular set of tools that web site
+   administrators use to serve up content. This collection is called LAMP, which
+   stands for Linux, Apache, MySQL, and PHP.
+
+   Appendix A tells you about other useful documentation for Linux and other
+   sources of help.
+
+   Appendix B shows you how to install Linux on the first non-Intel system that
+   supported it, the 64-bit Digital Alpha machine.
+
+   The Bibliography lists a number of books, HOWTOs, and Internet RFCs of
+   interest to Linux users and administrators.
+* Conventions Used in This Book
+  The following is a list of the typographical conventions used in this book:
+
+  Italic
+  Is used for file and directory names, program and command names, command-line
+  options, email addresses and path names, site names, and all new terms.
+  Constant Width
+  Is used in examples to show the contents of files or the output from commands, to
+  indicate environment variables and keywords that appear in code, and for machine
+  names, hostnames, usernames, IDs, and Emacs commands.
+  Constant Width Bold
+  Is used in examples to show commands or other text that should be typed literally by
+  the user.
+  Constant Width Italic
+  Is used to indicate variable options, keywords, or text that the user is to replace with
+  an actual value.
+* How to Contact Us
+* Acknowledgments
