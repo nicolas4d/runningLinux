@@ -1,0 +1,18 @@
+Many judge a computer system by the tools it offers its programmers. Unix
+systems have won the contest by many people's standards, having developed a very
+rich set over the years. Leading the parade is the GNU debugger, gdb. In this
+chapter, we take a close look at this invaluable utility, and at a number of
+other auxiliary tools C programmers will find useful.
+
+Even if you are not a programmer, you should consider using the Revision Control
+System (RCS). It provides one of the most reassuring protections a computer user
+could ask for — backups for everything you do to a file. If you delete a file by
+accident, or decide that everything you did for the past week was a mistake and
+should be ripped out, RCS can recover any version you want. If you are working
+on a larger project that involves either a large number of developers or a large
+number of directories (or both), Concurrent Versioning System (CVS) might be
+more suitable for you. It was originally based on RCS, but was rewritten from
+the ground up and provides many additional features. Currently, another rewrite
+from the ground up is taking place; that new tool will be called Subversion. It
+remains to be seen, however, whether it will replace CVS. Finally, the Linux
+kernel itself uses yet another versioning system, called BitKeeper.

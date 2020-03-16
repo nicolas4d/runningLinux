@@ -1,0 +1,234 @@
+* 
+  Do you hate it when a program crashes and spites you again by leaving a 10MB
+  core file in your working directory, wasting much-needed space? Don't be so
+  quick to delete that core file; it can be very helpful. A *core file* is just
+  a dump of the memory image of a process at the time of the crash. You can use
+  the core file with gdb to examine the state of your program (such as the
+  values of variables and data) and determine the cause for failure.
+
+  The core file is written to disk by the operating system whenever certain
+  failures occur. The most frequent reason for a crash and the subsequent core
+  dump is a memory violation — that is, trying to read or write memory to which
+  your program does not have access. For example, attempting to write data using
+  a null pointer can cause a segmentation fault, which is essentially a fancy
+  way of saying, "you screwed up." Segmentation faults are a common error and
+  occur when you try to access (read from or write to) a memory address that
+  does not belong to your process's address space. This includes the address 0,
+  as often happens with uninitialized pointers. Segmentation faults are often
+  caused by trying to access an array item outside the declared size of the
+  array, and are commonly a result of an off-by-one error. They can also be
+  caused by a failure to allocate memory for a data structure.
+* 
+  Other errors that result in core files are so-called "bus errors" and
+  "floating-point exceptions." Bus errors result from using incorrectly aligned
+  data and are therefore rare on the Intel architecture, which does not pose the
+  strong alignment conditions that other architectures do, such as SPARC.
+  Floating-point exceptions point to a severe problem in a floating-point
+  calculation like an overflow, but the most usual case is a division by zero.
+
+  However, not all such memory errors will cause immediate crashes. For example,
+  you may overwrite memory in some way, but the program continues to run, not
+  knowing the difference between actual data and instructions or garbage. Subtle
+  memory violations can cause programs to behave erratically. One of the authors
+  once witnessed a bug that caused the program to jump randomly around, but
+  without tracing it with gdb, it still appeared to work normally. The only
+  evidence of a bug was that the program returned output that meant, roughly,
+  that two and two did not add up to four. Sure enough, the bug was an attempt
+  to write one too many characters into a block of allocated memory. That
+  single-byte error caused hours of grief.
+* 
+  You can prevent these kinds of memory problems (even the best programmers make
+  these mistakes!) using the Valgrind package, a set of memory-management
+  routines that replaces the commonly used malloc( ) and free( ) functions as
+  well as their C++ counterparts, the operators new and delete. We'll talk about
+  Valgrind in Section 14.2.4.
+
+  However, if your program does cause a memory fault, it will crash and dump
+  core. Under Linux, core files are named, appropriately, core. The *core file*
+  appears in the current working directory of the running process, which is
+  usually the working directory of the shell that started the program, but on
+  occasion, programs may change their own working directory.
+
+  Some shells provide facilities for controlling whether core files are written.
+  Under bash, for example, the default behavior is not to write core files. In
+  order to enable core file output, you should use the command:
+* 
+  #+begin_src shell
+    ulimit -c unlimited
+  #+end_src
+  probably in your .bashrc initialization file. You can specify a maximum size
+  for core files other than unlimited , but truncated core files may not be of
+  use when debugging applications.
+
+  Also, in order for a core file to be useful, the program must be compiled with
+  debugging code enabled, as described in the previous section. Most binaries on
+  your system will not contain debugging code, so the core file will be of
+  limited value.
+
+  Our example for using gdb with a core file is yet another mythical program
+  called cross. Like trymh in the previous section, cross takes an image file as
+  input, does some calculations on it, and outputs another image file. However,
+  when running cross, we get a segmentation fault:
+* 
+  #+begin_src shell
+  papaya$ cross < image30.pfm > image30.pbm
+  Segmentation fault (core dumped)
+  papaya$
+  #+end_src
+  To invoke gdb for use with a core file, you must specify not only the core
+  filename, but also the name of the executable that goes along with that core
+  file. This is because the core file does not contain all the information
+  necessary for debugging:
+* 
+  #+begin_src shell
+    papaya$ gdb cross core
+    GDB is free software and you are welcome to distribute copies of it
+    under certain conditions; type "show copying" to see the conditions.
+    There is absolutely no warranty for GDB; type "show warranty" for details.
+    GDB 4.8, Copyright 1993 Free Software Foundation, Inc...
+    Core was generated by `cross'.
+    Program terminated with signal 11, Segmentation fault.
+    #0 0x2494 in crossings (image=0xc7c8) at cross.c:31
+    31  if ((image[i][j] >= 0) &&
+    (gdb)
+  #+end_src
+* 
+  gdb tells us that the core file was created when the program terminated with
+  signal 11. A signal is a kind of message that is sent to a running program
+  from the kernel, the user, or the program itself. Signals are generally used
+  to terminate a program (and possibly cause it to dump core). For example, when
+  you type the interrupt character, a signal is sent to the running program,
+  which will probably kill the program.
+
+  In this case, signal 11 was sent to the running cross process by the kernel
+  when cross attempted to read or write to memory to which it did not have
+  access. This signal caused cross to die and dump core. gdb says that the
+  illegal memory reference occurred on line 31 of the source file cross.c:
+* 
+  #+begin_src shell
+    (gdb) list
+    xmax = imGetWidth(image)-1;
+    ymax = imGetHeight(image)-1;
+    for (j=1; j<xmax; j++) {
+            for (i=1; i<ymax; i++) {
+                    if ((image[i][j] >= 0) &&
+                            (image[i-1][j-1] < 0) ||
+                                (image[i-1][j] < 0) ||
+                                (image[i-1][j+1] < 0) ||
+                                (image[i][j-1] < 0) ||
+  #+end_src
+* 
+  Here, we see several things. First of all, there is a loop across the two
+  index variables i and j , presumably in order to do calculations on the input
+  image. Line 31 is an attempt to reference data from image[i][j] , a
+  two-dimensional array. When a program dumps core while attempting to access
+  data from an array, it's usually a sign that one of the indices is out of
+  bounds. Let's check them:
+  #+begin_src shell
+    (gdb) print i
+    $1 = 1
+    (gdb) print j
+    $2 = 1194
+    (gdb) print xmax
+    $3 = 1551
+    (gdb) print ymax
+    $4 = 1194
+    (gdb)
+  #+end_src
+* 
+  Here we see the problem. The program was attempting to reference element
+  image[1][1194] , however, the array extends only to image[1550][1193]
+  (remember that arrays in C are indexed from 0 to max -1). In other words, we
+  attempted to read the 1195th row of an image that has only 1194 rows.
+
+  If we look at lines 29 and 30, we see the problem: the values xmax and ymax
+  are reversed. The variable j should range from 1 to ymax (because it is the
+  row index of the array), and i should range from 1 to xmax . Fixing the two
+  for loops on lines 29 and 30 corrects the problem.
+
+  Let's say that your program is crashing within a function that is called from
+  many different locations, and you want to determine where the function was
+  invoked from and what situation led up to the crash. The backtrace command
+  displays the call stack of the program at the time of failure. If you are like
+  the author of this section and are too lazy to type backtrace all the time,
+  you will be delighted to hear that you can also use the shortcut bt.
+* 
+  The call stack is the list of functions that led up to the current one. For
+  example, if the program starts in function main, which calls function foo,
+  which calls bamf, the call stack looks like this:
+  #+begin_src shell
+  (gdb) backtrace
+  #0 0x1384 in bamf ( ) at goop.c:31
+  #1 0x4280 in foo ( ) at goop.c:48
+  #2 0x218 in main ( ) at goop.c:116
+  (gdb)
+  #+end_src
+* 
+  As each function is called, it pushes certain data onto the stack, such as
+  saved registers, function arguments, local variables, and so forth. Each
+  function has a certain amount of space allocated on the stack for its use. The
+  chunk of memory on the stack for a particular function is called a stack
+  frame, and the call stack is the ordered list of stack frames.
+
+  In the following example, we are looking at a core file for an X-based
+  animation program. Using backtrace gives us:
+  #+begin_src shell
+  (gdb) backtrace
+  #0 0x602b4982 in _end ( )
+  #1 0xbffff934 in _end ( )
+  #2 0x13c6 in stream_drawimage (wgt=0x38330000, sn=4)\
+  at stream_display.c:94
+  #3 0x1497 in stream_refresh_all ( ) at stream_display.c:116
+  #4 0x49c in control_update_all ( ) at control_init.c:73
+  #5 0x224 in play_timeout (Cannot access memory at address 0x602b7676.
+  (gdb)
+  #+end_src
+* 
+  This is a list of stack frames for the process. The most recently called
+  function is frame 0, which is the "function" _end in this case. Here, we see
+  that play_timeout called control_update_all, which called stream_refresh_all,
+  and so on. Somehow, the program jumped to _end where it crashed.
+
+  However, _end is not a function; it is simply a label that specifies the end
+  of the process data segment. When a program branches to an address such as
+  _end, which is not a real function, it is a sign that something must have
+  caused the process to go haywire, corrupting the call stack. (This is known in
+  hacker jargon as "jumping to hyperspace.") In fact, the error " Cannot access
+  memory at address 0x602b7676 " is another indication that something bizarre
+  has occurred.
+
+  We can see, however, that the last "real" function called was
+  stream_drawimage, and we might guess that it is the source of the problem. To
+  examine the state of stream_drawimage, we need to select its stack frame
+  (frame number 2), using the frame command:
+* 
+  [[file:../img/14.1.2.png]]
+
+  Well, not knowing anything else about the program at hand, we can't see
+  anything wrong here, unless the variable sn (being used as an index into the
+  array streams ) is out of range. From the output of frame, we see that
+  stream_drawimage was called with an sn parameter of 4. (Function parameters
+  are displayed in the output of backtrace, as well as whenever we change
+  frames.)
+
+  Let's move up another frame, to stream_refresh_all, to see how stream_display
+  was called. To do this, we use the up command, which selects the stack frame
+  above the current one:
+  
+  [[file:../img/14.1.2-0.png]]
+* 
+  Here, we see that the index variable i is looping from 0 to numstreams , and
+  indeed i here is 4, the second parameter to stream_drawimage. However,
+  numstreams is also 4. What's going on?
+
+  The for loop on line 115 looks funny; it should read:
+  #+begin_src c
+    for (i=0; i<numstreams; i++) {
+  #+end_src
+  The error is in the use of the <= comparison operator. The streams array is
+  indexed from 0 to numstreams-1 , not from 0 to numstreams . This simple
+  off-by-one error caused the program to go berserk.
+
+  As you can see, using gdb with a core dump allows you to browse through the
+  image of a crashed program to find bugs. Never again will you delete those
+  pesky core files, right?

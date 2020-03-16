@@ -1,0 +1,54 @@
+* 
+  Linux supports a full implementation of the Transmission Control
+  Protocol/Internet Protocol (TCP/IP) networking protocols. TCP/IP has become
+  the most successful mechanism for networking computers worldwide. With Linux
+  and an Ethernet card, you can network your machine to a local area network
+  (LAN) or (with the proper network connections) to the Internet — the worldwide
+  TCP/IP network.
+
+  Hooking up a small LAN of Unix machines is easy. It simply requires an
+  Ethernet controller in each machine and the appropriate Ethernet cables and
+  other hardware. Or if your business or university provides access to the
+  Internet, you can easily add your Linux machine to this network.
+* 
+  Linux TCP/IP support has had its ups and downs. After all, implementing an
+  entire protocol stack from scratch isn't something that one does for fun on a
+  weekend. On the other hand, the Linux TCP/IP code has benefited greatly from
+  the hoard of beta testers and developers to have crossed its path, and as time
+  has progressed many bugs and configuration problems have fallen in their wake.
+
+  The current implementation of TCP/IP and related protocols for Linux is called
+  NET-4. This has no relationship to the so-called NET-2 release of BSD Unix;
+  instead, in this context, NET-4 means the fourth implementation of TCP/IP for
+  Linux. Before NET-4 came (no surprise here) NET-3, NET-2, and NET-1, the last
+  having been phased out around kernel Version 0.99.pl10. NET-4 supports nearly
+  all the features you'd expect from a Unix TCP/IP implementation and a wide
+  range of networking hardware.
+* 
+  Linux NET-4 also supports *Serial Line Internet Protocol (SLIP)* and
+  *Point-to-Point Protocol (PPP)*. SLIP and PPP allow you to have dial-up
+  Internet access using a modem. If your business or university provides SLIP or
+  PPP access, you can dial in to the SLIP or PPP server and put your machine on
+  the Internet over the phone line. Alternatively, if your Linux machine also
+  has Ethernet access to the Internet, you can configure it as a SLIP or PPP
+  server.
+
+  In the following sections, we won't mention SLIP anymore because nowadays most
+  people use PPP. If you want to run SLIP on your machine, you can find all the
+  information you'll need in the Linux Network Administrator's Guide by Olaf
+  Kirch and Terry Dawson (O'Reilly). Besides the Linux Network Administrator's
+  Guide, the Linux NET-4 HOWTO contains more or less complete information on
+  configuring TCP/IP and PPP for Linux. The Linux Ethernet HOWTO is a related
+  document that describes configuration of various Ethernet card drivers for
+  Linux.
+* 
+  Also of interest is TCP/IP Network Administration by Craig Hunt (O'Reilly). It
+  contains complete information on using and configuring TCP/IP on Unix systems.
+  If you plan to set up a network of Linux machines or do any serious TCP/IP
+  hacking, you should have the background in network administration presented by
+  that book.
+
+  If you really want to get serious about setting up and operating networks, you
+  will probably also want to read DNS and BIND by Cricket Liu and Paul Albitz
+  (O'Reilly). This book tells you all there is to know about name servers in a
+  refreshingly funny manner.

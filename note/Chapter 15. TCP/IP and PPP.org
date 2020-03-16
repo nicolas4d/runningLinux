@@ -1,0 +1,15 @@
+So, you've staked out your homestead on the Linux frontier, and installed and
+configured your system. What's next? Eventually you'll want to communicate with
+other systems — Linux and otherwise — and the Pony Express isn't going to
+suffice.
+
+Fortunately, Linux supports a number of methods for data communication and
+networking. This includes serial communications, TCP/IP, and UUCP. In this
+chapter and the next, we will discuss how to configure your system to
+communicate with the world.
+
+The Linux Network Administrator's Guide, available from the Linux Documentation
+Project (See Linux Documentation Project in the Bibliography) and also published
+by O'Reilly & Associates, is a complete guide to configuring TCP/IP and UUCP
+networking under Linux. For a detailed account of the information presented
+here, we refer you to that book.

@@ -1,0 +1,25 @@
+* 
+  In order to fully appreciate (and utilize) the power of TCP/IP, you should be familiar with its
+  underlying principles. TCP/IP is a suite of protocols (the magic buzzword for this chapter)
+  that define how machines should communicate with each other via a network, as well as
+  internally to other layers of the protocol suite. For the theoretical background of the Internet
+  protocols, the best sources of information are the first volume of Douglas Comer's
+  Internetworking with TCP/IP (Prentice Hall) and the first volume of W. Richard Stevens'
+  TCP/IP Illustrated (Addison-Wesley).
+  TCP/IP was originally developed for use on the Advanced Research Projects Agency
+  network, ARPAnet, which was funded to support military and computer-science research.
+  Therefore, you may hear TCP/IP being referred to as the "DARPA Internet Protocols." Since
+  that first Internet, many other TCP/IP networks have come into use, such as the National
+  Science Foundation's NSFNET, as well as thousands of other local and regional networks
+  around the world. All these networks are interconnected into a single conglomerate known as
+  the Internet.
+  On a TCP/IP network, each machine is assigned an IP address, which is a 32-bit number
+  uniquely identifying the machine. You need to know a little about IP addresses to structure
+  your network and assign addresses to hosts. The IP address is usually represented as a dotted
+  quad: four numbers in decimal notation, separated by dots. As an example, the IP address
+  0x80114b14 (in hexadecimal format) can be written as 128.17.75.20.
+  Two special cases should be mentioned here, dynamic IP addresses and masqueraded IP
+  addresses. Both have been invented to overcome the current shortage of IP addresses (which
+  will not be of concern any longer once everybody has adopted the new IPv6 standard that
+  prescribes six bytes for the IP addresses — enough for every amoeba in the universe to have
+  an IP address).

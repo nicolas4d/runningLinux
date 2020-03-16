@@ -1,0 +1,26 @@
+* 
+  Are you one of those programmers who scoff at the very idea of using a
+  debugger to trace through code? Is it your philosophy that if the code is too
+  complex for even the programmer to understand, the programmer deserves no
+  mercy when it comes to bugs? Do you step through your code, mentally, using a
+  magnifying glass and a toothpick? More often than not, are bugs usually caused
+  by a single-character omission, such as using the = operator when you mean +=
+  ?
+
+  Then perhaps you should meet gdb — the GNU debugger. Whether or not you know
+  it, gdb is your friend. It can locate obscure and difficult-to-find bugs that
+  result in core dumps, memory leaks, and erratic behavior (both for the program
+  and the programmer). Sometimes even the most harmless-looking glitches in your
+  code can cause everything to go haywire, and without the aid of a debugger
+  like gdb, finding these problems can be nearly impossible — especially for
+  programs longer than a few hundred lines. In this section, we'll introduce you
+  to the most useful features of gdb by way of examples. There's a book on gdb,
+  too — the *Free Software Foundation's Debugging with GDB* by Richard M.
+  Stallman, Roland Pesch, Stan Shebs, et al.
+* 
+  gdb is capable of either debugging programs as they run, or examining the
+  cause for a program crash with a core dump. Programs debugged at runtime with
+  gdb can either be executed from within gdb itself or can be run separately;
+  that is, gdb can attach itself to an already running process to examine it.
+  First, we'll discuss how to debug programs running within gdb and then move on
+  to attaching to running processes and examining core dumps.

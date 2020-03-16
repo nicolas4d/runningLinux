@@ -1,0 +1,208 @@
+* 
+  Our first example is a program called trymh that detects edges in a grayscale
+  image. trymh takes as input an image file, does some calculations on the data,
+  and spits out another image file. Unfortunately, it crashes whenever it is
+  invoked, as so:
+  #+begin_src shell
+    papaya$ trymh < image00.pgm > image00.pbm
+    Segmentation fault (core dumped)
+  #+end_src
+  Now, using gdb we could analyze the resulting core file, but for this example,
+  we'll show how to trace the program as it runs.(The sample programs in this
+  section are not programs you're likely to run into anywhere; they were thrown
+  together by the authors for the purpose of demonstration.)
+
+  Before we use gdb to trace through the executable trymh, we need to ensure
+  that the executable has been compiled with debugging code (see Section 1.5.4).
+  To do so, we should compile trymh using the -g switch with gcc.
+* 
+  Note that enabling optimization (-O) with debug code (-g) is legal but
+  discouraged. The problem is that gcc is too smart for its own good. For
+  example, if you have two identical lines of code in two different places in a
+  function, gdb may unexpectedly jump to the second occurrence of the line,
+  instead of the first, as expected. This is because gcc combined the two lines
+  into a single line of machine code used in both instances.
+
+  Some of the automatic optimizations performed by gcc can be confusing when
+  using a debugger. To turn off all optimization (even optimizations performed
+  without specifying -O), use the -O0 (that's dash-oh-zero) option with gcc.
+* 
+  Now we can fire up gdb to see what the problem might be:
+  #+begin_src shell
+  papaya$ gdb trymh
+  GNU gdb 20010316
+  Copyright 2001 Free Software Foundation, Inc.
+  GDB is free software, covered by the GNU General Public License, and you are
+  welcome to change it and/or distribute copies of it under certain conditions.
+  Type "show copying" to see the conditions.
+  There is absolutely no warranty for GDB. Type "show warranty" for details.
+  This GDB was configured as "i386-suse-linux".
+  (gdb)
+  #+end_src
+  Now gdb is waiting for a command. (The command help displays information on
+  the available commands.) The first thing we want to do is start running the
+  program so that we can observe its behavior. However, if we immediately use
+  the run command, the program simply executes until it exits or crashes.
+* 
+  First, we need to set a breakpoint somewhere in the program. A breakpoint is
+  just a location in the program where gdb should stop and allow us to control
+  execution of the program. For the sake of simplicity, let's set a breakpoint
+  on the first line of actual code so that the program stops just as it begins
+  to execute. The list command displays several lines of code (an amount that is
+  variable) at a time:
+  #+begin_src shell
+    (gdb) list
+         main( ) {
+             FloatImage inimage;
+             FloatImage outimage;
+             BinaryImage binimage;
+             int i,j;
+             inimage = (FloatImage)imLoadF(IMAGE_FLOAT,stdin);
+             outimage = laplacian_float(inimage);
+             (gdb) break 19
+             Breakpoint 1 at 0x289c: file trymh.c, line 19.
+             (gdb)
+  #+end_src
+* 
+  A breakpoint is now set at line 19 in the current source file. You can set
+  many breakpoints in the program; breakpoints may be conditional (that is,
+  triggered only when a certain expression is true), unconditional, delayed,
+  temporarily disabled, and so on. You may set breakpoints on a particular line
+  of code, a particular function, or a set of functions, and in a slew of other
+  ways. You may also set a watchpoint, using the watch command, which is similar
+  to a breakpoint but is triggered whenever a certain event takes place — not
+  necessarily at a specific line of code within the program. We'll talk more
+  about breakpoints and watchpoints later in the chapter.
+
+  Next, we use the run command to start running the program. run takes as arguments the same
+  arguments you'd give trymh on the command line; this can include shell wildcards and
+  input/output redirection, as the command is passed to /bin/sh for execution:
+  #+begin_src shell
+    (gdb) run < image00.pgm > image00.pfm
+    Starting program: /amd/dusk/d/mdw/vis/src/trymh < image00.pgm > image00.pfm
+    Breakpoint 1, main ( ) at trymh.c:19
+    19  inimage = (FloatImage)imLoadF(IMAGE_FLOAT,stdin);
+    (gdb)
+  #+end_src
+* 
+  As expected, the breakpoint is reached immediately at the first line of code.
+  We can now take over.
+
+  The most useful program-stepping commands are next and step. Both commands
+  execute the next line of code in the program, except that step descends into
+  any function calls in the program, and next steps directly to the next line of
+  code in the same function. next quietly executes any function calls that it
+  steps over but does not descend in their code for us to examine.
+
+  imLoadF is a function that loads an image from a disk file. We know this
+  function is not at fault (you'll have to trust us on that one), so we wish to
+  step over it using the next command:
+  #+begin_src shell
+    (gdb) next
+    20    outimage = laplacian_float(inimage);
+    (gdb)
+  #+end_src
+* 
+  Here, we are interested in tracing into the suspicious-looking laplacian_float
+  function, so we use the step command:
+  #+begin_src shell
+    (gdb) step
+    laplacian_float (fim=0x0) at laplacian.c:21
+    21  i = 20.0;
+    (gdb)
+  #+end_src
+* 
+  Let's use the list command to get some idea of where we are:
+  #+begin_src shell
+    (gdb) list
+    FloatImage laplacian_float(FloatImage fim) {
+        FloatImage mask;
+        float i;
+        i = 20.0;
+        mask=(FloatImage)imNew(IMAGE_FLOAT,3,3);
+        imRef(mask,0,0) = imRef(mask,2,0) = imRef(mask,0,2) = 1.0;
+        imRef(mask,2,2) = 1.0; imRef(mask,1,0) = imRef(mask,0,1) = i/5;
+        imRef(mask,2,1) = imRef(mask,1,2) = i/5; imRef(mask,1,1) = -i;
+    (gdb) list
+        return convolveFloatWithFloat(fim,mask);
+    }
+    (gdb)
+  #+end_src
+* 
+  As you can see, using list multiple times just displays more of the code.
+  Because we don't want to step manually through this code, and we're not
+  interested in the imNew function on line 22, let's continue execution until
+  line 27. For this, we use the until command:
+  #+begin_src shell
+    (gdb) until 27
+    laplacian_float (fim=0x0) at laplacian.c:27
+    27 return convolveFloatWithFloat(fim,mask);
+    (gdb)
+  #+end_src
+* 
+  Before we step into the convolveFloatWithFloat function, let's be sure the two parameters,
+  fim and mask , are valid. The print command examines the value of a variable:
+  #+begin_src shell
+    (gdb) print mask
+    $1 = (struct {...} *) 0xe838
+    (gdb) print fim
+
+    $2 = (struct {...} *) 0x0
+    (gdb)
+  #+end_src
+* 
+  mask looks fine, but fim , the input image, is null. Obviously,
+  laplacian_float was passed a null pointer instead of a valid image. If you
+  have been paying close attention, you noticed this as we entered
+  laplacian_float earlier.
+
+  Instead of stepping deeper into the program (as it's apparent that something has already gone
+  wrong), let's continue execution until the current function returns. The finish command
+  accomplishes this:
+  #+begin_src shell
+    (gdb) finish
+    Run till exit from #0 laplacian_float (fim=0x0) at laplacian.c:27
+    0x28c0 in main ( ) at trymh.c:20
+    20 outimage = laplacian_float(inimage);
+    Value returned is $3 = (struct {...} *) 0x0
+    (gdb)
+  #+end_src
+* 
+  Now we're back in main. To determine the source of the problem, let's examine
+  the values of some variables:
+  #+begin_src shell
+    (gdb) list
+    FloatImage outimage;
+    BinaryImage binimage;
+    int i,j;
+    inimage = (FloatImage)imLoadF(IMAGE_FLOAT,stdin);
+    outimage = laplacian_float(inimage);
+    binimage = marr_hildreth(outimage);
+    if (binimage = = NULL) {
+           fprintf(stderr,"trymh: binimage returned NULL\n");
+    (gdb) print inimage
+           $6 = (struct {...} *) 0x0
+    (gdb)
+  #+end_src
+* 
+  The variable inimage , containing the input image returned from imLoadF, is
+  null. Passing a null pointer into the image manipulation routines certainly
+  would cause a core dump in this case. However, we know imLoadF to be tried and
+  true because it's in a well-tested library, so what's the problem?
+
+  As it turns out, our library function imLoadF returns NULL on failure — if the
+  input format is bad, for example. Because we never checked the return value of
+  imLoadF before passing it along to laplacian_float, the program goes haywire
+  when inimage is assigned NULL . To correct the problem, we simply insert code
+  to cause the program to exit with an error message if imLoadF returns a null
+  pointer.
+* 
+  To quit gdb, just use the command quit. Unless the program has finished
+  execution, gdb will complain that the program is still running:
+  #+begin_src shell
+  (gdb) quit
+  The program is running. Quit anyway (and kill it)? (y or n) y
+  papaya$
+  #+end_src
+  In the following sections we examine some specific features provided by the
+  debugger, given the general picture just presented.
